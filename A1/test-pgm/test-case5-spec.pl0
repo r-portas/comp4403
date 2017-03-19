@@ -1,0 +1,22 @@
+var x: int;
+begin
+  x := 2;
+  while x >= 0 do
+  begin
+    case x of
+    when 1: write 1
+    default write 0
+    end;
+    x := x-1
+  end;
+  x := 3;
+  while x >= 0 do
+  begin
+    case x of
+    when 3: write 3
+    when 2: write 2
+    when 1: write 1
+    end;
+    x := x-1
+  end
+end

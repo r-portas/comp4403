@@ -1,0 +1,7 @@
+Compiling test-basea-proc-err.pl0
+     3 end
+******   ^  Error: Parse error, expecting ';' in Procedure Definition
+******   ^  Error: 'End-of-file' at line 3 column 2 cannot start Compound Statement
+Parsing complete
+Static semantic analysis complete
+2 errors detected.

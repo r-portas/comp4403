@@ -1,0 +1,29 @@
+var 
+  x: int;
+begin
+  x := 1;
+  if x = 1 then
+    write 105
+  else
+    write -99;
+  if x = 0 then
+    write -99
+  else
+    write 104;
+  if x < 1 then
+    write -99
+  else
+    write 103;
+  if x > 1 then
+    write -99
+  else
+    write 102;
+  if x <= 1 then
+    write 101
+  else
+    write -99;
+  if x >= 1 then
+    write 100
+  else
+    write -99    
+end

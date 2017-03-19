@@ -1,0 +1,6 @@
+begin
+  case 2 of
+  when 1: write 99
+  when 2: write 100
+  end
+end

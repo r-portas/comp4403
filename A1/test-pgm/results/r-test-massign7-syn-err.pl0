@@ -1,0 +1,12 @@
+Compiling test-massign7-syn-err.pl0
+     4     x+1 := y | 2 := x;
+******      ^  Error: '+' at line 4 column 5 cannot follow LValue in Assignment
+******                ^  Error: number(2) cannot start Assignment
+******                      ^  Error: Parse error, expecting ':=' in Assignment
+     5     write x
+******     ^  Error: 'write' at line 5 column 4 cannot start Condition
+Parsing complete
+     4     x+1 := y | 2 := x;
+******                     ^  Error: x assigned more than once
+Static semantic analysis complete
+5 errors detected.

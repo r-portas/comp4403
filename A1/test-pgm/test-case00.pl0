@@ -1,0 +1,5 @@
+begin
+  case 1 of
+  when 1: write 100
+  end
+end

@@ -1,0 +1,7 @@
+var
+  x: int;
+  y: int;
+begin
+    x+1 := y | 2 := x;
+    write x
+end

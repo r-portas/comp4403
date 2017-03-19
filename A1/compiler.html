@@ -1,0 +1,202 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>COMP4403/7402 Compiling and Running PL0 Compiler</title>
+</head>
+
+<p>
+<FORM><INPUT TYPE="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>
+
+Last updated: <LASTUPDATED>Mon  6 Mar 2017 09:45:32 AEST</LASTUPDATED>.
+
+<h3>Compiling the PL0 compiler</h3>
+
+<font color="blue">Sections in blue refer to the compilers used for
+  assignments 2 and 3.</font>
+
+<h4>Using Eclipse</h4>
+
+If you are using Eclipse then it will automatically compile the Java
+source files.
+<font color="blue">
+For the compiler generated via Java-CUP (assignments 2 and 3):
+<ul>
+  <li>to run the Java-CUP parser generator to rebuild CUPParser.java and
+  CUPTokens.java from PL0.cup run the ant script <i>build-cup.xml</i>
+  from within Eclipse
+  </li>
+  <li>you also need to refresh the parser files after running the ant
+  script, but you can set up Eclipse to do this automatically as part
+  of running the ant script</li>
+  <li>to run the JFlex lexical analyser generator to build Lexer.java from
+  PL0.flex run the ant script <i>build-flex.xml</i> from within
+  Eclipse, and refresh the parser files; you should only need to
+  generate Lexer.java once.
+</ul>
+</font>
+
+<!--
+<h4>Using Unix shell scripts</h4>
+
+Within the assignment compiler directory there are a number of Unix shell
+scripts to compile and run the PL0 compiler.
+You can make (i.e., compile) the PL0 compiler using the Unix shell
+script <i>compile</i>, i.e., run
+<ul>
+      ./compile
+</ul>
+The Java source code for the compiler is all in the
+subdirectory <i>src</i>. 
+See the the accompanying description of the source files.
+<p>
+The compilation process places the compiled class files in the
+subdirectory build.
+The main program is in package pl0 and file PL0.java.
+<p>
+There is also an ant script called <i>build.xml</i>.
+-->
+
+
+<h3>Running the PL0 compiler under Eclipse</h3>
+
+You'll need to set up a run configuration to run the PL0 compiler
+under Eclipse.
+While in the assignment compiler Eclipse project that you have
+imported. 
+<ul>
+ <li>Select Run>Run Configurations...
+ <li>Select Java Application
+ <li>Press the new icon (the box with the "+" in the corner)
+ <li>Give your new configuration a name (like "A1run")
+ <li>The Project field should correspond to the compiler project (eg,
+  "T4", "A1")
+ <li>Under the "Main" tab, press "search" under "Main class"
+ <li>Select PL0_RD (for recursive descent) or 
+    <font color="blue">PL0_LALR (for Java-CUP version)</font> from package pl0
+ <li>Select the "Arguments" tab
+ <li>Insert in text box 
+     <ul>
+       -v "${resource_loc}"
+     </ul>
+     These are the arguments to the PL0 compiler, which are described
+     in more detail below. 
+     If the path name to your workspace includes blanks,
+     don't forget to put the quotes around ${resource_loc}.
+     In Eclipse ${resource_loc} is replaced by the currently selected file. 
+     Hence to compile a PL0 program, 
+     you should first select the PL0 program,
+     e.g., select "test-pgm/test-based-write1.pl0" 
+     (which is the closest PL0 gets to a "Hello World" program)
+     under Eclipse, and then select "Run>Run" to run the run
+     configuration that you previously ran, or "Run>Run
+     Configurations..." to switch to a different configuration, or
+     create a new configuration.
+  </ul>
+</ul>
+There is a suite of test PL0 programs within the
+subdirectory <i>test-pgm</i>. 
+
+When you run a program the output of the compiler appears in the
+"Console" window (usually under the program).
+
+<ul>
+Compiling .../test-pgm/test-based-write1.pl0
+<br>
+Parsing complete
+<br>
+Static semantic analysis complete
+<br>
+Code generation complete
+<br>
+No errors detected.
+<ul>
+    1000 :  32    ZERO
+<br>
+    1001 :  32    ZERO
+<br>
+    1002 :  32    ZERO
+<br>
+    1003 :  26    LOAD_CON
+<br>
+    1004 :  1     
+<br>
+    1005 :  22    WRITE
+<br>
+    1006 :  4     RETURN
+</ul>
+Code generation complete
+<br>
+No errors detected.
+<br>
+Running .../test-pgm/test-based-write1.ibsm...
+<br>
+1
+<br><br>
+Terminated
+</ul>
+The line containing "1" is the output produced by this particular
+(simple) PL0 program.
+
+<!--
+<p>
+Within tests there is a Unix shell script <i>mkresult</i>,
+which runs the PL0 compiler 
+(you must have already compiled the compiler)
+on a test file passed as an argument, e.g.,
+within directory <i>tests</i> run
+<ul>
+  ./mkresult test-write1.pl0
+</ul>
+<p>
+The <i>mkresult</i> shell script also saves copies of the
+standard output produced by the compiler in
+subdirectory <i>results</i> under the name 
+<i>r-test-write1.pl0</i> and
+the standard error output in subdirectory <i>errors</i> under the
+name <i>e-test-write1.pl0</i>. 
+<p>
+The shell script <i>runtests</i> in the assignment directory will run
+<mkresult</i> on every test program file within the subdirectory 
+<i>test-pgm</i>.
+A test program file must start with "test".
+<p>
+You should develop your own set of test cases to thoroughly test 
+your compiler.
+-->
+
+
+<h3>Compiler options</h3>
+
+If a compilation of a PL0 program is successful, 
+the compiler normally runs the interpreter to execute the generated code.
+However there are a number of compiler parameters that can change its
+behaviour.
+<ul>
+          PL0 - PL0 Compiler
+      <br>Usage: java pl0.PL0 [-cdhptv] <i>filename.pl0</i> ]
+      <br>  -d  =  debug messages on (verbose trace of parsing, etc.)
+      <br>  -p  =  parse only (nonstatic check or code generation)
+      <br>  -c  =  parse and static check only (no code generation)
+      <br>  -v  =  verbose output of generated code
+      <br>  -t  =  trace execution of resulting code (verbose)
+      <br>  -h  =  output this usage information
+      <br> <i>filename.pl0</i> is compiled, and if there are no errors
+            the generated code is executed unless -p or -c are given.
+</ul>
+The <b>-p</b> option only runs the parsing phase.
+The <b>-d</b> option gives a blow-by-blow (very verbose) trace of
+the recursive descent parsing process (for assignment 1 compiler) or
+<font color="blue"> the shift-reduce parsing process (for assignment 2 and 3 compilers).</font>
+<p>
+The <b>-t</b> option is useful for debugging problems with the code
+      your compiler generates; it gives a very verbose
+      blow-by-blow trace of the execution of the code.
+<p>
+The compiler switches are also documented at the start of PL0_RD.java
+or <font color="blue"> PL0_LALR.java.</font>
+
+<p>
+<FORM><INPUT TYPE="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>
+
+</body>
+</html>

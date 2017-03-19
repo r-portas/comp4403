@@ -1,0 +1,19 @@
+Compiling test-case5-spec.pl0
+Parsing complete
+Static semantic analysis complete
+Code generation complete
+No errors detected.
+Running ...
+0
+1
+0
+3
+2
+1
+
+Runtime error: expression in case doesn't match any label
+PC=1130 in PROC   <main> : PROCEDURE level 0 start 1000 : 1143 FP=0 SL=0 DL=0 RA=0
+  x(3) = 0
+End of traceBack
+
+Terminated

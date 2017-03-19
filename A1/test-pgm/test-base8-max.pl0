@@ -1,0 +1,9 @@
+var First: int; Second: int; Max: int;
+begin
+  First := 100; Second := -100;
+  if First > Second then
+    Max := First
+  else 
+    Max := Second;
+  write Max
+end

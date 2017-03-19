@@ -1,0 +1,14 @@
+const c = 1;
+var   x:int;
+
+procedure p() =
+  begin
+    case x of
+    when -c: write 100
+    end
+  end;
+
+begin // main
+  x := -1;
+  call p()
+end

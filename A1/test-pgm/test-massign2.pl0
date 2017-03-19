@@ -1,0 +1,16 @@
+var
+  x: int;
+  y : int;
+  z : int;
+  b : boolean;
+begin
+  x := 1 | y := 2 | z := 3;
+  write x; write y; write z;  // 1 2 3
+  x := y | y := z | z := x;
+  write x; write y; write z;  // 2 3 1
+  x := x+y | y := y+z | z := z+x;
+  write x; write y; write z;  // 5 4 3
+  b := false;
+  x := 6 | b := true;
+  write x; if b then write 1 else write 0
+end

@@ -1,0 +1,5 @@
+begin
+  case 1 of
+  when 0: write 99
+  end
+end

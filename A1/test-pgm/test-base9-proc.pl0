@@ -1,0 +1,28 @@
+var x: int;
+procedure q() = begin call p() end; // q
+procedure p() =
+  procedure r() =
+    var z : T;
+    begin // r
+      z := y;
+      if z = 0 then
+        y := z/0      // execution ends with divide by 0
+      else
+      begin
+        x := y;
+        call q()
+      end
+    end; //r 
+  var y: T;
+  type T = [0..5];
+  begin // p
+    y := x-1;
+    call r();
+    x := y
+  end; //p
+begin // main
+  x := 2;
+  write x;
+  call q();
+  write x
+end // main

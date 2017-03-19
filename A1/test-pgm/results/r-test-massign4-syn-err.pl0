@@ -1,0 +1,13 @@
+Compiling test-massign4-syn-err.pl0
+     4   x : = y;           // erroneous blank between : and =
+******     ^  Error: ':' at line 4 column 4 cannot follow LValue in Assignment
+******       ^  Error: Parse error, expecting ':=' in Assignment
+     5   x := y || y := x;  // error || should be |
+******          ^  Error: '||' at line 5 column 9 cannot follow LValue in Factor
+     6   x := y & y := x;   // error & should be |
+******          ^  Error: 'illegal' at line 6 column 9 cannot follow LValue in Factor
+     7   x := y | skip      // skip isn't an assignment
+******            ^  Error: 'skip' at line 7 column 11 cannot start Assignment
+Parsing complete
+Static semantic analysis complete
+5 errors detected.

@@ -1,0 +1,16 @@
+var
+  x: int;
+begin
+  x := 2+3;
+  write x;
+  x := x-1;
+  write x;
+  x := x*2-5;
+  write x;
+  x := 10-x-x-2;
+  write x;
+  x := x * (x+1) - 5;
+  write x;
+  x := x*0;
+  write x
+end

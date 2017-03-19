@@ -1,0 +1,6 @@
+Compiling test-massign6-four-way.pl0
+Parsing complete
+     8   x := y | y := x | z := y | y := z
+******                              ^  Error: y assigned more than once
+Static semantic analysis complete
+1 error detected.

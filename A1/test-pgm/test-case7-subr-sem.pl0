@@ -1,0 +1,13 @@
+type S = [1..5];
+var i : S;
+begin
+  i := 2;
+  case i of
+  when 0: write 100 // out of subrange [1..5]
+  when 1: write 101
+  when 2: write 102
+  when 3: write 103
+  when 4: write 104
+  when 5: write 105
+  end
+end

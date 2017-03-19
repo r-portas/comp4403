@@ -1,0 +1,14 @@
+var
+  x : int;
+  y : int;
+  sum : int;
+  diff : int;
+begin
+  x := 1;
+  y := 2;
+  x := y | y := x | sum := x + y | diff := x - y;
+  write x;
+  write y;
+  write sum;
+  write diff
+end

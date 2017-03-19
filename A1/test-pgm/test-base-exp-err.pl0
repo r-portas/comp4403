@@ -1,0 +1,24 @@
+type S = [2..8];
+var i: int;
+    b: boolean;
+    j: S;
+const k = 10;
+    i = 42;    // duplicate declaration
+    S = 27;    // duplicate declaration
+    big = 5000000000; // too big
+begin
+  i := true;   // cannot assign boolean to int
+  b := 8;      // cannot assign int to boolean
+  i := b;      // cannot assign boolean to int
+  i := i + b;  // cannot add int and boolean
+  b := i + b;  // cannot add int and boolean
+  j := i;
+  i := j;
+  i := i + j;
+  b := j;      // cannot assign int subrange to boolean
+  j := b;      // cannot assign boolean to int subrange
+  j := i = j;  // cannot assign boolean to int
+  b := x * y;  // x and y not declared
+  i := i + (j * x);  // x not declared
+  write undefined // undefined not declared
+end

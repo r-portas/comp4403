@@ -1,0 +1,5 @@
+begin
+  case 1 of
+  default write 100
+  end
+end

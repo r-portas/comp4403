@@ -1,0 +1,25 @@
+var 
+  x: int;
+  b: boolean;
+begin
+  x := 3;
+  while x >= 0 do
+  begin
+    case x of
+    when 0: write 0
+    when true: write 1
+    when 2: write 2
+    when 2: write 3
+    when 2: write 4
+    when false: write 5
+    default write 6
+    end;
+    case b of
+    when true: write 7
+    when true: write 8
+    when false: write 9
+    default write 10
+    end;
+    x := x-1
+  end
+end

@@ -1,0 +1,14 @@
+Compiling test-case4-sem.pl0
+Parsing complete
+     9     when true: write 1
+******          ^  Error: case label type does not match case expression type
+    11     when 2: write 3
+******          ^  Error: repeated label in case branch
+    12     when 2: write 4
+******          ^  Error: repeated label in case branch
+    13     when false: write 5
+******          ^  Error: case label type does not match case expression type
+    18     when true: write 8
+******          ^  Error: repeated label in case branch
+Static semantic analysis complete
+5 errors detected.

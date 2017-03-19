@@ -1,0 +1,12 @@
+type S = [-2..2];
+var i : S;
+begin
+  i := -2;
+  case i of
+  when -2: write 98
+  when -1: write 99
+  when 0: write 100
+  when 1: write 101
+  when 2: write 102
+  end
+end

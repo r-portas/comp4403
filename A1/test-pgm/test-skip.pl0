@@ -1,0 +1,4 @@
+begin
+  skip;
+  while false do skip
+end

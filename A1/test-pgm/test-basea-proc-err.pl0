@@ -1,0 +1,4 @@
+procedure x() =
+begin
+  write 1
+end

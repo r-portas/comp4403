@@ -1,0 +1,17 @@
+const
+	c = true;
+var 
+	x: int;
+    b: boolean;
+begin
+	x := 1;
+	b := true;
+	x := true;   // cannot assign boolean to int
+	b := 1;      // cannot assign int to boolean
+	c := false;  // cannot assign to a constant
+	b := c;
+	if c then
+		write 1
+	else
+		write 0
+end

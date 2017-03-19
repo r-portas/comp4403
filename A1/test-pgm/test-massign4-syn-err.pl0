@@ -1,0 +1,10 @@
+var
+  x: int;
+  y: int;
+begin
+  x : = y;           // erroneous blank between : and =
+  x := y || y := x;  // error || should be |
+  x := y & y := x;   // error & should be |
+  x := y | skip      // skip isn't an assignment
+end
+  

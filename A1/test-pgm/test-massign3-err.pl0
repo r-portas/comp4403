@@ -1,0 +1,7 @@
+var
+  x: int;
+  b : boolean;
+begin
+  x := 1 | x := 2;  // x assigned more than once
+  x := b | b := x   // both assignments are not type correct
+end

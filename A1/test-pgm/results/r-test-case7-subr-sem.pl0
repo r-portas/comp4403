@@ -1,0 +1,6 @@
+Compiling test-case7-subr-sem.pl0
+Parsing complete
+     5   when 0: write 100 // out of subrange [1..5]
+******        ^  Error: case label type does not match case expression type
+Static semantic analysis complete
+1 error detected.

@@ -1,0 +1,15 @@
+var 
+  x: int;
+begin
+  x := 3;
+  while x >= 0 do
+  begin
+    case x of
+    when 1: write 101
+    when 2: write 102
+    when 3: write 103
+    default write 100
+    end;
+    x := x-1
+  end
+end
