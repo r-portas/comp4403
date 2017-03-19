@@ -1,0 +1,5 @@
+cd test-pgm
+for i in test*
+do
+	./mkresult $i
+done

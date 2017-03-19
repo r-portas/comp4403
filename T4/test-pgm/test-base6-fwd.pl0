@@ -1,0 +1,31 @@
+var 
+  x: A;
+type 
+  A = B;
+  B = C;
+  C = int;
+  D = E;   // circularly defined type
+  E = F;   // circularly defined type
+  F = D;   // circularly defined type
+var
+  z: D;
+procedure p() = 
+  var 
+    q: B;
+    y: D;
+  type
+    B = C;
+    C = boolean;
+    D = A;
+  begin
+    q := true;
+    q := 1;     // within p, B is boolean and hence q is boolean
+    y := 1;
+    y := true;  // within p, D is A is int and hence y is int
+    x := 1;
+    x := true   // x declared in main of type A which is int
+  end;
+begin
+  x := 1;
+  x := true   // x declared in main of type A which is int
+end

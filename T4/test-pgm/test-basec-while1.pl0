@@ -1,0 +1,13 @@
+var 
+  x: int; 
+  i: int; 
+begin 
+  i := 1; 
+  x := 0; 
+  while i < 5 do 
+    begin 
+      x := x + i*i; 
+      i := i + 1 
+    end; 
+  write x // 30
+end

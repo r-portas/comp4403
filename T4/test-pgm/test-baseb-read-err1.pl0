@@ -1,0 +1,10 @@
+const 
+	c = 1;
+var
+	x: int;
+begin
+	read x;
+	write x;
+	read c;  //cannot read into (assign to) a constant
+	write c
+end

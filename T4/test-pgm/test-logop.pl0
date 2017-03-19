@@ -1,0 +1,17 @@
+var x: int;
+    y: int;
+    b: boolean;
+begin
+    b := true;
+    if ! b then write 1 else write 0;
+    b := 1 < 0 || 0 < 1;
+    if b then write 1 else write 0;
+    b := 1 < 0 || 1 < -1;
+    if b then write 1 else write 0;
+    b := 1 < 0 && 0 < 1;
+    if b then write 1 else write 0;
+    b := 0 < 1 && 1 < -1;
+    if b then write 1 else write 0;
+    b := 0 < 1 && 1 < 2;
+    if b then write 1 else write 0
+end

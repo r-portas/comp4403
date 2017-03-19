@@ -1,0 +1,316 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <title>COMP4403/COMP7402 - Assignment 1 Compiler</title>
+</head>
+
+<body>
+Last updated: <LASTUPDATED>Sun  5 Mar 2017 13:12:42 AEST</LASTUPDATED>.
+
+<p>
+<FORM><INPUT TYPE="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>
+
+<h1>PL0 Compiler Java Source Code (Recursive descent version)</h1>
+<p>
+The Java files that make up the compiler are listed below, along with a
+brief description of their purpose. 
+The source code for the compiler is divided into the following packages:
+<ul>
+  <li><b>pl0</b>
+    contains the Java files for the main program for the compiler
+  </li>
+  <li><b>parser</b>
+    contains the Java files to handle scanning and parsing as well
+    as defining the lexical tokens
+  </li>
+  <li><b>tree</b>
+    contains the abstract syntax tree, the static semantic checker and
+    the code generator
+  </li>
+  <li><b>syms</b>
+    contains the symbol table, its entries, and type descriptors
+  </li>
+  <li><b>machine</b>
+    contains the Java files for the stack machine interpreter,
+    instruction set operation codes, and instructions.
+  </li>
+  <li><b>source</b>
+    contains the Java files for processing the source input and
+    handling error messages
+  </li>
+</ul>
+ 
+ 
+<h2>Package pl0</h2>
+<p>
+You shouldn't need to look in here too much.
+The main program defines some command line arguments that may be
+useful. 
+<ul>
+  <li><b>PL0_RD.java</b>
+    (class)
+    The main program for the compiler 
+    ("RD" stands for recursive descent).
+  </li>
+</ul>
+
+<h2>Package machine</h2>
+<p>
+You may want to look inside the stack machine at some stage to work
+out exactly what an instruction does.
+<ul>
+ <li><b>Instruction.java</b>
+    (class)
+    Defines the different formats of instruction.
+  </li>
+  <li><b>Operation.java</b>
+  (enumeration)
+  Define the operation codes for the stack machine.
+  </li>
+  <li><b>StackMachine.java</b>
+    (class)
+    Implements an interpreter for the Stack Machine.
+  </li>
+</ul>
+
+
+<h2>Package parser</h2>
+<p>
+You'll need to understand how the Parser works and what the lexical
+Tokens are, but you shouldn't need to look at the Scanner.
+<ul>
+  <li><b>IdentifierToken.java</b> 
+    (class, extends LexicalToken)
+    Subclass of token for identifier tokens only.
+  </li>
+  <li><b>LexicalToken.java</b> 
+    (class)
+    Defines the lexical token passed between the scanner and parser.
+  </li>
+  <li><b>NumberToken.java</b>
+    (class, extends LexicalToken)
+    Subclass of token for integer number tokens only.
+  </li>
+  <li><b>Parser.java</b>
+    (class)
+    The parser recognises the input program and creates and
+    abstract syntax tree and symbol table.
+    This version uses a recursive descent parser.
+  </li>
+  <li><b>Scanner.java</b>
+    (class)
+    The scanner recognises the input character stream and splits
+    it up into a stream of lexical tokens.
+  </li>
+  <li><b>Token.java</b>
+    (class)
+    Defines the lexical tokens.
+  </li>
+  <li><b>TokenSet.java</b>
+    (class)
+    Defines types and operations on sets of Tokens.
+  </li>
+  <li><b>TokenStream.java</b>
+    (class)
+    Handles access to the stream of tokens from input source from the
+    parser. Contains generic syntax error recovery methods.
+  </li>
+</ul>
+
+<h2>Package tree</h2>
+<p>
+You'll need to know the structure of the Abstract Syntax Tree and the
+definitions of the Operators.
+Then you'll need to understand how the StaticChecker and CodeGenerator
+work. These both implement the Visitor interfaces to traverse the abstract
+syntax tree.
+<ul>
+  <li><b>Code.java</b>
+    (class)
+    Data structure for a sequence of instructions used in the code
+    generation.
+  </li>
+  <li><b>CodeGenerator.java</b>
+    (class, implements TreeTransform, ExpTransform, and StatementTransform)
+    Implements the code generation for the compiler via a tree traversal.
+    You'll need to modify this to generate code for the extra statements.
+  </li>
+  <li><b>ConstExp.java</b>
+    (class)
+    Symbolic constant expressions are evaluated at compile time.
+    This class provides tree nodes to represent constants and evaluate
+    them.
+  </li>
+  <li><b>DeclNode.java</b>
+    (class)
+    This class provides the abstract syntax tree nodes representing
+    declarations lists and procedure declarations.
+  </li>
+  <li><b>DeclVisitor.java</b>
+    (interface)
+    Visitor interface for declarations and procedures (including main program).
+  </li>
+  <li><b>ExpNode.java</b>
+    (class)
+    Defines the nodes in the abstract syntax tree for expressions
+    as well as methods for allowing tree traversals using the visitor pattern.
+  </li>
+  <li><b>ExpTransform.java</b>
+    (interface)
+    Visitor interface for expressions returning a transformed expression.
+  </li>
+  <li><b>Operator.java</b>
+    (enumeration)
+    Enumeration for the binary and unary operators for the abstract syntax tree.
+  </li>
+  <li><b>Procedures.java</b>
+    (class)
+    Provides data structure to keep track of the start and finish
+    addresses of procedures. Also used to provide a run-time stack
+    trace (on a run-time error).
+  </li>
+  <li><b>StatementNode.java</b>
+    (class)
+    Defines the nodes in the abstract syntax tree for statements 
+    as well as methods for allowing tree traversals using the visitor pattern.
+    You'll need to modify this to generate the appropriate abstract
+    syntax tree structure.
+  </li>
+  <li><b>StatementTransform.java</b>
+    (interface)
+    Visitor interface for statement transformation (used in code generation).
+  </li>
+  <li><b>StatementVisitor.java</b>
+    (interface)
+    Visitor interface for statements (used by static checker).
+  </li>
+  <li><b>StaticChecker.java</b>
+    (class, implements TreeVisitor, ExpTransform, and StatementVisitor) 
+    Implements the static (type) checking for the compiler via
+    a tree traversal.
+    You'll need to modify this to static check the new constructs.
+  </li>
+</ul>
+
+
+<h2>Package syms</h2>
+<p>
+This package defines the symbol table and its entries as well as type descriptors.
+<ul>
+  <li><b>Predefined.java</b>
+    (class)
+    Handles all the predefined constants, types and operators.
+  </li>
+  <li><b>Scope.java</b>
+    (class)
+    Provides a single scope within the symbol table.
+  </li>
+  <li><b>SymEntry.java</b>
+    (class)
+    Defines the symbol table entries for CONST, TYPE, VAR and 
+    PROCEDURE identifiers, and operators.
+  </li>
+  <li><b>SymbolTable.java</b>
+    (class)
+    The main symbol table that puts together symbol tables for
+    each Scope (procedure, main program or predefined scope) that
+    contain entries (SymEntry) for each identifier.
+    Handles constant, variable, type, procedure identifiers, 
+    as well as the type structures.
+  </li>
+  <li><b>SymbolTableTest.java</b>
+    (JUnit test class)
+    JUnit test for the symbol table.
+  </li>
+  <li><b>Type.java</b>
+    (class)
+    Defines the symbol table structures that represent types,
+    including basic types like int and boolean, as well as 
+    subrange types.
+  </li>
+  <li><b>TypeTest.java</b>
+    (JUnit test class)
+    JUnit test for types.
+  </li>
+</ul>
+
+<h2>Package source</h2>
+<p>
+This is low level boring stuff.
+You shouldn't have to look in here
+unless you just want to find out what it does.
+<ul>
+  <li><b>CompileError.java</b>
+    (class)
+    Stores a single error message.
+  </li>
+  <li><b>ErrorHandler.java</b>
+    (class, implements Errors)
+    Handles the saving and reporting of error messages.
+  </li>
+  <li><b>Errors.java</b>
+    (interface)
+    Errors interface defines error methods.
+  </li>
+  <li><b>LineLocations.java</b>
+    (class)
+    Used for finding the source line in the input file when
+    reporting errors.
+  </li>
+  <li><b>Severity.java</b>
+    (enumeration)
+    Enumeration containing the error message severities.
+  </li>
+  <li><b>Source.java</b>
+    (class)
+    Handles reading the source input, keeping track of the
+    location within the source input and output of error messages
+    and a listing of the input.
+  </li>
+</ul>
+
+<h1>Other files</h1>
+<p>
+Test programs
+<ul>
+  <li><b>test-pgm/</b>
+    A directory containing a set of test PL0 programs
+    (each with suffix ".pl0").
+  </li>
+</ul>
+<!--
+For Ant (not under Eclipse)
+<ul>
+  <li><b>build.xml</b>
+    Basic ant script for building compiler.
+    An alternative to the Unix command scripts or Eclipse.
+  </li>
+</ul>
+-->
+<!--
+For Unix
+<ul>
+  <li><b>clean</b>
+    Unix shell script to clean the directory of .class files, etc.
+    Look to see what it deletes before you use it.
+  </li>
+  <li><b>compile</b>
+    Unix shell script to compile the PL0 compiler.
+  </li>
+  <li><b>run</b>
+    Unix shell script to run the PL0 compiler.
+    If you are using Eclipse you can use its Run menu option to set up
+    an Eclipse run configuration to run PL0.
+  </li>
+  <li><b>runtests</b>
+    Unix shell script to run all the tests in the <b>test-pgm</b>
+    directory.
+  </li>
+</ul>
+-->
+
+<p>
+<FORM><INPUT TYPE="button" VALUE="Back" onClick="history.go(-1);return true;"></FORM>
+
+</body>
+</html>

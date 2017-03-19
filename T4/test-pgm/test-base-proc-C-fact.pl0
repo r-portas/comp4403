@@ -1,0 +1,44 @@
+var x: int;  // first argument to C
+    y: int;  // second argument to C
+    res: int;  // result from C
+procedure C() =
+  var n: int;  // argument to fact
+      f: int;  // result from fact
+  procedure fact() =
+    begin
+      // assume 0 <= n
+      if n = 0 then
+        f := 1    
+        // f = n!
+      else // 0 < n
+       begin
+        n := n - 1;
+        call fact();  
+        // f = n!
+        n:= n + 1;
+        f := f * n   
+        // f = n!
+       end
+    end; // fact
+  begin // C
+    n := x;
+    call fact();   
+    // f = x!
+    res := f;
+    n := y;
+    call fact();   
+    // f = y!
+    res := res / f; 
+    // res = x! / y!
+    n := x - y;
+    call fact();   
+    // f = (x-y)!
+    res := res / f   
+    // res = x! / (y! * (x-y!))
+  end; // C
+begin // main program
+  x := 6;
+  y := 2;
+  call C();
+  write res
+end

@@ -1,0 +1,8 @@
+var i: int;
+begin
+  i := 4;
+  repeat
+    write i;
+    i := i - 1
+  until i = 0
+end

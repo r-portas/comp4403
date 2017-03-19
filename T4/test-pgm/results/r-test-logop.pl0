@@ -1,0 +1,16 @@
+Compiling test-logop.pl0
+     5     if ! b then write 1 else write 0;
+******        ^  Error: '!' at line 5 column 7 cannot start Condition
+     6     b := 1 < 0 || 0 < 1;
+******                ^  Error: '||' at line 6 column 15 cannot follow Factor in Term
+     8     b := 1 < 0 || 1 < -1;
+******                ^  Error: '||' at line 8 column 15 cannot follow Factor in Term
+    10     b := 1 < 0 && 0 < 1;
+******                ^  Error: '&&' at line 10 column 15 cannot follow Factor in Term
+    12     b := 0 < 1 && 1 < -1;
+******                ^  Error: '&&' at line 12 column 15 cannot follow Factor in Term
+    14     b := 0 < 1 && 1 < 2;
+******                ^  Error: '&&' at line 14 column 15 cannot follow Factor in Term
+Parsing complete
+Static semantic analysis complete
+6 errors detected.

@@ -1,0 +1,19 @@
+type
+  S = [1..10];
+var 
+  x: int;
+  y: S;
+  b: boolean;
+begin
+  x := 1;
+  x := y; // widen to int
+  y := x; // narrow to subrange S
+  y := (x = 1); // incompatible
+  b := x; // incompatible
+  x := (x = b); // mismatch in expression and assignment
+  b := (x + b); // mismatch in expression and assignment
+  y := (x + y); // ok
+  x := z;  // z undeclared (Error_TYPE for coercion)
+  y := z;  // z undeclared (Error_TYPE for coercion)
+  A := z   // z undeclared (Error_TYPE for coercion)
+end

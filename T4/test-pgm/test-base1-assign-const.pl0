@@ -1,0 +1,21 @@
+const 
+    c = 42;
+    b = 2147483647;
+    d = false;
+    e = -f;
+    f = -42;
+    g = h;       // circular definition
+    h = i;       // circular definition
+    i = j;       // circular definition
+    j = --g;     // circular definition
+var 
+    x: int;
+begin
+	x := c;
+	write c;
+	write b;
+	if d then
+	    write 1
+	else
+	    write 0
+end
