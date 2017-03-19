@@ -44,7 +44,7 @@ import tree.StatementNode;
  *  CompoundStatement -> KW_BEGIN StatementList KW_END
  *  StatementList -> Statement { SEMICOLON Statement }
  *  Statement -> WhileStatement | IfStatement | CallStatement | Assignment | 
- *               ReadStatement | WriteStatement | CompoundStatement
+ *               ReadStatement | WriteStatement | CompoundStatement | SkipStatement
  *  Assignment -> LValue ASSIGN Condition
  *  WhileStatement -> KW_WHILE Condition KW_DO Statement
  *  IfStatement -> KW_IF Condition KW_THEN Statement KW_ELSE Statement
@@ -467,6 +467,9 @@ public class Parser {
         case IDENTIFIER:
             result = parseAssignment( recoverSet ); 
             break;
+        case KW_SKIP:
+            result = parseSkipStatement( recoverSet );
+            break;
         case KW_WHILE:
             result = parseWhileStatement( recoverSet ); 
             break;
@@ -511,6 +514,19 @@ public class Parser {
         tokens.endRule( "Assignment", recoverSet );
         return new StatementNode.AssignmentNode( loc, left, right );
     }
+
+    /** Rule: SkipStatement
+     * @requires token.isMatch( Token.KW_SKIP ) */
+    private StatementNode parseSkipStatement( TokenSet recoverSet ) {
+        tokens.beginRule( "Skip Statement", Token.KW_SKIP  );
+
+        // Cannot fail
+        tokens.match( Token.KW_SKIP );
+
+        tokens.endRule( "Skip Statement", recoverSet );
+        return null;
+    }
+
     /** Rule: WhileStatement -> KW_WHILE Condition KW_DO Statement 
      * @requires tokens.isMatch( Token.KW_WHILE ) */
     private StatementNode parseWhileStatement( TokenSet recoverSet ) {
