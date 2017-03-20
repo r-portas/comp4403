@@ -18,3 +18,5 @@ tmp/
 *.bak
 *.swp
 *~.nib
+
+.metadata
