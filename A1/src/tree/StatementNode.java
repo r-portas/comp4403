@@ -122,6 +122,28 @@ public abstract class StatementNode {
         }
     }
 
+    public static class SkipNode extends StatementNode {
+        public SkipNode( Location loc ) {
+            super( loc );
+        }
+
+        @Override
+        public void accept( StatementVisitor visitor ) {
+            visitor.visitSkipNode( this );
+        }
+
+        @Override
+        public Code genCode( StatementTransform<Code> visitor ) {
+            return visitor.visitSkipNode( this );
+        }
+
+        @Override
+        public String toString( int level ) {
+            return "skip";
+        }
+
+    }
+
     /** Tree node representing an assignment statement. */
     public static class AssignmentNode extends StatementNode {
         /** Tree node for expression on left hand side of an assignment. */

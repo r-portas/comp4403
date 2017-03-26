@@ -177,6 +177,27 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         endGen( "If" );
         return code;
     }
+
+    // Generate code for the "repeat" statement
+    public Code visitRepeatNode(StatementNode.RepeatNode node) {
+        beginGen("Repeat");
+        
+        // Generate code for the loop body
+        Code bodyCode = node.getLoopStmt().genCode(this);
+
+        // Generate the condition code
+        Code code = node.getCondition().genCode(this);
+
+        code.genJumpIfFalse(bodyCode.size() + Code.SIZE_JUMP_ALWAYS);
+
+        code.append(bodyCode);
+
+        code.genJumpAlways(-(code.size() + Code.SIZE_JUMP_ALWAYS ));
+
+        endGen("Repeat");
+        return code;
+
+    }
  
     /** Generate code for a "while" statement. */
     public Code visitWhileNode(StatementNode.WhileNode node) {

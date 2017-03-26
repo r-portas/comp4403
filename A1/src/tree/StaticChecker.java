@@ -97,6 +97,14 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         endCheck("StatementError");
     }
 
+    public void visitSkipNode(StatementNode.SkipNode node) {
+        beginCheck("Skip");
+
+        // Do nothing
+        
+        endCheck("Skip");
+    }
+
     public void visitAssignmentNode(StatementNode.AssignmentNode node) {
         beginCheck("Assignment");
         // Check the left side left value.

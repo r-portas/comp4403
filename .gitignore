@@ -15,3 +15,5 @@ tmp/
 *~.nib
 
 .metadata
+
+.DS_Store

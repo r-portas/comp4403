@@ -133,6 +133,15 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         endCheck("Write");
     }
 
+    public void visitRepeatNode( StatementNode.RepeatNode node ) {
+        beginCheck("Repeat");
+
+        node.getLoopStmt().accept(this);
+        node.setCondition(checkCondition( node.getCondition() ));
+        endCheck("Repeat");
+
+    }
+
     
     public void visitCallNode(StatementNode.CallNode node) {
         beginCheck("Call");

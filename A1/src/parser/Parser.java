@@ -44,8 +44,10 @@ import tree.StatementNode;
  *  CompoundStatement -> KW_BEGIN StatementList KW_END
  *  StatementList -> Statement { SEMICOLON Statement }
  *  Statement -> WhileStatement | IfStatement | CallStatement | Assignment | 
- *               ReadStatement | WriteStatement | CompoundStatement | SkipStatement
+ *               ReadStatement | WriteStatement | CompoundStatement |
+ *               SkipStatement
  *  Assignment -> LValue ASSIGN Condition
+ *  SkipStatement -> KW_SKIP
  *  WhileStatement -> KW_WHILE Condition KW_DO Statement
  *  IfStatement -> KW_IF Condition KW_THEN Statement KW_ELSE Statement
  *  CallStatement -> KW_CALL IDENTIFIER LPAREN ActualParameters RPAREN
@@ -73,7 +75,8 @@ public class Parser {
     private final static TokenSet STATEMENT_START_SET =
         LVALUE_START_SET.union( Token.KW_WHILE, Token.KW_IF,
           Token.KW_READ, Token.KW_WRITE,
-          Token.KW_CALL, Token.KW_BEGIN );
+          Token.KW_CALL, Token.KW_BEGIN,
+          Token.KW_SKIP );
     /** Set of tokens that may start a Declaration. */
     private final static TokenSet DECLARATION_START_SET =
         new TokenSet( Token.KW_CONST, Token.KW_TYPE, Token.KW_VAR, 
@@ -468,7 +471,7 @@ public class Parser {
             result = parseAssignment( recoverSet ); 
             break;
         case KW_SKIP:
-            result = parseSkipStatement( recoverSet );
+            result = parseSkip( recoverSet );
             break;
         case KW_WHILE:
             result = parseWhileStatement( recoverSet ); 
@@ -495,6 +498,19 @@ public class Parser {
         tokens.endRule( "Statement", recoverSet );
         return result;
     }
+
+    /** Rule: SkipStatement -> KW_SKIP */
+    private StatementNode parseSkip( TokenSet recoverSet ) {
+        tokens.beginRule( "Skip Statement", Token.KW_SKIP );
+        
+        tokens.match( Token.KW_SKIP );
+        Location loc = tokens.getLocation();
+
+        tokens.endRule( "Skip Statement", recoverSet );
+
+        return new StatementNode.SkipNode( loc );
+    }
+
     /** Rule: Assignment -> LValue ASSIGN Condition */
     private StatementNode.AssignmentNode parseAssignment(TokenSet recoverSet) {
         if( !tokens.beginRule( "Assignment", LVALUE_START_SET, recoverSet ) ) {
@@ -514,19 +530,6 @@ public class Parser {
         tokens.endRule( "Assignment", recoverSet );
         return new StatementNode.AssignmentNode( loc, left, right );
     }
-
-    /** Rule: SkipStatement
-     * @requires token.isMatch( Token.KW_SKIP ) */
-    private StatementNode parseSkipStatement( TokenSet recoverSet ) {
-        tokens.beginRule( "Skip Statement", Token.KW_SKIP  );
-
-        // Cannot fail
-        tokens.match( Token.KW_SKIP );
-
-        tokens.endRule( "Skip Statement", recoverSet );
-        return null;
-    }
-
     /** Rule: WhileStatement -> KW_WHILE Condition KW_DO Statement 
      * @requires tokens.isMatch( Token.KW_WHILE ) */
     private StatementNode parseWhileStatement( TokenSet recoverSet ) {
