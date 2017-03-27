@@ -106,16 +106,24 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return code;
     }
 
-    /** Code generation for an assignment statement. */
     public Code visitAssignmentNode(StatementNode.AssignmentNode node) {
         beginGen( "Assignment" );
+        Code code = new Code();
+
+        endGen( "Assignment" );
+        return code;
+    }
+    
+    /** Code generation for an assignment statement. */
+    public Code visitSingleAssignmentNode(StatementNode.SingleAssignNode node) {
+        beginGen( "SingleAssign" );
         /* Generate code to evaluate the expression */
         Code code = node.getExp().genCode( this );
         /* Generate the code to load the address of the variable */
         code.append( node.getVariable().genCode( this ) );
         /* Generate the store based on the type/size of value */
         code.genStore( (Type.ReferenceType)node.getVariable().getType() );
-        endGen( "Assignment" );
+        endGen( "SingleAssign" );
         return code;
     }
     /** Generate code for a "write" statement. */

@@ -144,29 +144,6 @@ public abstract class StatementNode {
 
     }
 
-
-    public static class CaseBranchNode extends StatementNode {
-        public CaseBranchNode( Location loc ) {
-            super( loc );
-        }
-
-        @Override
-        public void accept( StatementVisitor visitor ) {
-            visitor.visitCaseBranchNode( this );
-        }
-
-        @Override
-        public Code genCode( StatementTransform<Code> visitor ) {
-            return visitor.visitCaseBranchNode( this );
-        }
-
-        @Override
-        public String toString( int level ) {
-            return "case";
-        }
-
-    }
-
     public static class SkipNode extends StatementNode {
         public SkipNode( Location loc ) {
             super( loc );
@@ -189,25 +166,25 @@ public abstract class StatementNode {
 
     }
 
-    /** Tree node representing an assignment statement. */
-    public static class AssignmentNode extends StatementNode {
+    /** Tree node representing an SingleAssign statement. */
+    public static class SingleAssignNode extends StatementNode {
         /** Tree node for expression on left hand side of an assignment. */
         private ExpNode lValue;
         /** Tree node for the expression to be assigned. */
         private ExpNode exp;
 
-        public AssignmentNode( Location loc, ExpNode variable, ExpNode exp ) {
+        public SingleAssignNode( Location loc, ExpNode variable, ExpNode exp ) {
             super( loc );
             this.lValue = variable;
             this.exp = exp;
         }
         @Override
         public void accept( StatementVisitor visitor ) {
-            visitor.visitAssignmentNode( this );
+            visitor.visitSingleAssignNode( this );
         }
         @Override
         public Code genCode( StatementTransform<Code> visitor ) {
-            return visitor.visitAssignmentNode( this );
+            return visitor.visitSingleAssignNode( this );
         }
         public ExpNode getVariable() {
             return lValue;
@@ -234,6 +211,25 @@ public abstract class StatementNode {
             return lValue.toString() + " := " + exp.toString();
         }
     }
+    /** Tree node representing an assignment statement. */
+    public static class AssignmentNode extends StatementNode {
+        public AssignmentNode( Location loc ) {
+            super( loc );
+        }
+        @Override
+        public void accept( StatementVisitor visitor ) {
+            visitor.visitAssignmentNode( this );
+        }
+        @Override
+        public Code genCode( StatementTransform<Code> visitor ) {
+            return visitor.visitAssignmentNode( this );
+        }
+        @Override
+        public String toString( int level ) {
+            return "Assignment Node";
+        }
+    }
+
     /** Tree node representing a "write" statement. */
     public static class WriteNode extends StatementNode {
         private ExpNode exp;

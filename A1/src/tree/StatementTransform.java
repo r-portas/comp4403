@@ -20,6 +20,8 @@ public interface  StatementTransform<ResultType> {
 
     ResultType visitAssignmentNode( StatementNode.AssignmentNode node);
 
+    ResultType visitSingleAssignNode( StatementNode.SingleAssignNode node);
+
     ResultType visitWriteNode( StatementNode.WriteNode node);
 
     ResultType visitCallNode( StatementNode.CallNode node);
