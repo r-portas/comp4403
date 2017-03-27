@@ -122,6 +122,51 @@ public abstract class StatementNode {
         }
     }
 
+    public static class CaseStatementNode extends StatementNode {
+        public CaseStatementNode( Location loc ) {
+            super( loc );
+        }
+
+        @Override
+        public void accept( StatementVisitor visitor ) {
+            visitor.visitCaseStatementNode( this );
+        }
+
+        @Override
+        public Code genCode( StatementTransform<Code> visitor ) {
+            return visitor.visitCaseStatementNode( this );
+        }
+
+        @Override
+        public String toString( int level ) {
+            return "case";
+        }
+
+    }
+
+
+    public static class CaseBranchNode extends StatementNode {
+        public CaseBranchNode( Location loc ) {
+            super( loc );
+        }
+
+        @Override
+        public void accept( StatementVisitor visitor ) {
+            visitor.visitCaseBranchNode( this );
+        }
+
+        @Override
+        public Code genCode( StatementTransform<Code> visitor ) {
+            return visitor.visitCaseBranchNode( this );
+        }
+
+        @Override
+        public String toString( int level ) {
+            return "case";
+        }
+
+    }
+
     public static class SkipNode extends StatementNode {
         public SkipNode( Location loc ) {
             super( loc );

@@ -97,6 +97,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return null;
     }
 
+    /** Code generation for a skip */
     public Code visitSkipNode(StatementNode.SkipNode node) {
         beginGen("Skip");
         Code code = new Code();

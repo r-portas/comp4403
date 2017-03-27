@@ -45,7 +45,7 @@ import tree.StatementNode;
  *  StatementList -> Statement { SEMICOLON Statement }
  *  Statement -> WhileStatement | IfStatement | CallStatement | Assignment | 
  *               ReadStatement | WriteStatement | CompoundStatement |
- *               SkipStatement
+ *               SkipStatement | CaseStatement
  *  Assignment -> LValue ASSIGN Condition
  *  SkipStatement -> KW_SKIP
  *  WhileStatement -> KW_WHILE Condition KW_DO Statement
@@ -69,6 +69,8 @@ public class Parser {
     /***************** Start Sets for parsing rules **********************/
 
     /** Set of tokens that may start an LValue. */
+    private final static TokenSet CASE_START_SET = 
+        new TokenSet( Token.KW_WHEN, Token.KW_DEFAULT );
     private final static TokenSet LVALUE_START_SET =
         new TokenSet( Token.IDENTIFIER );
     /** Set of tokens that may start a Statement. */
@@ -76,7 +78,7 @@ public class Parser {
         LVALUE_START_SET.union( Token.KW_WHILE, Token.KW_IF,
           Token.KW_READ, Token.KW_WRITE,
           Token.KW_CALL, Token.KW_BEGIN,
-          Token.KW_SKIP );
+          Token.KW_SKIP, Token.KW_CASE );
     /** Set of tokens that may start a Declaration. */
     private final static TokenSet DECLARATION_START_SET =
         new TokenSet( Token.KW_CONST, Token.KW_TYPE, Token.KW_VAR, 
@@ -473,6 +475,9 @@ public class Parser {
         case KW_SKIP:
             result = parseSkip( recoverSet );
             break;
+        case KW_CASE:
+            result = parseCaseStatement( recoverSet );
+            break;
         case KW_WHILE:
             result = parseWhileStatement( recoverSet ); 
             break;
@@ -497,6 +502,54 @@ public class Parser {
         }
         tokens.endRule( "Statement", recoverSet );
         return result;
+    }
+
+    /** Rule: CaseStatement -> KW_CASE Condition KW_OF { CaseBranch } [ KW_DEFAULT StatementList ] KW_END */
+    private StatementNode parseCaseStatement( TokenSet recoverSet ) {
+        tokens.beginRule( "Case Statement", Token.KW_CASE );
+        
+        tokens.match( Token.KW_CASE );
+        Location loc = tokens.getLocation();
+
+        ExpNode cond = parseCondition( recoverSet.union( Token.KW_OF ) );
+        tokens.match( Token.KW_OF, CASE_START_SET);
+
+        while (tokens.isMatch(Token.KW_WHEN)) {
+            tokens.match( Token.KW_WHEN, CONSTANT_START_SET );
+
+            ConstExp c = parseConstant( recoverSet.union(Token.COLON) );
+            tokens.match( Token.COLON, STATEMENT_START_SET );
+           
+            StatementNode sl = parseStatementList( recoverSet.union( Token.KW_DEFAULT, Token.KW_WHEN ) );
+        }
+
+        if (tokens.isMatch( Token.KW_DEFAULT )) {
+            tokens.match( Token.KW_DEFAULT, STATEMENT_START_SET );
+
+            StatementNode defaultCase = parseStatementList( recoverSet.union(Token.KW_END) );
+        }
+
+        tokens.match( Token.KW_END );
+        //
+        // while token != 'end'
+        //  parseCase....
+        //
+
+        tokens.endRule( "Case Statement", recoverSet );
+
+        return new StatementNode.CaseBranchNode( loc );
+    }
+
+    private StatementNode parseCaseBranch( TokenSet recoverSet ) {
+        tokens.beginRule( "Case Branch", Token.KW_WHEN );
+
+        tokens.match( Token.KW_WHEN );
+
+        Location loc = tokens.getLocation();
+
+        tokens.endRule( "Case Branch", recoverSet );
+        
+        return new StatementNode.CaseBranchNode( loc );
     }
 
     /** Rule: SkipStatement -> KW_SKIP */
