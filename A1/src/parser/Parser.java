@@ -15,6 +15,8 @@ import tree.DeclNode;
 import tree.ExpNode;
 import tree.Operator;
 import tree.StatementNode;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * class Parser - PL0 recursive descent parser. To understand how this parser
@@ -558,16 +560,20 @@ public class Parser {
         tokens.beginRule("Assignment", LVALUE_START_SET);
 
         Location loc = tokens.getLocation();
+
+        List<StatementNode> assignments = new ArrayList<StatementNode>();
         StatementNode first = parseSingleAssignment(recoverSet.union(Token.BAR)); 
+        assignments.add(first);
 
         while (tokens.isMatch(Token.BAR)) {
             // Parse a SingleAssign
             tokens.match( Token.BAR, LVALUE_START_SET );
-            StatementNode second = parseSingleAssignment(recoverSet.union(Token.BAR)); 
+            StatementNode other = parseSingleAssignment(recoverSet.union(Token.BAR)); 
+            assignments.add(other);
         }
 
         tokens.endRule("Assignment", recoverSet);
-        return new StatementNode.AssignmentNode( loc );
+        return new StatementNode.AssignmentNode( loc, assignments );
     }
 
     private StatementNode.SingleAssignNode parseSingleAssignment(TokenSet recoverSet) {

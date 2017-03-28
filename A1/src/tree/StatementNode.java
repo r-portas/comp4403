@@ -211,22 +211,33 @@ public abstract class StatementNode {
             return lValue.toString() + " := " + exp.toString();
         }
     }
+
     /** Tree node representing an assignment statement. */
     public static class AssignmentNode extends StatementNode {
-        public AssignmentNode( Location loc ) {
+
+        private List<StatementNode> assignments;
+
+        public AssignmentNode( Location loc, List assignments ) {
             super( loc );
+            this.assignments = assignments;
         }
         @Override
         public void accept( StatementVisitor visitor ) {
             visitor.visitAssignmentNode( this );
         }
+
         @Override
         public Code genCode( StatementTransform<Code> visitor ) {
             return visitor.visitAssignmentNode( this );
         }
+
+        public List<StatementNode> getAssignments() {
+            return this.assignments;
+        }
+
         @Override
         public String toString( int level ) {
-            return "Assignment Node";
+            return "Assignment Node (" + this.assignments.toString() + ")";
         }
     }
 

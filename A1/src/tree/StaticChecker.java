@@ -107,6 +107,22 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
     public void visitAssignmentNode(StatementNode.AssignmentNode node) {
         beginCheck("Assignment");
+        
+        for( StatementNode a : node.getAssignments() ) {
+            a.accept(this);
+        }
+
+        endCheck("Assignment");
+    }
+
+    public void visitCaseStatementNode(StatementNode.CaseStatementNode node) {
+        beginCheck("CaseStatement");
+
+        endCheck("CaseStatement");
+    }
+
+    public void visitSingleAssignNode(StatementNode.SingleAssignNode node) {
+        beginCheck("SingleAssign");
         // Check the left side left value.
         ExpNode left = node.getVariable().transform( this );
         node.setVariable( left );
@@ -128,7 +144,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             Type baseType = ((Type.ReferenceType)lvalType).getBaseType();
             node.setExp( baseType.coerceExp( exp ) );
         }
-        endCheck("Assignment");
+        endCheck("SingleAssign");
     }
 
     public void visitWriteNode(StatementNode.WriteNode node) {
