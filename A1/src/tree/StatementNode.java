@@ -3,6 +3,7 @@ package tree;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import syms.Scope;
 import java_cup.runtime.ComplexSymbolFactory.Location;
@@ -123,8 +124,16 @@ public abstract class StatementNode {
     }
 
     public static class CaseStatementNode extends StatementNode {
-        public CaseStatementNode( Location loc ) {
+
+
+        private HashMap<ConstExp, StatementNode> cases;
+        private StatementNode defaultCase;
+
+        public CaseStatementNode( Location loc, HashMap<ConstExp, StatementNode> cases, StatementNode defaultCase ) {
             super( loc );
+
+            this.cases = cases;
+            this.defaultCase = defaultCase;
         }
 
         @Override
@@ -135,6 +144,14 @@ public abstract class StatementNode {
         @Override
         public Code genCode( StatementTransform<Code> visitor ) {
             return visitor.visitCaseStatementNode( this );
+        }
+
+        public StatementNode getDefaultCase() {
+            return defaultCase;
+        }
+
+        public HashMap<ConstExp, StatementNode> getCases() {
+            return cases;
         }
 
         @Override

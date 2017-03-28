@@ -17,6 +17,7 @@ import tree.Operator;
 import tree.StatementNode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  * class Parser - PL0 recursive descent parser. To understand how this parser
@@ -510,6 +511,9 @@ public class Parser {
     /** Rule: CaseStatement -> KW_CASE Condition KW_OF { CaseBranch } [ KW_DEFAULT StatementList ] KW_END */
     private StatementNode parseCaseStatement( TokenSet recoverSet ) {
         tokens.beginRule( "Case Statement", Token.KW_CASE );
+
+        HashMap<ConstExp, StatementNode> cases = new HashMap<ConstExp, StatementNode>();
+        StatementNode defaultCase = null;
         
         tokens.match( Token.KW_CASE );
         Location loc = tokens.getLocation();
@@ -524,23 +528,21 @@ public class Parser {
             tokens.match( Token.COLON, STATEMENT_START_SET );
            
             StatementNode sl = parseStatementList( recoverSet.union( Token.KW_DEFAULT, Token.KW_WHEN ) );
+
+            cases.put(c, sl);
         }
 
         if (tokens.isMatch( Token.KW_DEFAULT )) {
             tokens.match( Token.KW_DEFAULT, STATEMENT_START_SET );
 
-            StatementNode defaultCase = parseStatementList( recoverSet.union(Token.KW_END) );
+            defaultCase = parseStatementList( recoverSet.union(Token.KW_END) );
         }
 
         tokens.match( Token.KW_END );
-        //
-        // while token != 'end'
-        //  parseCase....
-        //
 
         tokens.endRule( "Case Statement", recoverSet );
 
-        return new StatementNode.CaseStatementNode( loc );
+        return new StatementNode.CaseStatementNode( loc, cases, defaultCase );
     }
 
     /** Rule: SkipStatement -> KW_SKIP */

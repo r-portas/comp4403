@@ -118,6 +118,20 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public void visitCaseStatementNode(StatementNode.CaseStatementNode node) {
         beginCheck("CaseStatement");
 
+        for (StatementNode c : node.getCases().values()) {
+            c.accept(this);
+        }
+
+        // TODO: Check if static checking for ConstExp is required
+        // for (ConstExp k : node.getCases().keySet()) {
+        //     k.transform(this);
+        // }
+
+        if (node.getDefaultCase() != null) {
+            node.getDefaultCase().accept(this);
+        }
+
+
         endCheck("CaseStatement");
     }
 
