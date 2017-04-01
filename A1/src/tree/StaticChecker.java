@@ -3,6 +3,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.Stack;
 
@@ -107,9 +108,23 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
     public void visitAssignmentNode(StatementNode.AssignmentNode node) {
         beginCheck("Assignment");
-        
-        for( StatementNode a : node.getAssignments() ) {
+       
+        List<String> identifiers = new ArrayList<String>(); 
+
+        for( SingleAssignNode a : node.getAssignments() ) {
             a.accept(this);
+
+            ExpNode exp = a.getVariable().transform(this);
+
+            if (exp.getType() != Type.ERROR_TYPE) {
+                String ident = ((ExpNode.VariableNode)exp).getVariable().getIdent();
+                if (identifiers.contains(ident)) {
+                    staticError("Duplicate left assignments in multiassign: " + ident + " => " + identifiers.toString(), exp.getLocation());
+                }
+
+                identifiers.add(ident);
+            }
+
         }
 
         endCheck("Assignment");
@@ -135,6 +150,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         endCheck("CaseStatement");
     }
 
+    
     public void visitSingleAssignNode(StatementNode.SingleAssignNode node) {
         beginCheck("SingleAssign");
         // Check the left side left value.

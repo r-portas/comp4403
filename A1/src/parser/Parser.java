@@ -15,6 +15,7 @@ import tree.DeclNode;
 import tree.ExpNode;
 import tree.Operator;
 import tree.StatementNode;
+import tree.StatementNode.SingleAssignNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -559,18 +560,22 @@ public class Parser {
 
     /** Rule: Assignment -> LValue ASSIGN Condition */
     private StatementNode.AssignmentNode parseAssignment(TokenSet recoverSet) {
-        tokens.beginRule("Assignment", LVALUE_START_SET);
+        // TODO: Check if if statement is required
+        if ( !tokens.beginRule("Assignment", LVALUE_START_SET, recoverSet) ) {
+            return new StatementNode.AssignmentNode(tokens.getLocation(), null);
+        }
+        assert tokens.isIn( LVALUE_START_SET );
 
         Location loc = tokens.getLocation();
 
-        List<StatementNode> assignments = new ArrayList<StatementNode>();
-        StatementNode first = parseSingleAssignment(recoverSet.union(Token.BAR)); 
+        List<SingleAssignNode> assignments = new ArrayList<SingleAssignNode>();
+        SingleAssignNode first = parseSingleAssignment(recoverSet.union(Token.BAR)); 
         assignments.add(first);
 
         while (tokens.isMatch(Token.BAR)) {
             // Parse a SingleAssign
             tokens.match( Token.BAR, LVALUE_START_SET );
-            StatementNode other = parseSingleAssignment(recoverSet.union(Token.BAR)); 
+            SingleAssignNode other = parseSingleAssignment(recoverSet.union(Token.BAR)); 
             assignments.add(other);
         }
 

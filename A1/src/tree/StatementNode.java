@@ -232,9 +232,9 @@ public abstract class StatementNode {
     /** Tree node representing an assignment statement. */
     public static class AssignmentNode extends StatementNode {
 
-        private List<StatementNode> assignments;
+        private List<SingleAssignNode> assignments;
 
-        public AssignmentNode( Location loc, List assignments ) {
+        public AssignmentNode( Location loc, List<SingleAssignNode> assignments ) {
             super( loc );
             this.assignments = assignments;
         }
@@ -248,7 +248,7 @@ public abstract class StatementNode {
             return visitor.visitAssignmentNode( this );
         }
 
-        public List<StatementNode> getAssignments() {
+        public List<SingleAssignNode> getAssignments() {
             return this.assignments;
         }
 
