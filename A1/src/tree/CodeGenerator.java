@@ -2,6 +2,9 @@ package tree;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
 import java.util.Stack;
 
 import machine.Operation;
@@ -108,16 +111,141 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return code;
     }
 
+    /**
+     * Gets the size of the code for the case statement
+     */
+    private int getCaseCodeSize(StatementNode.CaseStatementNode node) {
+        Code caseCode = new Code();
+
+        for (Map.Entry<ConstExp, StatementNode> s : node.getCases().entrySet()) {
+
+            caseCode.append(genCodeForCase(s.getValue(), 0));
+        }
+
+        return caseCode.size();
+
+    }
+
+    private Code genCodeForCase(StatementNode n, int jumpLoc) {
+        Code code = new Code();
+
+        code.append(n.genCode(this));
+        code.genJumpAlways(jumpLoc);
+
+        return code;
+    }
+
+    private int getDefaultCodeSize(StatementNode.CaseStatementNode node) {
+
+        if (node.getDefaultCase() == null) {
+            return 0;
+        }
+
+        return node.getDefaultCase().genCode(this).size();
+    }
+
+
+    // TODO: Handle default case
+    public Code visitCaseStatementNode(StatementNode.CaseStatementNode node) {
+        beginGen( "CaseStatement" );
+
+        Code code = new Code();
+
+        // Parse the condition and push onto the stack
+        ExpNode cond = node.getCondition();
+        code.append(cond.genCode(this));
+
+        // Push the size of each jump table entry
+        // size = size(load_con) + size(br_always) = 2 + 1
+        int jumpListEntrySize = 3;
+        code.genLoadConstant(jumpListEntrySize);
+
+        // Multipy the condition by the size to get where to jump to
+        code.generateOp(Operation.MPY);
+
+        // Branch to that location
+        code.generateOp(Operation.BR);
+
+        int totalSize = getCaseCodeSize(node);
+
+        // TODO: If default case, add size
+        // because we want to jump right to the end
+
+        Code caseCode = new Code();
+        HashMap<Integer, Integer> sizeLookup = new HashMap<Integer, Integer>();
+
+        for (Map.Entry<ConstExp, StatementNode> s : node.getCases().entrySet()) {
+            sizeLookup.put(s.getKey().getValue(), caseCode.size());
+            // Subtract 3 for the branch + loadcon
+            int sizeToEnd = totalSize - (caseCode.size() + s.getValue().genCode(this).size()) - 3;
+            caseCode.append(genCodeForCase(s.getValue(), sizeToEnd));
+        }
+
+        // Get min and max of tokens
+        Set<ConstExp> labels = node.getCases().keySet();
+        int min = 0;
+        int max = 0;
+
+        if (labels.size() > 0) {
+
+            min = ((ConstExp) labels.toArray()[0]).getValue();
+            max = ((ConstExp) labels.toArray()[0]).getValue();
+
+            for (ConstExp l : labels) {
+                if (l.getValue() < min) {
+                    min = l.getValue();
+                }
+
+                if (l.getValue() > max) {
+                    max = l.getValue();
+                }
+            }
+        }
+
+        // Generate the jump list
+        for (int i = min; i <= max; i++) {
+            // Get the location to branch to
+            System.out.println("LOOP: " + i);
+
+            // The size of the remaining code
+            int jumpLength = jumpListEntrySize * (max - i);
+
+            // and add the size of the other code
+            // If its not valid, jump to the end, or default
+            jumpLength += sizeLookup.getOrDefault(i, totalSize);
+
+            code.genJumpAlways(jumpLength + getDefaultCodeSize(node)); 
+        }
+
+        code.append(caseCode);
+        
+        if (node.getDefaultCase() != null) {
+            code.append(node.getDefaultCase().genCode(this));
+        }
+
+        endGen( "CaseStatement" );
+        return code;
+    }
+
     public Code visitAssignmentNode(StatementNode.AssignmentNode node) {
         beginGen( "Assignment" );
         Code code = new Code();
+
+        for (StatementNode.SingleAssignNode n : node.getAssignments()) {
+            code.append( n.getExp().genCode( this ) );
+        }
+
+        for (StatementNode.SingleAssignNode n : node.getReverseAssignments()) {
+            code.append( n.getVariable().genCode( this ) );
+            code.genStore( (Type.ReferenceType)n.getVariable().getType() );
+        }
 
         endGen( "Assignment" );
         return code;
     }
     
     /** Code generation for an assignment statement. */
-    public Code visitSingleAssignmentNode(StatementNode.SingleAssignNode node) {
+    public Code visitSingleAssignNode(StatementNode.SingleAssignNode node) {
         beginGen( "SingleAssign" );
         /* Generate code to evaluate the expression */
         Code code = node.getExp().genCode( this );

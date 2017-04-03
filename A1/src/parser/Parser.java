@@ -543,7 +543,7 @@ public class Parser {
 
         tokens.endRule( "Case Statement", recoverSet );
 
-        return new StatementNode.CaseStatementNode( loc, cases, defaultCase );
+        return new StatementNode.CaseStatementNode( loc, cond, cases, defaultCase );
     }
 
     /** Rule: SkipStatement -> KW_SKIP */

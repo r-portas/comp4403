@@ -32,5 +32,4 @@ public interface  StatementTransform<ResultType> {
     ResultType visitSkipNode( StatementNode.SkipNode node );
 
     ResultType visitCaseStatementNode( StatementNode.CaseStatementNode node );
-    ResultType visitCaseBranchNode( StatementNode.CaseBranchNode node );
 }

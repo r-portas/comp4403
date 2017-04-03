@@ -128,12 +128,14 @@ public abstract class StatementNode {
 
         private HashMap<ConstExp, StatementNode> cases;
         private StatementNode defaultCase;
+        private ExpNode condition;
 
-        public CaseStatementNode( Location loc, HashMap<ConstExp, StatementNode> cases, StatementNode defaultCase ) {
+        public CaseStatementNode( Location loc, ExpNode condition, HashMap<ConstExp, StatementNode> cases, StatementNode defaultCase ) {
             super( loc );
 
             this.cases = cases;
             this.defaultCase = defaultCase;
+            this.condition = condition;
         }
 
         @Override
@@ -144,6 +146,10 @@ public abstract class StatementNode {
         @Override
         public Code genCode( StatementTransform<Code> visitor ) {
             return visitor.visitCaseStatementNode( this );
+        }
+
+        public ExpNode getCondition() {
+            return this.condition;
         }
 
         public StatementNode getDefaultCase() {
@@ -250,6 +256,17 @@ public abstract class StatementNode {
 
         public List<SingleAssignNode> getAssignments() {
             return this.assignments;
+        }
+
+        public List<SingleAssignNode> getReverseAssignments() {
+            List<SingleAssignNode> reversed = new ArrayList<SingleAssignNode>();
+
+            for (SingleAssignNode n : this.assignments) {
+                reversed.add(0, n);
+            }
+
+            return reversed;
+
         }
 
         @Override
