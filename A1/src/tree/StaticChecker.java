@@ -135,6 +135,13 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
         node.setCondition( node.getCondition().transform( this ) );
 
+        // Check that its actually a base type, not a reference
+        Type condType = node.getCondition().getType();
+        if (condType instanceof Type.ReferenceType) {
+            Type baseType = ((Type.ReferenceType)condType).getBaseType();
+            node.setCondition( baseType.coerceExp( node.getCondition() ) );
+        }
+
         for (StatementNode c : node.getCases().values()) {
             c.accept(this);
         }

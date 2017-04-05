@@ -144,6 +144,43 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return node.getDefaultCase().genCode(this).size();
     }
 
+    private int getLabelMin(StatementNode.CaseStatementNode node) {
+        Set<ConstExp> labels = node.getCases().keySet();
+        int min = 0;
+
+        if (labels.size() > 0) {
+
+            min = ((ConstExp) labels.toArray()[0]).getValue();
+
+            for (ConstExp l : labels) {
+                if (l.getValue() < min) {
+                    min = l.getValue();
+                }
+            }
+        }
+
+        return min;
+    }
+
+    private int getLabelMax(StatementNode.CaseStatementNode node) {
+        // Get min and max of tokens
+        Set<ConstExp> labels = node.getCases().keySet();
+        int max = 0;
+
+        if (labels.size() > 0) {
+
+            max = ((ConstExp) labels.toArray()[0]).getValue();
+
+            for (ConstExp l : labels) {
+                if (l.getValue() > max) {
+                    max = l.getValue();
+                }
+            }
+        }
+
+        return max;
+    }
+
 
     // TODO: Handle default case
     public Code visitCaseStatementNode(StatementNode.CaseStatementNode node) {
@@ -153,16 +190,44 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         // Parse the condition and push onto the stack
         ExpNode cond = node.getCondition();
+        
+        // Push the size of each jump table entry
+        // size = size(load_con) + size(br_always) = 2 + 1
+        int jumpListEntrySize = 3;
+
+        int max = getLabelMax(node);
+        int min = getLabelMin(node);
+
+        int totalSize = getCaseCodeSize(node);
+        int totalJumpListSize = jumpListEntrySize * (max - min);
+
+        // Check if it is within the bounds of the jump table
+        /*
+        Code tempCode = new Code();
+        tempCode.append(cond.genCode(this));
+        tempCode.genLoadConstant(max);
+        tempCode.generateOp(Operation.LESS);
+        // Jump all the code (excluding the default case)
+        tempCode.genJumpIfFalse(totalJumpListSize + totalSize);
+
+        // Check the min
+        code.genLoadConstant(min);
         code.append(cond.genCode(this));
-        // code.loadFrameAddress(0);
+        code.generateOp(Operation.LESS);
+        // Jump all the code (excluding the default case)
+        code.genJumpIfFalse(totalJumpListSize + totalSize + tempCode.size());
+
+        // Append the tempCode
+        // The order will be max check then min check
+        code.append(tempCode);
+        */
+        
+        code.append(cond.genCode(this));
 
         // Subtract 1, so it jumps into the table correctly
         code.genLoadConstant(-1);
         code.generateOp(Operation.ADD);
 
-        // Push the size of each jump table entry
-        // size = size(load_con) + size(br_always) = 2 + 1
-        int jumpListEntrySize = 3;
         code.genLoadConstant(jumpListEntrySize);
 
         // Multipy the condition by the size to get where to jump to
@@ -171,7 +236,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         // Branch to that location
         code.generateOp(Operation.BR);
 
-        int totalSize = getCaseCodeSize(node);
 
         // TODO: If default case, add size
         // because we want to jump right to the end
@@ -183,7 +247,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         HashMap<ConstExp, StatementNode> cases = node.getCases();
 
 
-        // TODO: This is not sorted correctly
         for (ConstExp n : node.getLabels()) {
             StatementNode sn = cases.get(n);
 
@@ -195,45 +258,19 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
             int sizeToEnd = totalSize - (caseCode.size() + statementCode.size() + 3);
 
             // Generate the code
-            System.out.println("Jumping to " + n.getValue() + ", BR size " + sizeToEnd + defaultCaseSize);
             caseCode.append(genCodeForCase(sn, sizeToEnd + defaultCaseSize));
         }
 
-        // Get min and max of tokens
-        Set<ConstExp> labels = node.getCases().keySet();
-        int min = 0;
-        int max = 0;
-
-        if (labels.size() > 0) {
-
-            min = ((ConstExp) labels.toArray()[0]).getValue();
-            max = ((ConstExp) labels.toArray()[0]).getValue();
-
-            for (ConstExp l : labels) {
-                if (l.getValue() < min) {
-                    min = l.getValue();
-                }
-
-                if (l.getValue() > max) {
-                    max = l.getValue();
-                }
-            }
-        }
+        // Redo min and ma
 
         // Generate the jump list
         for (int i = min; i <= max; i++) {
             // The size of the remaining code
             int jumpLength = jumpListEntrySize * (max - i);
 
-            // System.out.println("Jumping to label " + i + " [" + jumpLength + ", " + sizeLookup.getOrDefault(i, totalSize) + "]");
-            // System.out.println("Max: " + max);
-            // System.out.println("Min: " + min);
-            // System.out.println("Max-i: " + (max-i));
-
             // and add the size of the other code
             // If its not valid, jump to the end, or default
             jumpLength += (sizeLookup.getOrDefault(i, totalSize));
-            System.out.println("Jumping to label " + i + " [" + jumpLength + ", " + sizeLookup.getOrDefault(i, totalSize) + "]");
 
             code.genJumpAlways(jumpLength); 
         }
