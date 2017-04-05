@@ -133,6 +133,8 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public void visitCaseStatementNode(StatementNode.CaseStatementNode node) {
         beginCheck("CaseStatement");
 
+        node.setCondition( node.getCondition().transform( this ) );
+
         for (StatementNode c : node.getCases().values()) {
             c.accept(this);
         }

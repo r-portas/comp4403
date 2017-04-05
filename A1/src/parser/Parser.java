@@ -522,6 +522,8 @@ public class Parser {
         ExpNode cond = parseCondition( recoverSet.union( Token.KW_OF ) );
         tokens.match( Token.KW_OF, CASE_START_SET);
 
+        List<ConstExp> labels = new ArrayList<ConstExp>();
+
         while (tokens.isMatch(Token.KW_WHEN)) {
             tokens.match( Token.KW_WHEN, CONSTANT_START_SET );
 
@@ -531,6 +533,7 @@ public class Parser {
             StatementNode sl = parseStatementList( recoverSet.union( Token.KW_DEFAULT, Token.KW_WHEN ) );
 
             cases.put(c, sl);
+            labels.add(c);
         }
 
         if (tokens.isMatch( Token.KW_DEFAULT )) {
@@ -543,7 +546,7 @@ public class Parser {
 
         tokens.endRule( "Case Statement", recoverSet );
 
-        return new StatementNode.CaseStatementNode( loc, cond, cases, defaultCase );
+        return new StatementNode.CaseStatementNode( loc, cond, cases, labels, defaultCase );
     }
 
     /** Rule: SkipStatement -> KW_SKIP */

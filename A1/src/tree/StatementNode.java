@@ -129,13 +129,15 @@ public abstract class StatementNode {
         private HashMap<ConstExp, StatementNode> cases;
         private StatementNode defaultCase;
         private ExpNode condition;
+        private List<ConstExp> labels;
 
-        public CaseStatementNode( Location loc, ExpNode condition, HashMap<ConstExp, StatementNode> cases, StatementNode defaultCase ) {
+        public CaseStatementNode( Location loc, ExpNode condition, HashMap<ConstExp, StatementNode> cases, List<ConstExp> labels, StatementNode defaultCase ) {
             super( loc );
 
             this.cases = cases;
             this.defaultCase = defaultCase;
             this.condition = condition;
+            this.labels = labels;
         }
 
         @Override
@@ -148,8 +150,16 @@ public abstract class StatementNode {
             return visitor.visitCaseStatementNode( this );
         }
 
+        public List<ConstExp> getLabels() {
+            return this.labels;
+        }
+
         public ExpNode getCondition() {
             return this.condition;
+        }
+
+        public void setCondition(ExpNode c) {
+            this.condition = c;
         }
 
         public StatementNode getDefaultCase() {

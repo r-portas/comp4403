@@ -154,6 +154,11 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         // Parse the condition and push onto the stack
         ExpNode cond = node.getCondition();
         code.append(cond.genCode(this));
+        // code.loadFrameAddress(0);
+
+        // Subtract 1, so it jumps into the table correctly
+        code.genLoadConstant(-1);
+        code.generateOp(Operation.ADD);
 
         // Push the size of each jump table entry
         // size = size(load_con) + size(br_always) = 2 + 1
@@ -170,15 +175,28 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         // TODO: If default case, add size
         // because we want to jump right to the end
+        int defaultCaseSize = getDefaultCodeSize(node);
 
         Code caseCode = new Code();
         HashMap<Integer, Integer> sizeLookup = new HashMap<Integer, Integer>();
 
-        for (Map.Entry<ConstExp, StatementNode> s : node.getCases().entrySet()) {
-            sizeLookup.put(s.getKey().getValue(), caseCode.size());
+        HashMap<ConstExp, StatementNode> cases = node.getCases();
+
+
+        // TODO: This is not sorted correctly
+        for (ConstExp n : node.getLabels()) {
+            StatementNode sn = cases.get(n);
+
+            System.out.println("Lab " + n.getValue());
+            sizeLookup.put(n.getValue(), caseCode.size());
             // Subtract 3 for the branch + loadcon
-            int sizeToEnd = totalSize - (caseCode.size() + s.getValue().genCode(this).size()) - 3;
-            caseCode.append(genCodeForCase(s.getValue(), sizeToEnd));
+            Code statementCode = sn.genCode(this);
+            // TODO: Check this
+            int sizeToEnd = totalSize - (caseCode.size() + statementCode.size() + 3);
+
+            // Generate the code
+            System.out.println("Jumping to " + n.getValue() + ", BR size " + sizeToEnd + defaultCaseSize);
+            caseCode.append(genCodeForCase(sn, sizeToEnd + defaultCaseSize));
         }
 
         // Get min and max of tokens
@@ -204,17 +222,20 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         // Generate the jump list
         for (int i = min; i <= max; i++) {
-            // Get the location to branch to
-            System.out.println("LOOP: " + i);
-
             // The size of the remaining code
             int jumpLength = jumpListEntrySize * (max - i);
 
+            // System.out.println("Jumping to label " + i + " [" + jumpLength + ", " + sizeLookup.getOrDefault(i, totalSize) + "]");
+            // System.out.println("Max: " + max);
+            // System.out.println("Min: " + min);
+            // System.out.println("Max-i: " + (max-i));
+
             // and add the size of the other code
             // If its not valid, jump to the end, or default
-            jumpLength += sizeLookup.getOrDefault(i, totalSize);
+            jumpLength += (sizeLookup.getOrDefault(i, totalSize));
+            System.out.println("Jumping to label " + i + " [" + jumpLength + ", " + sizeLookup.getOrDefault(i, totalSize) + "]");
 
-            code.genJumpAlways(jumpLength + getDefaultCodeSize(node)); 
+            code.genJumpAlways(jumpLength); 
         }
 
         code.append(caseCode);
