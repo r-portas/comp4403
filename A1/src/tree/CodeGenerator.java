@@ -146,7 +146,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
     private int getLabelMin(StatementNode.CaseStatementNode node) {
         Set<ConstExp> labels = node.getCases().keySet();
-        int min = 0;
+        int min = 10000;
 
         if (labels.size() > 0) {
 
@@ -165,7 +165,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     private int getLabelMax(StatementNode.CaseStatementNode node) {
         // Get min and max of tokens
         Set<ConstExp> labels = node.getCases().keySet();
-        int max = 0;
+        int max = -10000;
 
         if (labels.size() > 0) {
 
@@ -211,8 +211,10 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         Code code = new Code();
 
-        // Parse the condition and push onto the stack
         ExpNode cond = node.getCondition();
+
+        // code.append(cond.genCode(this));
+        // code.generateOp(Operation.WRITE);
         
         // Push the size of each jump table entry
         // size = size(load_con) + size(br_always) = 2 + 1
@@ -220,6 +222,8 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         int max = getLabelMax(node);
         int min = getLabelMin(node);
+
+        System.out.println("Max: " + max + ", Min: " + min);
 
         int totalSize = getCaseCodeSize(node);
         int totalJumpListSize = jumpListEntrySize * (max - min + 1);
@@ -231,13 +235,12 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         tempCode.generateOp(Operation.LESSEQ);
         // Jump all the code (excluding the default case)
         // TODO: Code offset is wrong
-        System.out.println("JmpListSize: " + totalJumpListSize + ", TotalSize: " + totalSize + ", JmpIntoSize: " + getSizeOfJmpInto(node));
         tempCode.genJumpIfFalse(totalJumpListSize + totalSize + getSizeOfJmpInto(node));
 
         // Check the min
         code.genLoadConstant(min);
         code.append(cond.genCode(this));
-        code.generateOp(Operation.LESS);
+        code.generateOp(Operation.LESSEQ);
         // Jump all the code (excluding the default case)
         code.genJumpIfFalse(totalJumpListSize + totalSize + tempCode.size() + getSizeOfJmpInto(node));
 
@@ -247,14 +250,15 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         
         code.append(cond.genCode(this));
 
-        // Subtract 1, so it jumps into the table correctly
-        code.genLoadConstant(-1);
+        // Subtract the min, so it jumps into the table correctly
+        code.genLoadConstant(-min);
         code.generateOp(Operation.ADD);
 
         code.genLoadConstant(jumpListEntrySize);
 
         // Multipy the condition by the size to get where to jump to
         code.generateOp(Operation.MPY);
+        // code.generateOp(Operation.WRITE);
 
         // Branch to that location
         code.generateOp(Operation.BR);
@@ -273,7 +277,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         for (ConstExp n : node.getLabels()) {
             StatementNode sn = cases.get(n);
 
-            System.out.println("Lab " + n.getValue());
             sizeLookup.put(n.getValue(), caseCode.size());
             // Subtract 3 for the branch + loadcon
             Code statementCode = sn.genCode(this);
@@ -284,12 +287,11 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
             caseCode.append(genCodeForCase(sn, sizeToEnd + defaultCaseSize));
         }
 
-        // Redo min and ma
-
         // Generate the jump list
         for (int i = min; i <= max; i++) {
             // The size of the remaining code
             int jumpLength = jumpListEntrySize * (max - i);
+            System.out.println("Generating jmplist item for " + i);
 
             // and add the size of the other code
             // If its not valid, jump to the end, or default

@@ -532,6 +532,11 @@ public class Parser {
            
             StatementNode sl = parseStatementList( recoverSet.union( Token.KW_DEFAULT, Token.KW_WHEN ) );
 
+            // Check for duplicate labels
+            if (cases.containsKey(c)) {
+                errors.error("Duplicate labels for case statement", tokens.getLocation());
+            }
+
             cases.put(c, sl);
             labels.add(c);
         }

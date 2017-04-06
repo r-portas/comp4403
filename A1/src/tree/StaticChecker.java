@@ -117,9 +117,11 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             ExpNode exp = a.getVariable().transform(this);
 
             if (exp.getType() != Type.ERROR_TYPE) {
+
+                System.out.println(exp.getType());
                 String ident = ((ExpNode.VariableNode)exp).getVariable().getIdent();
                 if (identifiers.contains(ident)) {
-                    staticError("Duplicate left assignments in multiassign: " + ident + " => " + identifiers.toString(), exp.getLocation());
+                    staticError(ident + " assigned more than once", exp.getLocation());
                 }
 
                 identifiers.add(ident);
@@ -147,9 +149,9 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         }
 
         // TODO: Check if static checking for ConstExp is required
-        // for (ConstExp k : node.getCases().keySet()) {
-        //     k.transform(this);
-        // }
+        for (ConstExp k : node.getCases().keySet()) {
+            condType.containsElement(k.getType(), k.getValue());
+        }
 
         if (node.getDefaultCase() != null) {
             node.getDefaultCase().accept(this);
