@@ -202,14 +202,16 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         int totalJumpListSize = jumpListEntrySize * (max - min);
 
         // Check if it is within the bounds of the jump table
-        /*
         Code tempCode = new Code();
         tempCode.append(cond.genCode(this));
         tempCode.genLoadConstant(max);
-        tempCode.generateOp(Operation.LESS);
+        tempCode.generateOp(Operation.LESSEQ);
         // Jump all the code (excluding the default case)
-        tempCode.genJumpIfFalse(totalJumpListSize + totalSize);
+        // TODO: Code offset is wrong
+        System.out.println("JmpListSize: " + totalJumpListSize + ", TotalSize: " + totalSize);
+        tempCode.genJumpIfFalse(totalJumpListSize + totalSize + 12);
 
+        /*
         // Check the min
         code.genLoadConstant(min);
         code.append(cond.genCode(this));
@@ -219,8 +221,8 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         // Append the tempCode
         // The order will be max check then min check
-        code.append(tempCode);
         */
+        code.append(tempCode);
         
         code.append(cond.genCode(this));
 
