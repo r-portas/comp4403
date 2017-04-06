@@ -181,6 +181,29 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return max;
     }
 
+    private int getSizeOfJmpInto(StatementNode.CaseStatementNode node) {
+        // Parse the condition and push onto the stack
+        ExpNode cond = node.getCondition();
+        int jumpListEntrySize = 3;
+
+        Code code = new Code();
+        code.append(cond.genCode(this));
+
+        // Subtract 1, so it jumps into the table correctly
+        code.genLoadConstant(-1);
+        code.generateOp(Operation.ADD);
+
+        code.genLoadConstant(jumpListEntrySize);
+
+        // Multipy the condition by the size to get where to jump to
+        code.generateOp(Operation.MPY);
+
+        // Branch to that location
+        code.generateOp(Operation.BR);
+
+        return code.size();
+    }
+
 
     // TODO: Handle default case
     public Code visitCaseStatementNode(StatementNode.CaseStatementNode node) {
@@ -199,7 +222,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         int min = getLabelMin(node);
 
         int totalSize = getCaseCodeSize(node);
-        int totalJumpListSize = jumpListEntrySize * (max - min);
+        int totalJumpListSize = jumpListEntrySize * (max - min + 1);
 
         // Check if it is within the bounds of the jump table
         Code tempCode = new Code();
@@ -208,20 +231,18 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         tempCode.generateOp(Operation.LESSEQ);
         // Jump all the code (excluding the default case)
         // TODO: Code offset is wrong
-        System.out.println("JmpListSize: " + totalJumpListSize + ", TotalSize: " + totalSize);
-        tempCode.genJumpIfFalse(totalJumpListSize + totalSize + 12);
+        System.out.println("JmpListSize: " + totalJumpListSize + ", TotalSize: " + totalSize + ", JmpIntoSize: " + getSizeOfJmpInto(node));
+        tempCode.genJumpIfFalse(totalJumpListSize + totalSize + getSizeOfJmpInto(node));
 
-        /*
         // Check the min
         code.genLoadConstant(min);
         code.append(cond.genCode(this));
         code.generateOp(Operation.LESS);
         // Jump all the code (excluding the default case)
-        code.genJumpIfFalse(totalJumpListSize + totalSize + tempCode.size());
+        code.genJumpIfFalse(totalJumpListSize + totalSize + tempCode.size() + getSizeOfJmpInto(node));
 
         // Append the tempCode
         // The order will be max check then min check
-        */
         code.append(tempCode);
         
         code.append(cond.genCode(this));
