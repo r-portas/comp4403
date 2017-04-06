@@ -111,21 +111,23 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
        
         List<String> identifiers = new ArrayList<String>(); 
 
-        for( SingleAssignNode a : node.getAssignments() ) {
-            a.accept(this);
+        for( SingleAssignNode assignNode : node.getAssignments() ) {
+            assignNode.accept(this);
 
-            ExpNode exp = a.getVariable().transform(this);
+            ExpNode var = assignNode.getVariable().transform(this);
+            assignNode.setVariable(var);
 
-            if (exp.getType() != Type.ERROR_TYPE) {
+            if (var.getType() != Type.ERROR_TYPE && !(var instanceof ExpNode.ConstNode)) {
 
-                System.out.println(exp.getType());
-                String ident = ((ExpNode.VariableNode)exp).getVariable().getIdent();
+                String ident = ((ExpNode.VariableNode)var).getVariable().getIdent();
                 if (identifiers.contains(ident)) {
-                    staticError(ident + " assigned more than once", exp.getLocation());
+                    staticError(ident + " assigned more than once", var.getLocation());
                 }
 
                 identifiers.add(ident);
             }
+
+            assignNode.setExp(assignNode.getExp().transform(this));
 
         }
 
@@ -142,15 +144,23 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         if (condType instanceof Type.ReferenceType) {
             Type baseType = ((Type.ReferenceType)condType).getBaseType();
             node.setCondition( baseType.coerceExp( node.getCondition() ) );
+            condType = node.getCondition().getType();
         }
 
         for (StatementNode c : node.getCases().values()) {
             c.accept(this);
         }
 
+        for (ConstExp dup : node.getDuplicates()) {
+            staticError("repeated label in case branch", dup.loc);
+        }
+
         // TODO: Check if static checking for ConstExp is required
         for (ConstExp k : node.getCases().keySet()) {
-            condType.containsElement(k.getType(), k.getValue());
+            // TODO: Fix this
+            if (!condType.containsElement(k.getType(), k.getValue())) {
+                staticError("case label type does not match case expression type", k.loc);
+            }
         }
 
         if (node.getDefaultCase() != null) {

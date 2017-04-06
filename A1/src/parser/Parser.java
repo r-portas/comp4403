@@ -523,6 +523,7 @@ public class Parser {
         tokens.match( Token.KW_OF, CASE_START_SET);
 
         List<ConstExp> labels = new ArrayList<ConstExp>();
+        List<ConstExp> duplicates = new ArrayList<ConstExp>();
 
         while (tokens.isMatch(Token.KW_WHEN)) {
             tokens.match( Token.KW_WHEN, CONSTANT_START_SET );
@@ -533,8 +534,11 @@ public class Parser {
             StatementNode sl = parseStatementList( recoverSet.union( Token.KW_DEFAULT, Token.KW_WHEN ) );
 
             // Check for duplicate labels
-            if (cases.containsKey(c)) {
-                errors.error("Duplicate labels for case statement", tokens.getLocation());
+            for (ConstExp label : labels) {
+                if (label.getValue() == c.getValue() && label.getType() == c.getType()) {
+                    duplicates.add(c);
+                    break;
+                }
             }
 
             cases.put(c, sl);
@@ -551,7 +555,7 @@ public class Parser {
 
         tokens.endRule( "Case Statement", recoverSet );
 
-        return new StatementNode.CaseStatementNode( loc, cond, cases, labels, defaultCase );
+        return new StatementNode.CaseStatementNode( loc, cond, cases, labels, defaultCase, duplicates );
     }
 
     /** Rule: SkipStatement -> KW_SKIP */

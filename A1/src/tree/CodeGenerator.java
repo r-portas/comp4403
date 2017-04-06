@@ -31,6 +31,10 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     /** Track the tree node currently being checked (for debugging) */
     private Stack<String> nodeStack;
 
+    // The maximum branch values
+    private int maxBranchValue = 10000;
+    private int minBranchValue = -10000;
+
     public CodeGenerator(Errors errors) {
         super();
         this.errors = errors;
@@ -138,7 +142,10 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     private int getDefaultCodeSize(StatementNode.CaseStatementNode node) {
 
         if (node.getDefaultCase() == null) {
-            return 0;
+            Code code = new Code();
+            code.genLoadConstant(1);
+            code.generateOp(Operation.STOP);
+            return code.size();
         }
 
         return node.getDefaultCase().genCode(this).size();
@@ -146,7 +153,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
     private int getLabelMin(StatementNode.CaseStatementNode node) {
         Set<ConstExp> labels = node.getCases().keySet();
-        int min = 10000;
+        int min = maxBranchValue;
 
         if (labels.size() > 0) {
 
@@ -165,7 +172,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     private int getLabelMax(StatementNode.CaseStatementNode node) {
         // Get min and max of tokens
         Set<ConstExp> labels = node.getCases().keySet();
-        int max = -10000;
+        int max = minBranchValue;
 
         if (labels.size() > 0) {
 
@@ -223,10 +230,15 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         int max = getLabelMax(node);
         int min = getLabelMin(node);
 
-        System.out.println("Max: " + max + ", Min: " + min);
-
         int totalSize = getCaseCodeSize(node);
-        int totalJumpListSize = jumpListEntrySize * (max - min + 1);
+        int totalJumpListSize;
+        
+        // If there are no cases
+        if (min == maxBranchValue && max == minBranchValue) {
+            totalJumpListSize = 0;
+        } else {
+            totalJumpListSize = jumpListEntrySize * (max - min + 1);
+        }
 
         // Check if it is within the bounds of the jump table
         Code tempCode = new Code();
@@ -291,7 +303,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         for (int i = min; i <= max; i++) {
             // The size of the remaining code
             int jumpLength = jumpListEntrySize * (max - i);
-            System.out.println("Generating jmplist item for " + i);
 
             // and add the size of the other code
             // If its not valid, jump to the end, or default
@@ -302,7 +313,11 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         code.append(caseCode);
         
-        if (node.getDefaultCase() != null) {
+
+        if (node.getDefaultCase() == null) {
+            code.genLoadConstant(1);
+            code.generateOp(Operation.STOP);
+        } else {
             code.append(node.getDefaultCase().genCode(this));
         }
 

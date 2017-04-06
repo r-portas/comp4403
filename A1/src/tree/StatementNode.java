@@ -130,14 +130,16 @@ public abstract class StatementNode {
         private StatementNode defaultCase;
         private ExpNode condition;
         private List<ConstExp> labels;
+        private List<ConstExp> duplicates;
 
-        public CaseStatementNode( Location loc, ExpNode condition, HashMap<ConstExp, StatementNode> cases, List<ConstExp> labels, StatementNode defaultCase ) {
+        public CaseStatementNode( Location loc, ExpNode condition, HashMap<ConstExp, StatementNode> cases, List<ConstExp> labels, StatementNode defaultCase, List<ConstExp> duplicates ) {
             super( loc );
 
             this.cases = cases;
             this.defaultCase = defaultCase;
             this.condition = condition;
             this.labels = labels;
+            this.duplicates = duplicates;
         }
 
         @Override
@@ -152,6 +154,10 @@ public abstract class StatementNode {
 
         public List<ConstExp> getLabels() {
             return this.labels;
+        }
+
+        public List<ConstExp> getDuplicates() {
+            return this.duplicates;
         }
 
         public ExpNode getCondition() {
