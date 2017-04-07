@@ -15,7 +15,7 @@ import tree.DeclNode;
 import tree.ExpNode;
 import tree.Operator;
 import tree.StatementNode;
-import tree.StatementNode.SingleAssignNode;
+import tree.StatementNode.AssignmentNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
@@ -50,8 +50,8 @@ import java.util.HashMap;
  *  Statement -> WhileStatement | IfStatement | CallStatement | Assignment | 
  *               ReadStatement | WriteStatement | CompoundStatement |
  *               SkipStatement | CaseStatement
- *  Assignment -> SingleAssign { BAR Single Assign }
- *  SingleAssign -> LValue ASSSIGN Condition
+ *  MultiAssign -> Assignment { BAR Assignment }
+ *  Assignment -> LValue ASSSIGN Condition
  *  SkipStatement -> KW_SKIP
  *  WhileStatement -> KW_WHILE Condition KW_DO Statement
  *  IfStatement -> KW_IF Condition KW_THEN Statement KW_ELSE Statement
@@ -475,7 +475,7 @@ public class Parser {
         assert tokens.isIn( STATEMENT_START_SET );
         switch( tokens.getKind() ) {
         case IDENTIFIER:
-            result = parseAssignment( recoverSet ); 
+            result = parseMultiAssign( recoverSet ); 
             break;
         case KW_SKIP:
             result = parseSkip( recoverSet );
@@ -571,33 +571,33 @@ public class Parser {
     }
 
     /** Rule: Assignment -> LValue ASSIGN Condition */
-    private StatementNode.AssignmentNode parseAssignment(TokenSet recoverSet) {
+    private StatementNode.MultiAssignNode parseMultiAssign(TokenSet recoverSet) {
         // TODO: Check if if statement is required
-        if ( !tokens.beginRule("Assignment", LVALUE_START_SET, recoverSet) ) {
-            return new StatementNode.AssignmentNode(tokens.getLocation(), null);
+        if ( !tokens.beginRule("MultiAssign", LVALUE_START_SET, recoverSet) ) {
+            return new StatementNode.MultiAssignNode(tokens.getLocation(), null);
         }
         assert tokens.isIn( LVALUE_START_SET );
 
         Location loc = tokens.getLocation();
 
-        List<SingleAssignNode> assignments = new ArrayList<SingleAssignNode>();
-        SingleAssignNode first = parseSingleAssignment(recoverSet.union(Token.BAR)); 
+        List<AssignmentNode> assignments = new ArrayList<AssignmentNode>();
+        AssignmentNode first = parseAssignment(recoverSet.union(Token.BAR)); 
         assignments.add(first);
 
         while (tokens.isMatch(Token.BAR)) {
-            // Parse a SingleAssign
+            // Parse a Assignment
             tokens.match( Token.BAR, LVALUE_START_SET );
-            SingleAssignNode other = parseSingleAssignment(recoverSet.union(Token.BAR)); 
+            AssignmentNode other = parseAssignment(recoverSet.union(Token.BAR)); 
             assignments.add(other);
         }
 
-        tokens.endRule("Assignment", recoverSet);
-        return new StatementNode.AssignmentNode( loc, assignments );
+        tokens.endRule("MultiAssign", recoverSet);
+        return new StatementNode.MultiAssignNode( loc, assignments );
     }
 
-    private StatementNode.SingleAssignNode parseSingleAssignment(TokenSet recoverSet) {
-        if( !tokens.beginRule( "SingleAssign", LVALUE_START_SET, recoverSet ) ) {
-            return new StatementNode.SingleAssignNode( tokens.getLocation(), 
+    private StatementNode.AssignmentNode parseAssignment(TokenSet recoverSet) {
+        if( !tokens.beginRule( "Assignment", LVALUE_START_SET, recoverSet ) ) {
+            return new StatementNode.AssignmentNode( tokens.getLocation(), 
                     new ExpNode.ErrorNode( tokens.getLocation() ), 
                     new ExpNode.ErrorNode( tokens.getLocation() ) );
         }
@@ -610,8 +610,8 @@ public class Parser {
         Location loc = tokens.getLocation();
         tokens.match( Token.ASSIGN, CONDITION_START_SET );
         ExpNode right = parseCondition( recoverSet );
-        tokens.endRule( "SingleAssign", recoverSet );
-        return new StatementNode.SingleAssignNode( loc, left, right );
+        tokens.endRule( "Assignment", recoverSet );
+        return new StatementNode.AssignmentNode( loc, left, right );
     }
 
     /** Rule: WhileStatement -> KW_WHILE Condition KW_DO Statement 
@@ -652,7 +652,7 @@ public class Parser {
         tokens.endRule( "Read Statement", recoverSet );
         // A read statement is treated as an assignment of the value read
         // to the variable. A ReadNode is an expression.
-        return new StatementNode.SingleAssignNode( loc, lval, 
+        return new StatementNode.AssignmentNode( loc, lval, 
                         new ExpNode.ReadNode( loc ) );
     }
     /** Rule: WriteStatement -> KW_WRITE Exp 

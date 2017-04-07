@@ -325,33 +325,33 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return code;
     }
 
-    public Code visitAssignmentNode(StatementNode.AssignmentNode node) {
-        beginGen( "Assignment" );
+    public Code visitMultiAssignNode(StatementNode.MultiAssignNode node) {
+        beginGen( "MultiAssign" );
         Code code = new Code();
 
-        for (StatementNode.SingleAssignNode n : node.getAssignments()) {
+        for (StatementNode.AssignmentNode n : node.getAssignments()) {
             code.append( n.getExp().genCode( this ) );
         }
 
-        for (StatementNode.SingleAssignNode n : node.getReverseAssignments()) {
+        for (StatementNode.AssignmentNode n : node.getReverseAssignments()) {
             code.append( n.getVariable().genCode( this ) );
             code.genStore( (Type.ReferenceType)n.getVariable().getType() );
         }
 
-        endGen( "Assignment" );
+        endGen( "MultiAssign" );
         return code;
     }
     
     /** Code generation for an assignment statement. */
-    public Code visitSingleAssignNode(StatementNode.SingleAssignNode node) {
-        beginGen( "SingleAssign" );
+    public Code visitAssignmentNode(StatementNode.AssignmentNode node) {
+        beginGen( "Assignment" );
         /* Generate code to evaluate the expression */
         Code code = node.getExp().genCode( this );
         /* Generate the code to load the address of the variable */
         code.append( node.getVariable().genCode( this ) );
         /* Generate the store based on the type/size of value */
         code.genStore( (Type.ReferenceType)node.getVariable().getType() );
-        endGen( "SingleAssign" );
+        endGen( "Assignment" );
         return code;
     }
     /** Generate code for a "write" statement. */

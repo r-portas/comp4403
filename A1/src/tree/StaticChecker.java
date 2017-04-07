@@ -106,12 +106,18 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         endCheck("Skip");
     }
 
-    public void visitAssignmentNode(StatementNode.AssignmentNode node) {
-        beginCheck("Assignment");
-       
+    public void visitMultiAssignNode(StatementNode.MultiAssignNode node) {
+        beginCheck("MultipleAssign");
         List<String> identifiers = new ArrayList<String>(); 
 
-        for( SingleAssignNode assignNode : node.getAssignments() ) {
+        // Treat it as a single assignment
+        if (node.getAssignments().size() == 1) {
+            node.getAssignments().get(0).accept(this);
+            return;
+        }
+
+
+        for( AssignmentNode assignNode : node.getAssignments() ) {
             assignNode.accept(this);
 
             ExpNode var = assignNode.getVariable().transform(this);
@@ -129,6 +135,33 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
             assignNode.setExp(assignNode.getExp().transform(this));
 
+        }
+        endCheck("MultipleAssign");
+    }
+
+    public void visitAssignmentNode(StatementNode.AssignmentNode node) {
+        beginCheck("Assignment");
+       
+        // Check the left side left value.
+        ExpNode left = node.getVariable().transform( this );
+        node.setVariable( left );
+        // Check the right side expression.
+        ExpNode exp = node.getExp().transform( this );
+        node.setExp( exp );
+        // Validate that it is a true left value and not a constant.
+        Type lvalType = left.getType();
+        if( ! (lvalType instanceof Type.ReferenceType) ) {
+            if( lvalType != Type.ERROR_TYPE ) {
+                staticError( "variable expected, type = " + lvalType , 
+                        left.getLocation() );
+            }
+        } else {
+            /* Validate that the right expression is assignment
+             * compatible with the left value. This may require that the 
+             * right side expression is coerced to the dereferenced
+             * type of the left side LValue. */
+            Type baseType = ((Type.ReferenceType)lvalType).getBaseType();
+            node.setExp( baseType.coerceExp( exp ) );
         }
 
         endCheck("Assignment");
@@ -169,33 +202,6 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
 
         endCheck("CaseStatement");
-    }
-
-    
-    public void visitSingleAssignNode(StatementNode.SingleAssignNode node) {
-        beginCheck("SingleAssign");
-        // Check the left side left value.
-        ExpNode left = node.getVariable().transform( this );
-        node.setVariable( left );
-        // Check the right side expression.
-        ExpNode exp = node.getExp().transform( this );
-        node.setExp( exp );
-        // Validate that it is a true left value and not a constant.
-        Type lvalType = left.getType();
-        if( ! (lvalType instanceof Type.ReferenceType) ) {
-            if( lvalType != Type.ERROR_TYPE ) {
-                staticError( "variable expected, type = " + lvalType , 
-                        left.getLocation() );
-            }
-        } else {
-            /* Validate that the right expression is assignment
-             * compatible with the left value. This may require that the 
-             * right side expression is coerced to the dereferenced
-             * type of the left side LValue. */
-            Type baseType = ((Type.ReferenceType)lvalType).getBaseType();
-            node.setExp( baseType.coerceExp( exp ) );
-        }
-        endCheck("SingleAssign");
     }
 
     public void visitWriteNode(StatementNode.WriteNode node) {

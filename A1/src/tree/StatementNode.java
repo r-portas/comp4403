@@ -206,24 +206,24 @@ public abstract class StatementNode {
     }
 
     /** Tree node representing an SingleAssign statement. */
-    public static class SingleAssignNode extends StatementNode {
+    public static class AssignmentNode extends StatementNode {
         /** Tree node for expression on left hand side of an assignment. */
         private ExpNode lValue;
         /** Tree node for the expression to be assigned. */
         private ExpNode exp;
 
-        public SingleAssignNode( Location loc, ExpNode variable, ExpNode exp ) {
+        public AssignmentNode( Location loc, ExpNode variable, ExpNode exp ) {
             super( loc );
             this.lValue = variable;
             this.exp = exp;
         }
         @Override
         public void accept( StatementVisitor visitor ) {
-            visitor.visitSingleAssignNode( this );
+            visitor.visitAssignmentNode( this );
         }
         @Override
         public Code genCode( StatementTransform<Code> visitor ) {
-            return visitor.visitSingleAssignNode( this );
+            return visitor.visitAssignmentNode( this );
         }
         public ExpNode getVariable() {
             return lValue;
@@ -252,32 +252,32 @@ public abstract class StatementNode {
     }
 
     /** Tree node representing an assignment statement. */
-    public static class AssignmentNode extends StatementNode {
+    public static class MultiAssignNode extends StatementNode {
 
-        private List<SingleAssignNode> assignments;
+        private List<AssignmentNode> assignments;
 
-        public AssignmentNode( Location loc, List<SingleAssignNode> assignments ) {
+        public MultiAssignNode( Location loc, List<AssignmentNode> assignments ) {
             super( loc );
             this.assignments = assignments;
         }
         @Override
         public void accept( StatementVisitor visitor ) {
-            visitor.visitAssignmentNode( this );
+            visitor.visitMultiAssignNode( this );
         }
 
         @Override
         public Code genCode( StatementTransform<Code> visitor ) {
-            return visitor.visitAssignmentNode( this );
+            return visitor.visitMultiAssignNode( this );
         }
 
-        public List<SingleAssignNode> getAssignments() {
+        public List<AssignmentNode> getAssignments() {
             return this.assignments;
         }
 
-        public List<SingleAssignNode> getReverseAssignments() {
-            List<SingleAssignNode> reversed = new ArrayList<SingleAssignNode>();
+        public List<AssignmentNode> getReverseAssignments() {
+            List<AssignmentNode> reversed = new ArrayList<AssignmentNode>();
 
-            for (SingleAssignNode n : this.assignments) {
+            for (AssignmentNode n : this.assignments) {
                 reversed.add(0, n);
             }
 
@@ -287,7 +287,7 @@ public abstract class StatementNode {
 
         @Override
         public String toString( int level ) {
-            return "Assignment Node (" + this.assignments.toString() + ")";
+            return "Multiple Assignment Node (" + this.assignments.toString() + ")";
         }
     }
 
