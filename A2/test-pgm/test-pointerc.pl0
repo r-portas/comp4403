@@ -1,0 +1,9 @@
+type
+    PINT = ^intt;      // undefined type intt
+var
+	i: int;
+	p: PINT;
+begin
+	p := new PINT;
+	p^ := 0
+end

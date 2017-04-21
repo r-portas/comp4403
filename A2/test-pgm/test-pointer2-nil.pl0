@@ -1,0 +1,15 @@
+type
+  List = ^Element;
+  Element = record
+    val: int
+  end;
+var
+  p: List;
+procedure q() =
+  begin
+    p := nil;
+    write p^.val  // nil pointer dereference (at runtime)
+  end;
+begin
+  call q()
+end

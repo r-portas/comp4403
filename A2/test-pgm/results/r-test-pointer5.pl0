@@ -1,0 +1,10 @@
+Compiling test-pointer5.pl0
+Parsing complete
+    16   r1 := r2; // invalid - not same record type
+******         ^  Error: cannot treat R2 as R1
+    18   t1 := t3; // invalid - pointer to different types
+******         ^  Error: cannot treat ^R2 as ^R1
+    19   t2 := t3  // invalid - pointer to different types
+******         ^  Error: cannot treat ^R2 as ^R1
+Static semantic analysis complete
+3 errors detected.

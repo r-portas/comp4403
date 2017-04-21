@@ -1,0 +1,18 @@
+// Valid assignments
+type
+  T1 = ^int;
+  T2 = T1;
+  T3 = ^int;
+var
+  p1: T1;
+  p2: T2;
+  p3: T3;
+begin
+  p1 := nil;
+  p2 := p1;
+  p1 := p2;
+  p3 := p1;
+  p3 := p2;
+  p1 := p3;
+  p2 := p3
+end     

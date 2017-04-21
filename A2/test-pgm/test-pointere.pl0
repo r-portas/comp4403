@@ -1,0 +1,11 @@
+type
+    T1 = ^int; 
+    T2 = ^int;
+var
+    p1 : T1;
+    p2 : T2;
+begin
+    p1 := new T1;
+    p2 := p1;
+    if p1 = p2 then write 100 else write 9999
+end

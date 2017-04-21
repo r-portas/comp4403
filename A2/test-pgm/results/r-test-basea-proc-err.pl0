@@ -1,0 +1,5 @@
+Compiling test-basea-proc-err.pl0
+     3 end
+******    ^  Error: PL0 syntax error
+Parsing complete
+1 error detected.

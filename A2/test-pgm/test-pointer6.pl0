@@ -1,0 +1,14 @@
+type
+  T1 = ^int;
+  T2 = ^T1;
+var
+  x: T1;
+  y: T2;
+begin
+  x := new T1;
+  x^ := 22;
+  y := new T2;
+  y^ := x;
+  y^^ := 33;
+  write x^  // writes out 33
+end

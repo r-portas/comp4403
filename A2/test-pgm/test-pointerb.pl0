@@ -1,0 +1,8 @@
+type
+  P = ^X;      // undefined type X
+var
+  v: P;
+begin
+  v := new P;
+  v^ := v^ + 1
+end

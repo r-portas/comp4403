@@ -1,0 +1,17 @@
+type
+  R = record 
+        x: int;
+        next: List
+      end;
+  List = ^R;
+  PList = ^List;
+var
+  p: PList;
+begin
+  p := new PList;
+  p^ := new List;
+  p^^.x := 100;
+  write p^^.x;   // 100
+  p^ := nil;
+  write p^^.x    // nil pointer dereference (at runtime)
+end

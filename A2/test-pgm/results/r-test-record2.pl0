@@ -1,0 +1,10 @@
+Compiling test-record2.pl0
+Parsing complete
+     4   P = Q;        // circularly defined
+******       ^  Error: Q is circularly defined
+    11   A = ^X;       // X undefined
+******        ^  Error: undefined type: X
+    20   write x^     // type must be pointer
+******         ^  Error: type must be a pointer
+Static semantic analysis complete
+3 errors detected.

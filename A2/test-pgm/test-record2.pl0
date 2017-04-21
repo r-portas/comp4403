@@ -1,0 +1,22 @@
+// invalid program
+// P defined circularly in terms of Q, R, S, and P!
+// X is undefined
+type 
+  P = Q;        // circularly defined
+  Q = R;        // circularly defined
+  R = record    // circularly defined
+        x: int;
+        y: S
+      end;
+  S = P;        // circularly defined
+  A = ^X;       // X undefined
+var
+  z: R;
+  v: A;
+  x: int;
+begin
+  write v^;
+  z.x := 1;
+  z.y := z;
+  write x^     // type must be pointer
+end

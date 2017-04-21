@@ -1,0 +1,68 @@
+<project name="PL0-Compiler" default="build" basedir=".">
+
+<!--
+	<property name="home" value="${basedir}" />
+
+	<property name="cuphome" value="${basedir}" />
+	<property name="jflexhome" value="${basedir}" />
+
+	<path id="cupclasspath">
+		<pathelement location="${cuphome}/java-cup-v11a.jar" />
+	</path>
+
+	<path id="jflexclasspath">
+		<pathelement location="${jflexhome}/JFlex.jar" />
+	</path>
+
+    <path id="compileclasspath">
+        <pathelement location="${home}/junit.jar" />
+		<pathelement location="${cuphome}/java-cup-v11a.jar" />
+    </path>
+    
+	<taskdef name="jflextask" classname="JFlex.anttask.JFlexTask" 
+                classpathref="jflexclasspath" />
+
+	<taskdef name="cuptask" classname="java_cup.anttask.CUPTask"
+                classpathref="cupclasspath" />
+-->
+	
+	<target name="jflex" description="Generate Lexer.java">
+		<echo message="jflex basedir=${basedir}" />
+		<JFlexTask file="${basedir}/src/parser/PL0.flex"
+                       destdir="${basedir}/src" />
+	</target>
+
+	<target name="cup" description="Generate CUPParser.java and CUPToken.java">
+		<echo message="cup basedir=${basedir}" />
+		<CUPTask srcfile="${basedir}/src/parser/PL0.cup"
+                     destdir="${basedir}/src"
+                     interface="true"
+                     parser="CUPParser" symbols="CUPToken" />
+	</target>
+
+	<target name="compile" depends="jflex,cup">
+		<!-- Compile the java code -->
+		<javac srcdir="${basedir}/src" destdir="${basedir}/bin">
+		<!--	<classpath refid="compileclasspath" /> -->
+		</javac>
+	</target>
+
+	<target name="clean" description="Remove CUPParser.java, Lexer.java and CUPToken.java">
+	    <echo message="Cleaning ${basedir}/src/parser" />
+	    <delete>
+	        <fileset dir="${basedir}/src/parser">
+		    	<include name="**/CUPParser.java"/>
+                <include name="**/CUPToken.java"/>
+                <include name="**/Lexer.java"/>
+		    </fileset>
+            <fileset dir="${basedir}/bin">
+                <include name="**/*.class"/>
+            </fileset>
+	    </delete>
+	</target>
+
+	<target name="build" depends="cup,jflex,compile">
+		<echo message="Done" />
+	</target>
+
+</project>

@@ -1,0 +1,22 @@
+// valid program
+type
+  R = record
+        b: boolean;
+        x: int
+      end;
+  Q = record
+        f: R
+      end;
+var
+  r: R;
+  q: Q;
+begin
+  r.x := 103;
+  r.b := true;
+  write r.x;   // 103
+  if r.b then write 102 else write 99; //102
+  r.x := 101;
+  q.f := r;
+  write q.f.x;  // 101
+  if q.f.b then write 100 else write 98 // 100
+end

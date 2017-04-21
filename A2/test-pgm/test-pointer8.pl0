@@ -1,0 +1,6 @@
+begin
+  if nil = nil then
+    write 100
+  else
+    write 99
+end

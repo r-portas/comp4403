@@ -1,0 +1,32 @@
+// valid program
+type
+  R = record
+        n: int;
+        b: boolean;
+        f: int
+      end;
+  P = ^R;
+var
+  r: R;
+  p: P;
+  q: P;
+begin
+  p := new P;
+  p^.f := 107;
+  write p^.f;
+  p := nil;
+  if p = nil then write 106 else write 99;
+  r.f := 105;
+  r.n := 104;
+  r.b := true;
+  write r.f;
+  write r.n;
+  if r.b then write 103 else write 98;
+  q := new P;
+  if p != q then write 102 else write 97;
+  r.f := 101;
+  r.n := 100;
+  q^ := r;
+  write q^.f;
+  write q^.n
+end

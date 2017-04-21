@@ -1,0 +1,21 @@
+// Record types are only compatible is have the same type name (or alias)
+type
+R1 = record x: int end;
+R2 = record x: int end;
+T1 = ^R1;
+T2 = ^R1;
+T3 = ^R2;
+
+var
+r1: R1;
+r2: R2;
+t1: T1;
+t2: T2;
+t3: T3;
+
+begin
+  r1 := r2; // invalid - not same record type
+  t1 := t2;
+  t1 := t3; // invalid - pointer to different types
+  t2 := t3  // invalid - pointer to different types
+end

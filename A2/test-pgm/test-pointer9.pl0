@@ -1,0 +1,11 @@
+type
+    T = ^int;
+var
+    n: int;
+    x: T;
+begin
+    x := new T;
+    x := n;   // invalid
+    x^ := 4;
+    write n 
+end

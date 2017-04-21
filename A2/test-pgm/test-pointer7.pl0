@@ -1,0 +1,9 @@
+type 
+  R = record x: int; next: List end;
+  List = ^R;
+var 
+  p: List;
+begin
+  p := new List;
+  write p^.next^.x   // next is undefined pointer
+end

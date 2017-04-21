@@ -1,0 +1,13 @@
+type
+    T = ^int; 
+    S = ^boolean;
+var
+    x: T;
+    y: S;
+begin
+    x := new T;
+    x^ := 22;
+    x := nil;
+    if x = y then write 1 else write 2;  // type mismatch in comparison
+    if x = nil then write 1 else write 2
+end

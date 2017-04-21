@@ -1,0 +1,20 @@
+// valid program
+type
+  List = ^Element;
+  Element = record
+    val: int;
+    next: List
+  end;
+var
+  p: List;
+procedure q() =
+  begin
+    p := new List;
+    p^.val := 101;
+    write p^.val   // 101
+  end;
+begin
+  call q();
+  p^.val := p^.val-1;
+  write p^.val     // 100
+end

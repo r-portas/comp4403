@@ -1,0 +1,35 @@
+Compiling test-base-exp-err.pl0
+     5     i = 42;    // duplicate declaration
+******     ^  Error: i already defined
+     6     S = 27;    // duplicate declaration
+******     ^  Error: S already defined
+     7     big = 5000000000; // too big
+******           ^  Error: integer too large
+Parsing complete
+     9   i := true;   // cannot assign boolean to int
+******        ^  Error: can't coerce boolean to int
+    10   b := 8;      // cannot assign int to boolean
+******        ^  Error: can't coerce int to boolean
+    11   i := b;      // cannot assign boolean to int
+******        ^  Error: can't coerce boolean to int
+    12   i := i + b;  // cannot add int and boolean
+******            ^  Error: can't coerce boolean to int
+    13   b := i + b;  // cannot add int and boolean
+******          ^  Error: can't coerce int to boolean
+******            ^  Error: can't coerce boolean to int
+    17   b := j;      // cannot assign int subrange to boolean
+******        ^  Error: can't coerce S to boolean
+    18   j := b;      // cannot assign boolean to int subrange
+******        ^  Error: can't coerce boolean to int
+    19   j := i = j;  // cannot assign boolean to int
+******          ^  Error: can't coerce boolean to int
+    20   b := x * y;  // x and y not declared
+******        ^  Error: Constant or variable identifier required
+******          ^  Error: can't coerce int to boolean
+******            ^  Error: Constant or variable identifier required
+    21   i := i + (j * x);  // x not declared
+******                 ^  Error: Constant or variable identifier required
+    22   write undefined // undefined not declared
+******         ^  Error: Constant or variable identifier required
+Static semantic analysis complete
+17 errors detected.

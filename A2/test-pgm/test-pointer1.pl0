@@ -1,0 +1,33 @@
+// valid program
+type 
+  List = ^Element;
+  Element = 
+    record
+      val: int;
+      next: List
+    end;
+var
+  p: List;
+  q: List;
+  n: int;
+begin
+  // create a list with values 103, 102, 101, 100 in that order
+  // but note that we insert in reverse order to achieve that
+  n := 100;
+  p := nil;
+  while n != 104 do
+  begin
+    q := new List;
+    q^.val := n;
+    q^.next := p;
+    p := q;
+    n := n+1
+  end;
+  // write out the list in order
+  q := p;
+  while q != nil do
+  begin
+    write q^.val;
+    q := q^.next
+  end
+end
