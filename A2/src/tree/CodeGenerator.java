@@ -49,6 +49,24 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     
     /* -------------------- Visitor methods ----------------------------*/
 
+    /** Generate code for a Record */
+    public Code visitRecordNode( ExpNode.RecordNode node) {
+        beginGen( "Record" ); 
+        Code code = new Code();
+
+        endGen( "Record" );
+        return code;
+    }
+
+    /** Generate code for a Pointer */
+    public Code visitPointerNode( ExpNode.PointerNode node ) {
+        beginGen( "Pointer" );
+        Code code = new Code();
+
+        endGen( "Pointer" );
+        return code;
+    }
+
     /** Generate code for a single procedure. */
     public void visitProcedureNode( DeclNode.ProcedureNode node ) {
         beginGen( "Procedure" );

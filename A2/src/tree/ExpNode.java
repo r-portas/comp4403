@@ -54,7 +54,69 @@ public abstract class ExpNode {
      * @return generated code
      */
     public abstract Code genCode( ExpTransform<Code> visitor );
-        
+
+
+    /** Tree node representing Records */
+    public static class RecordNode extends ExpNode {
+
+        public RecordNode( Location loc, Type.RecordType type ) {
+            super( loc, type );
+        }
+
+        public Type.RecordType getRecordType() {
+            return (Type.RecordType)getType();
+        }
+
+        public List<Type.Field> getFieldList() {
+            return getRecordType().getFieldList();
+        }
+
+        public void addFields(List<Type.Field> fields) {
+            for (Type.Field f : fields) {
+                getRecordType().add(f);
+            }
+        }
+
+        @Override
+        public ExpNode transform( ExpTransform<ExpNode> visitor ) {
+            return visitor.visitRecordNode( this );
+        }
+
+        @Override
+        public Code genCode( ExpTransform<Code> visitor ) {
+            return visitor.visitRecordNode( this );
+        }
+
+        @Override
+        public String toString( ) {
+            // TODO: Improve toString
+            return "Record Node";
+        }
+    }
+
+    /** Tree node representing Pointers */
+    public static class PointerNode extends ExpNode {
+        public PointerNode( Location loc, Type type ) {
+            super( loc, type );
+        }
+
+        @Override
+        public ExpNode transform( ExpTransform<ExpNode> visitor ) {
+            return visitor.visitPointerNode( this );
+        }
+
+        @Override
+        public Code genCode( ExpTransform<Code> visitor ) {
+            return visitor.visitPointerNode( this );
+        }
+
+        @Override
+        public String toString( ) {
+            // TODO: Improve toString
+            return "Pointer Node";
+        }
+    }
+
     /** Tree node representing an erroneous expression. */
     public static class ErrorNode extends ExpNode {
         

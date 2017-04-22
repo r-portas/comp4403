@@ -42,6 +42,22 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         this.errors = errors;
         nodeStack = new Stack<String>();
     }
+
+    public ExpNode visitRecordNode(ExpNode.RecordNode node) {
+        beginCheck( "Record" );
+
+        endCheck( "Record" );
+        return node;
+    }
+
+    public ExpNode visitPointerNode(ExpNode.PointerNode node) {
+        beginCheck( "Pointer" );
+
+        endCheck( "Pointer" );
+        return node;
+    }
+
+
     /** The tree traversal starts with a call to visitProgramNode.
      * Then its descendants are visited using visit methods for each
      * node type, which are called using the visitor pattern "accept"

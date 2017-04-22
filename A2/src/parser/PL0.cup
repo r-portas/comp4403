@@ -174,6 +174,15 @@ non terminal Operator         Relation,
                               UnaryOperator;
 non terminal ExpNode          LValue;
 
+non terminal ArrayList<Type.Field> Fields,
+                              FieldList;
+
+non terminal Type.Field       Field;
+
+non terminal                  PointerType;
+
+/* TODO: Check if additions are needed */
+
 /**-------------------------------------------------------------*
  *------------------------ GRAMMAR RULES -----------------------*
  *--------------------------------------------------------------*
@@ -329,6 +338,45 @@ TypeDef ::= IDENTIFIER:id EQUALS Type:type SEMICOLON
     |  error 
     ;
 
+/** BEGIN MY CODE **/
+
+PointerType ::= POINTER TypeIdentifier
+        {:
+            // TODO
+        :}
+    ;
+
+Field ::= IDENTIFIER:i COLON TypeIdentifier:ti
+        {:
+            RESULT = new Type.Field(ixleft, i, ti);
+        :}
+    ;
+
+/* Implementation based off StatementList */
+Fields ::= Field:f
+        {:
+            ArrayList fields = new ArrayList<Type.Field>();
+            fields.add(f);
+            RESULT = fields;
+        :}
+    | Fields:fs SEMICOLON Field:f
+        {:
+            fs.add(f);
+            RESULT = fs;
+        :}
+    ;
+
+// TODO: Handle empty case
+FieldList ::= Fields:fs
+        {:
+            RESULT = fs;
+        :}
+    | /* empty */
+        {:
+            RESULT = new ArrayList<Type.Field>();
+        :}
+    ;
+
 Type ::= TypeIdentifier:type
         {: 
             RESULT = type;
@@ -337,11 +385,27 @@ Type ::= TypeIdentifier:type
         {:
             RESULT = new Type.SubrangeType( lo, hi );
         :}
+    | KW_RECORD FieldList:fl KW_END
+        {:
+            Type.RecordType record = new Type.RecordType(); 
+
+            for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
+                System.out.println("Adding '" + f.toString() + "'");
+                record.add(f);
+            }
+
+            System.out.println(record);
+
+            RESULT = record;
+        :}
     | error:err
         {:
             RESULT = Type.ERROR_TYPE;
         :}
     ;
+
+/** END MY CODE **/
+
 TypeIdentifier ::= IDENTIFIER:id
         {: /* As the type identifier may not be defined at this point
             * the abstract syntax tree records the id, as well as the 

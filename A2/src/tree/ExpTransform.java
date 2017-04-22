@@ -5,6 +5,11 @@ package tree;
  * @version $Revision: 22 $  $Date: 2014-05-20 15:14:36 +1000 (Tue, 20 May 2014) $
  */
 public interface ExpTransform<ResultType> {
+
+    ResultType visitRecordNode(ExpNode.RecordNode node);
+    ResultType visitPointerNode(ExpNode.PointerNode node);
+
+
     ResultType visitErrorExpNode(ExpNode.ErrorNode node);
     ResultType visitConstNode(ExpNode.ConstNode node);
     ResultType visitIdentifierNode(ExpNode.IdentifierNode node);
