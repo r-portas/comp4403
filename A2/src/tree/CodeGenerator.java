@@ -58,6 +58,15 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return code;
     }
 
+    /** Generate code for a Record Reference*/
+    public Code visitRecordReferenceNode( ExpNode.RecordReferenceNode node) {
+        beginGen( "Record Reference" ); 
+        Code code = new Code();
+
+        endGen( "Record Reference" );
+        return code;
+    }
+
     /** Generate code for a Pointer */
     public Code visitPointerNode( ExpNode.PointerNode node ) {
         beginGen( "Pointer" );

@@ -8,6 +8,7 @@ public interface ExpTransform<ResultType> {
 
     ResultType visitRecordNode(ExpNode.RecordNode node);
     ResultType visitPointerNode(ExpNode.PointerNode node);
+    ResultType visitRecordReferenceNode(ExpNode.RecordReferenceNode node);
 
 
     ResultType visitErrorExpNode(ExpNode.ErrorNode node);

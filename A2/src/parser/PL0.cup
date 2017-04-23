@@ -179,9 +179,11 @@ non terminal ArrayList<Type.Field> Fields,
 
 non terminal Type.Field       Field;
 
-non terminal                  PointerType;
+non terminal Type.PointerType PointerType;
 
-/* TODO: Check if additions are needed */
+// ExpLists should contain conditions, which are ExpNodes
+non terminal ArrayList<ExpNode> ExpList,
+                                RecordFields;
 
 /**-------------------------------------------------------------*
  *------------------------ GRAMMAR RULES -----------------------*
@@ -340,9 +342,9 @@ TypeDef ::= IDENTIFIER:id EQUALS Type:type SEMICOLON
 
 /** BEGIN MY CODE **/
 
-PointerType ::= POINTER TypeIdentifier
+PointerType ::= POINTER TypeIdentifier:ti
         {:
-            // TODO
+            RESULT = new Type.PointerType(ti);
         :}
     ;
 
@@ -366,7 +368,6 @@ Fields ::= Field:f
         :}
     ;
 
-// TODO: Handle empty case
 FieldList ::= Fields:fs
         {:
             RESULT = fs;
@@ -385,16 +386,25 @@ Type ::= TypeIdentifier:type
         {:
             RESULT = new Type.SubrangeType( lo, hi );
         :}
+    | POINTER TypeIdentifier:ti
+        {:
+            RESULT = new Type.PointerType(ti);
+        :}
     | KW_RECORD FieldList:fl KW_END
         {:
             Type.RecordType record = new Type.RecordType(); 
+            ArrayList<String> fieldIdentifiers = new ArrayList<String>();
 
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
-                System.out.println("Adding '" + f.toString() + "'");
+                String identifier = f.getId();
+
+                if (fieldIdentifiers.contains(identifier)) {
+                    errors.error("Duplicate record keys", flxleft);
+                }
+
+                fieldIdentifiers.add(identifier);
                 record.add(f);
             }
-
-            System.out.println(record);
 
             RESULT = record;
         :}
@@ -533,6 +543,14 @@ LValue ::= IDENTIFIER:id
         {:
             RESULT = new ExpNode.IdentifierNode( idxleft, id );
         :}
+    | LValue:lv PERIOD IDENTIFIER:id
+        {:
+            RESULT = new ExpNode.RecordReferenceNode(lvxleft, lv, new ExpNode.IdentifierNode(idxleft, id));
+        :}
+    | LValue:lv POINTER
+        {:
+            RESULT = new ExpNode.PointerNode(lvxleft, lv);
+        :}
     ;
 
 /* To allow for adding logical expressions. */
@@ -623,6 +641,30 @@ MulOp ::= TIMES
         :}
     ;
 
+/* Implementation based on StatementList */
+ExpList ::= Condition:c
+        {:
+            ArrayList<ExpNode> exps = new ArrayList<ExpNode>();
+            exps.add(c);
+            RESULT = exps;
+        :}
+    | ExpList:el COMMA Condition:c
+        {:
+            el.add(c);
+            RESULT = el;
+        :}
+    ;
+
+RecordFields ::= /* empty */ 
+        {:
+            RESULT = new ArrayList<ExpNode>();
+        :}
+    | ExpList:el
+        {:
+            RESULT = el;
+        :}
+    ;
+
 Factor ::= PLUS Factor:e
         {:
             RESULT = e; 
@@ -643,6 +685,18 @@ Factor ::= PLUS Factor:e
     |  LValue:lval
         {:
             RESULT = lval;
+        :}
+
+    | KW_NEW TypeIdentifier:ti
+        {:
+            RESULT = new ExpNode.RecordNode(tixleft, ti);
+        :}
+    | TypeIdentifier:ti LCURLY RecordFields:rf RCURLY
+        {:
+            ExpNode.RecordNode node = new ExpNode.RecordNode(tixleft, ti);
+            node.addRecordFields(rf);
+
+            RESULT = node;
         :}
     | error:e
         {:

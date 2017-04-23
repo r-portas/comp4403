@@ -1,5 +1,6 @@
 package tree;
 import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +47,22 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public ExpNode visitRecordNode(ExpNode.RecordNode node) {
         beginCheck( "Record" );
 
+
+        ArrayList<String> fieldNames = new ArrayList<String>();
+
+        // TODO: This is not running
+
+        // Check uniqueness
+        for (Type.Field field : node.getFieldList()) {
+            String fieldName = field.getId();
+
+            if (fieldNames.contains(fieldName)) {
+                staticError("Record declaration contains duplicate identifiers", field.getLocation());
+            }
+
+            fieldNames.add(fieldName);
+        }
+
         endCheck( "Record" );
         return node;
     }
@@ -54,6 +71,45 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         beginCheck( "Pointer" );
 
         endCheck( "Pointer" );
+        return node;
+    }
+
+    public ExpNode visitRecordReferenceNode(ExpNode.RecordReferenceNode node) {
+        beginCheck( "Record Reference" );
+
+
+        // lval is a reference to the RecordType
+        ExpNode lval = node.getLvalueNode().transform( this );
+        node.setLvalueNode(lval);
+
+        // System.out.println(node.getIdentifierNode());
+        System.out.println(lval);
+
+        // Check lval is a record
+        Type lvalType = lval.getType();
+        if( ! (lvalType instanceof Type.ReferenceType) ) {
+            if( lvalType != Type.ERROR_TYPE ) {
+                staticError( "variable expected, type = " + lvalType , 
+                        lval.getLocation() );
+            }
+        }
+
+        // Get the record
+        Type.RecordType record = lvalType.getRecordType();
+
+        while (record == null) {
+            // The record is nested, so traverse up
+            // TODO: Figure out why this is an error_type
+            // System.out.println(lvalType);
+            break; // TODO: Remove
+        }
+
+        System.out.println(node.getIdentifierNode());
+        if ( !record.containsField(node.getIdentifierNode().getId()) ) {
+            staticError( "Record does not contain '" + node.getIdentifierNode().getId() + "'", lval.getLocation());
+        }
+
+        endCheck( "Record Reference" );
         return node;
     }
 

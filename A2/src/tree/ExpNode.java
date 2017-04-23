@@ -2,6 +2,7 @@ package tree;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import syms.Predefined;
@@ -55,12 +56,15 @@ public abstract class ExpNode {
      */
     public abstract Code genCode( ExpTransform<Code> visitor );
 
-
     /** Tree node representing Records */
     public static class RecordNode extends ExpNode {
 
-        public RecordNode( Location loc, Type.RecordType type ) {
+        private ArrayList<ExpNode> records;
+
+        public RecordNode( Location loc, Type type ) {
             super( loc, type );
+
+            records = new ArrayList<ExpNode>();
         }
 
         public Type.RecordType getRecordType() {
@@ -71,9 +75,10 @@ public abstract class ExpNode {
             return getRecordType().getFieldList();
         }
 
-        public void addFields(List<Type.Field> fields) {
-            for (Type.Field f : fields) {
-                getRecordType().add(f);
+        public void addRecordFields(ArrayList<ExpNode> recordFields) {
+            // TODO: Should check duplicates
+            for (ExpNode f : recordFields) {
+                records.add(f);
             }
         }
 
@@ -94,10 +99,57 @@ public abstract class ExpNode {
         }
     }
 
+    /** Tree node representing a reference to a record (e.g. p.x) */
+    public static class RecordReferenceNode extends ExpNode {
+        private ExpNode lval;
+        private IdentifierNode id;
+        
+        public RecordReferenceNode( Location loc, ExpNode lval, IdentifierNode id) {
+            super( loc );
+            this.id = id;
+            this.lval = lval;
+
+        }
+
+        public IdentifierNode getIdentifierNode() {
+            return id;
+        }
+
+        public void setIdentifierNode(IdentifierNode node) {
+            id = node;
+        }
+
+        public ExpNode getLvalueNode() {
+            return lval;
+        }
+
+        public void setLvalueNode(ExpNode node) {
+            lval = node;
+        }
+
+        @Override
+        public ExpNode transform( ExpTransform<ExpNode> visitor ) {
+            return visitor.visitRecordReferenceNode( this );
+        }
+        @Override
+        public Code genCode( ExpTransform<Code> visitor ) {
+            return visitor.visitRecordReferenceNode( this );
+        }
+        @Override
+        public String toString() {
+            return lval.toString() + "." + id;
+        }
+    }
+
+
     /** Tree node representing Pointers */
     public static class PointerNode extends ExpNode {
-        public PointerNode( Location loc, Type type ) {
-            super( loc, type );
+        
+        private ExpNode item;
+
+        public PointerNode( Location loc, ExpNode item ) {
+            super( loc );
+            this.item = item;
         }
 
         @Override
