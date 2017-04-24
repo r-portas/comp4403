@@ -141,14 +141,20 @@ public abstract class ExpNode {
         }
     }
 
-
     /** Tree node representing Pointers */
     public static class PointerNode extends ExpNode {
         
         private ExpNode item;
 
-        public PointerNode( Location loc, ExpNode item ) {
-            super( loc );
+        public PointerNode( Location loc, Type type ) {
+            super( loc, type );
+        }
+
+        public ExpNode getItem() {
+            return item;
+        }
+
+        public void setItem(ExpNode item) {
             this.item = item;
         }
 
@@ -167,6 +173,30 @@ public abstract class ExpNode {
             // TODO: Improve toString
             return "Pointer Node";
         }
+    }
+
+    /** Tree node for representing a DeferencePointer **/
+    public static class DerefPointerNode extends ExpNode {
+        public DerefPointerNode( Location loc ) {
+            super( loc ); 
+        }
+
+        @Override
+        public ExpNode transform( ExpTransform<ExpNode> visitor ) {
+            return visitor.visitDerefPointerNode( this );
+        }
+
+        @Override
+        public Code genCode( ExpTransform<Code> visitor ) {
+            return visitor.visitDerefPointerNode( this );
+        }
+
+        @Override
+        public String toString( ) {
+            // TODO: Improve toString
+            return "Deref Pointer Node";
+        }
+
     }
 
     /** Tree node representing an erroneous expression. */

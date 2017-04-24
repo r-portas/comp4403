@@ -13,8 +13,8 @@ var
 begin
   r.x := 103;
   r.b := true;
-  write r.x;   // 103
-  //if r.b then write 102 else write 99; //102
+  write r.x;  // 103
+  if r.b then write 102 else write 99; //102
   r.x := 101;
   q.f := r;
   write q.f.x;  // 101

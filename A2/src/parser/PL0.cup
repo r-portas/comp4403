@@ -342,12 +342,6 @@ TypeDef ::= IDENTIFIER:id EQUALS Type:type SEMICOLON
 
 /** BEGIN MY CODE **/
 
-PointerType ::= POINTER TypeIdentifier:ti
-        {:
-            RESULT = new Type.PointerType(ti);
-        :}
-    ;
-
 Field ::= IDENTIFIER:i COLON TypeIdentifier:ti
         {:
             RESULT = new Type.Field(ixleft, i, ti);
@@ -388,6 +382,13 @@ Type ::= TypeIdentifier:type
         :}
     | POINTER TypeIdentifier:ti
         {:
+            // Check that the type is in the scope
+            SymEntry.TypeEntry type = symtab.getCurrentScope().lookupType(ti.getName());
+            if (type == null) {
+                // FUCKED
+                errors.error("Cannot point to type that does not exist", tixleft);
+            }
+
             RESULT = new Type.PointerType(ti);
         :}
     | KW_RECORD FieldList:fl KW_END
@@ -395,6 +396,7 @@ Type ::= TypeIdentifier:type
             Type.RecordType record = new Type.RecordType(); 
             ArrayList<String> fieldIdentifiers = new ArrayList<String>();
 
+            // FUCKED
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
                 String identifier = f.getId();
 
@@ -549,7 +551,10 @@ LValue ::= IDENTIFIER:id
         :}
     | LValue:lv POINTER
         {:
-            RESULT = new ExpNode.PointerNode(lvxleft, lv);
+            ExpNode.PointerNode pointer = new ExpNode.PointerNode(lvxleft, lv.getType());
+            pointer.setItem(lv);
+
+            RESULT = pointer;
         :}
     ;
 
@@ -686,10 +691,18 @@ Factor ::= PLUS Factor:e
         {:
             RESULT = lval;
         :}
-
     | KW_NEW TypeIdentifier:ti
         {:
-            RESULT = new ExpNode.RecordNode(tixleft, ti);
+            // Check that ti is a pointer type
+            SymEntry.TypeEntry type = symtab.getCurrentScope().lookupType(ti.getName());
+            if (type == null || !(type.getType() instanceof Type.PointerType)) {
+                errors.error("Cannot create a new instance of a type that does not exist", tixleft);
+            }
+
+            System.out.println(ti);
+            
+            // Maybe clone the Type
+            RESULT = new ExpNode.PointerNode(tixleft, ti);
         :}
     | TypeIdentifier:ti LCURLY RecordFields:rf RCURLY
         {:

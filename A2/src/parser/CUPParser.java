@@ -51,10 +51,10 @@ public class CUPParser extends java_cup.runtime.lr_parser {
     "\006\004\000\002\007\006\000\002\007\003\000\002\010" +
     "\003\000\002\010\004\000\002\010\003\000\002\010\003" +
     "\000\002\011\003\000\002\011\004\000\002\012\006\000" +
-    "\002\012\003\000\002\043\004\000\002\042\005\000\002" +
-    "\040\003\000\002\040\005\000\002\041\003\000\002\041" +
-    "\002\000\002\013\003\000\002\013\007\000\002\013\004" +
-    "\000\002\013\005\000\002\013\003\000\002\014\003\000" +
+    "\002\012\003\000\002\042\005\000\002\040\003\000\002" +
+    "\040\005\000\002\041\003\000\002\041\002\000\002\013" +
+    "\003\000\002\013\007\000\002\013\004\000\002\013\005" +
+    "\000\002\013\003\000\002\043\004\000\002\014\003\000" +
     "\002\015\003\000\002\015\004\000\002\016\006\000\002" +
     "\016\003\000\002\017\005\000\002\020\007\000\002\020" +
     "\005\000\002\021\002\000\002\025\005\000\002\023\003" +
@@ -225,17 +225,17 @@ public class CUPParser extends java_cup.runtime.lr_parser {
     "\ufff8\054\154\001\002\000\020\003\uffed\033\uffed\035\uffed" +
     "\043\uffed\047\uffed\050\uffed\054\uffed\001\002\000\014\003" +
     "\162\026\163\031\166\045\164\054\076\001\002\000\004" +
-    "\006\205\001\002\000\004\006\uffe0\001\002\000\004\054" +
-    "\076\001\002\000\006\040\uffe5\054\175\001\002\000\004" +
-    "\006\uffe4\001\002\000\012\003\027\012\032\054\031\055" +
+    "\006\205\001\002\000\004\006\uffe1\001\002\000\004\054" +
+    "\076\001\002\000\006\040\uffe6\054\175\001\002\000\004" +
+    "\006\uffe5\001\002\000\012\003\027\012\032\054\031\055" +
     "\030\001\002\000\004\023\170\001\002\000\012\003\027" +
     "\012\032\054\031\055\030\001\002\000\004\032\172\001" +
-    "\002\000\004\006\uffe3\001\002\000\006\006\uffe8\040\uffe8" +
-    "\001\002\000\004\040\203\001\002\000\004\007\201\001" +
-    "\002\000\006\006\177\040\uffe6\001\002\000\004\054\175" +
-    "\001\002\000\006\006\uffe7\040\uffe7\001\002\000\004\054" +
-    "\076\001\002\000\006\006\uffe9\040\uffe9\001\002\000\004" +
-    "\006\uffe1\001\002\000\004\006\uffe2\001\002\000\020\003" +
+    "\002\000\004\006\uffe4\001\002\000\004\040\203\001\002" +
+    "\000\006\006\uffe9\040\uffe9\001\002\000\004\007\201\001" +
+    "\002\000\006\006\177\040\uffe7\001\002\000\004\054\175" +
+    "\001\002\000\006\006\uffe8\040\uffe8\001\002\000\004\054" +
+    "\076\001\002\000\006\006\uffea\040\uffea\001\002\000\004" +
+    "\006\uffe2\001\002\000\004\006\uffe3\001\002\000\020\003" +
     "\uffec\033\uffec\035\uffec\043\uffec\047\uffec\050\uffec\054\uffec" +
     "\001\002\000\014\033\ufffa\035\ufffa\043\ufffa\047\ufffa\050" +
     "\ufffa\001\002\000\004\006\uffda\001\002\000\014\033\ufffc" +
@@ -313,7 +313,7 @@ public class CUPParser extends java_cup.runtime.lr_parser {
     "\001\000\002\001\001\000\002\001\001\000\004\012\156" +
     "\001\001\000\002\001\001\000\006\013\160\014\164\001" +
     "\001\000\002\001\001\000\002\001\001\000\004\014\203" +
-    "\001\001\000\010\040\175\041\173\042\172\001\001\000" +
+    "\001\001\000\010\040\175\041\172\042\173\001\001\000" +
     "\002\001\001\000\004\010\166\001\001\000\002\001\001" +
     "\000\004\010\170\001\001\000\002\001\001\000\002\001" +
     "\001\000\002\001\001\000\002\001\001\000\002\001\001" +
@@ -747,21 +747,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 23: // PointerType ::= POINTER TypeIdentifier 
-            {
-              Type.PointerType RESULT =null;
-		Location tixleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xleft;
-		Location tixright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xright;
-		Type ti = (Type)((java_cup.runtime.Symbol) CUP$CUPParser$stack.peek()).value;
-		
-            RESULT = new Type.PointerType(ti);
-        
-              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("PointerType",33, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
-            }
-          return CUP$CUPParser$result;
-
-          /*. . . . . . . . . . . . . . . . . . . .*/
-          case 24: // Field ::= IDENTIFIER COLON TypeIdentifier 
+          case 23: // Field ::= IDENTIFIER COLON TypeIdentifier 
             {
               Type.Field RESULT =null;
 		Location ixleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-2)).xleft;
@@ -778,7 +764,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 25: // Fields ::= Field 
+          case 24: // Fields ::= Field 
             {
               ArrayList<Type.Field> RESULT =null;
 		Location fxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xleft;
@@ -794,7 +780,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 26: // Fields ::= Fields SEMICOLON Field 
+          case 25: // Fields ::= Fields SEMICOLON Field 
             {
               ArrayList<Type.Field> RESULT =null;
 		Location fsxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-2)).xleft;
@@ -812,7 +798,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 27: // FieldList ::= Fields 
+          case 26: // FieldList ::= Fields 
             {
               ArrayList<Type.Field> RESULT =null;
 		Location fsxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xleft;
@@ -826,7 +812,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 28: // FieldList ::= 
+          case 27: // FieldList ::= 
             {
               ArrayList<Type.Field> RESULT =null;
 		
@@ -837,7 +823,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 29: // Type ::= TypeIdentifier 
+          case 28: // Type ::= TypeIdentifier 
             {
               Type RESULT =null;
 		Location typexleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xleft;
@@ -851,7 +837,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 30: // Type ::= LBRACKET Constant RANGE Constant RBRACKET 
+          case 29: // Type ::= LBRACKET Constant RANGE Constant RBRACKET 
             {
               Type RESULT =null;
 		Location loxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-3)).xleft;
@@ -868,13 +854,19 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 31: // Type ::= POINTER TypeIdentifier 
+          case 30: // Type ::= POINTER TypeIdentifier 
             {
               Type RESULT =null;
 		Location tixleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xleft;
 		Location tixright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xright;
 		Type ti = (Type)((java_cup.runtime.Symbol) CUP$CUPParser$stack.peek()).value;
 		
+            // Check that the type is in the scope
+            SymEntry.TypeEntry type = symtab.getCurrentScope().lookupType(ti.getName());
+            if (type == null) {
+                errors.error("Cannot point to type that does not exist", tixleft);
+            }
+
             RESULT = new Type.PointerType(ti);
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("Type",9, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
@@ -882,7 +874,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 32: // Type ::= KW_RECORD FieldList KW_END 
+          case 31: // Type ::= KW_RECORD FieldList KW_END 
             {
               Type RESULT =null;
 		Location flxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xleft;
@@ -910,7 +902,7 @@ class CUP$CUPParser$actions {
           return CUP$CUPParser$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 33: // Type ::= error 
+          case 32: // Type ::= error 
             {
               Type RESULT =null;
 		Location errxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xleft;
@@ -920,6 +912,21 @@ class CUP$CUPParser$actions {
             RESULT = Type.ERROR_TYPE;
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("Type",9, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
+            }
+          return CUP$CUPParser$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 33: // PointerType ::= POINTER TypeIdentifier 
+            {
+              Type.PointerType RESULT =null;
+		Location tixleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xleft;
+		Location tixright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xright;
+		Type ti = (Type)((java_cup.runtime.Symbol) CUP$CUPParser$stack.peek()).value;
+		
+            System.out.println("Deferencing pointer");
+            RESULT = new Type.PointerType(ti);
+        
+              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("PointerType",33, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
           return CUP$CUPParser$result;
 
@@ -1292,7 +1299,10 @@ class CUP$CUPParser$actions {
 		Location lvxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xright;
 		ExpNode lv = (ExpNode)((java_cup.runtime.Symbol) CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).value;
 		
-            RESULT = new ExpNode.PointerNode(lvxleft, lv);
+            ExpNode.PointerNode pointer = new ExpNode.PointerNode(lvxleft, lv.getType());
+            pointer.setItem(lv);
+
+            RESULT = pointer;
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("LValue",29, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
@@ -1668,7 +1678,16 @@ class CUP$CUPParser$actions {
 		Location tixright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xright;
 		Type ti = (Type)((java_cup.runtime.Symbol) CUP$CUPParser$stack.peek()).value;
 		
-            RESULT = new ExpNode.RecordNode(tixleft, ti);
+            // Check that ti is a pointer type
+            SymEntry.TypeEntry type = symtab.getCurrentScope().lookupType(ti.getName());
+            if (type == null || !(type.getType() instanceof Type.PointerType)) {
+                errors.error("Cannot create a new instance of a type that does not exist", tixleft);
+            }
+
+            System.out.println(ti);
+            
+            // Maybe clone the Type
+            RESULT = new ExpNode.PointerNode(tixleft, ti);
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("Factor",24, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }

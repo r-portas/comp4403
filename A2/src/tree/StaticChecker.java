@@ -47,10 +47,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public ExpNode visitRecordNode(ExpNode.RecordNode node) {
         beginCheck( "Record" );
 
-
         ArrayList<String> fieldNames = new ArrayList<String>();
-
-        // TODO: This is not running
 
         // Check uniqueness
         for (Type.Field field : node.getFieldList()) {
@@ -70,43 +67,67 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public ExpNode visitPointerNode(ExpNode.PointerNode node) {
         beginCheck( "Pointer" );
 
+        // Resolve the type
+        Type type = node.getType();
+        node.setType(type.resolveType(node.getLocation()));
+
+        // Check the type of the pointer
+        if (node.getItem() != null) {
+            System.out.println("Pointer is pointing to " + node);
+            ExpNode item = node.getItem().transform( this );
+            
+            if (item.getType() != node.getType()) {
+                staticError("Pointer type does not match (" + item.getType() + " != " + node.getType() + ")", node.getLocation());
+            }
+        }
+
+
+        // Check the type actually exists (done in PL0.cup)
+
         endCheck( "Pointer" );
+        return node;
+    }
+
+    public ExpNode visitDerefPointerNode(ExpNode.DerefPointerNode node) {
+        beginCheck( "Deref Pointer Node" );
+
+        Type type = node.getType();
+
+        // Check that node is of type PointerType
+        if (!(type instanceof Type.PointerType)) {
+            staticError("Attempted to dereference a non pointer", node.getLocation());
+        }
+
+        endCheck( "Deref Pointer Node" );
+
         return node;
     }
 
     public ExpNode visitRecordReferenceNode(ExpNode.RecordReferenceNode node) {
         beginCheck( "Record Reference" );
 
-
         // lval is a reference to the RecordType
         ExpNode lval = node.getLvalueNode().transform( this );
         node.setLvalueNode(lval);
 
-        // System.out.println(node.getIdentifierNode());
-        System.out.println(lval);
-
-        // Check lval is a record
+        // Check lval is a variable
         Type lvalType = lval.getType();
+        System.out.println(lvalType);
         if( ! (lvalType instanceof Type.ReferenceType) ) {
             if( lvalType != Type.ERROR_TYPE ) {
                 staticError( "variable expected, type = " + lvalType , 
                         lval.getLocation() );
             }
-        }
+        } else {
 
-        // Get the record
-        Type.RecordType record = lvalType.getRecordType();
+            // Get the record
+            Type.RecordType record = lvalType.getRecordType();
 
-        while (record == null) {
-            // The record is nested, so traverse up
-            // TODO: Figure out why this is an error_type
-            // System.out.println(lvalType);
-            break; // TODO: Remove
-        }
-
-        System.out.println(node.getIdentifierNode());
-        if ( !record.containsField(node.getIdentifierNode().getId()) ) {
-            staticError( "Record does not contain '" + node.getIdentifierNode().getId() + "'", lval.getLocation());
+            if (record != null) {
+                if ( !record.containsField(node.getIdentifierNode().getId()) ) {
+                    staticError( "Record does not contain '" + node.getIdentifierNode().getId() + "'", lval.getLocation());
+                }
+            }
         }
 
         endCheck( "Record Reference" );
