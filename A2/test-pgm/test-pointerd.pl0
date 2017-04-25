@@ -6,7 +6,7 @@ var
     y: S;
 begin
     x := new T;
-    x^ := 22; // Deference x?
+    x^ := 22;
     x := nil;
     if x = y then write 1 else write 2;  // type mismatch in comparison
     if x = nil then write 1 else write 2

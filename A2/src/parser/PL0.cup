@@ -383,20 +383,27 @@ Type ::= TypeIdentifier:type
     | POINTER TypeIdentifier:ti
         {:
             // Check that the type is in the scope
-            SymEntry.TypeEntry type = symtab.getCurrentScope().lookupType(ti.getName());
-            if (type == null) {
-                // FUCKED
-                errors.error("Cannot point to type that does not exist", tixleft);
-            }
 
-            RESULT = new Type.PointerType(ti);
+            // TODO: This should be done in StaticChecker
+            /* SymEntry.TypeEntry type = symtab.getCurrentScope().lookupType(ti.getName()); */
+            /* System.out.println(type); */
+            /* if (type == null) { */
+            /*     errors.error("Cannot point to type that does not exist", tixleft); */
+            /* } */
+
+            Type.PointerType pointer = new Type.PointerType(ti);
+
+            RESULT = pointer;
+
         :}
     | KW_RECORD FieldList:fl KW_END
         {:
-            Type.RecordType record = new Type.RecordType(); 
+            // TODO: Set location
+            Type.RecordType record = new Type.RecordType();
+            record.setLocation(flxleft);
+
             ArrayList<String> fieldIdentifiers = new ArrayList<String>();
 
-            // FUCKED
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
                 String identifier = f.getId();
 
@@ -543,18 +550,24 @@ ActualParamList ::= /* empty */
 
 LValue ::= IDENTIFIER:id
         {:
+            // Type of identifier is error?
             RESULT = new ExpNode.IdentifierNode( idxleft, id );
-        :}
-    | LValue:lv PERIOD IDENTIFIER:id
-        {:
-            RESULT = new ExpNode.RecordReferenceNode(lvxleft, lv, new ExpNode.IdentifierNode(idxleft, id));
+            System.out.println("Identifier result: " + RESULT);
         :}
     | LValue:lv POINTER
         {:
-            ExpNode.PointerNode pointer = new ExpNode.PointerNode(lvxleft, lv.getType());
-            pointer.setItem(lv);
+            // Create a deref pointer type
+            ExpNode.DerefPointerNode pointer = new ExpNode.DerefPointerNode(lvxleft, lv);
 
             RESULT = pointer;
+        :}
+    | LValue:lv PERIOD IDENTIFIER:id
+        {:
+            RESULT = new ExpNode.RecordReferenceNode(lvxleft, lv, id);
+
+            /* ExpNode.RecordNode record = new ExpNode.RecordNode(lvxleft); */
+            /* record.addRecordField(id); */
+            /* RESULT = record; */
         :}
     ;
 
@@ -698,14 +711,17 @@ Factor ::= PLUS Factor:e
             if (type == null || !(type.getType() instanceof Type.PointerType)) {
                 errors.error("Cannot create a new instance of a type that does not exist", tixleft);
             }
+           
 
-            System.out.println(ti);
-            
-            // Maybe clone the Type
-            RESULT = new ExpNode.PointerNode(tixleft, ti);
+            ExpNode.PointerNode pointer = new ExpNode.PointerNode(tixleft,
+                new Type.PointerType(ti));
+            pointer.setPointerType(ti);
+
+            RESULT = pointer;
         :}
     | TypeIdentifier:ti LCURLY RecordFields:rf RCURLY
         {:
+            // TODO: Might be incorrect
             ExpNode.RecordNode node = new ExpNode.RecordNode(tixleft, ti);
             node.addRecordFields(rf);
 

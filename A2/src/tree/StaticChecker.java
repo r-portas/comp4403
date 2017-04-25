@@ -68,21 +68,8 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         beginCheck( "Pointer" );
 
         // Resolve the type
-        Type type = node.getType();
+        Type type = node.getPointerType();
         node.setType(type.resolveType(node.getLocation()));
-
-        // Check the type of the pointer
-        if (node.getItem() != null) {
-            System.out.println("Pointer is pointing to " + node);
-            ExpNode item = node.getItem().transform( this );
-            
-            if (item.getType() != node.getType()) {
-                staticError("Pointer type does not match (" + item.getType() + " != " + node.getType() + ")", node.getLocation());
-            }
-        }
-
-
-        // Check the type actually exists (done in PL0.cup)
 
         endCheck( "Pointer" );
         return node;
@@ -91,12 +78,20 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public ExpNode visitDerefPointerNode(ExpNode.DerefPointerNode node) {
         beginCheck( "Deref Pointer Node" );
 
-        Type type = node.getType();
+        ExpNode pointer = node.getPointer().transform( this );
+        node.setPointer(pointer);
 
-        // Check that node is of type PointerType
-        if (!(type instanceof Type.PointerType)) {
-            staticError("Attempted to dereference a non pointer", node.getLocation());
+        Type.PointerType pointerType = pointer.getType().getPointerType();
+
+        if (pointerType == null) {
+            staticError("Pointer is undefined", node.getLocation());
+            return node;
         }
+
+        Type baseType = pointerType.getBaseType();
+
+        Type.ReferenceType ref = new Type.ReferenceType(baseType);
+        node.setType(ref);
 
         endCheck( "Deref Pointer Node" );
 
@@ -106,28 +101,39 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public ExpNode visitRecordReferenceNode(ExpNode.RecordReferenceNode node) {
         beginCheck( "Record Reference" );
 
-        // lval is a reference to the RecordType
-        ExpNode lval = node.getLvalueNode().transform( this );
-        node.setLvalueNode(lval);
+        ExpNode record = node.getRecord().transform( this );
 
-        // Check lval is a variable
-        Type lvalType = lval.getType();
-        System.out.println(lvalType);
-        if( ! (lvalType instanceof Type.ReferenceType) ) {
-            if( lvalType != Type.ERROR_TYPE ) {
-                staticError( "variable expected, type = " + lvalType , 
-                        lval.getLocation() );
-            }
-        } else {
+        Type.RecordType recType = record.getType().getRecordType();
 
-            // Get the record
-            Type.RecordType record = lvalType.getRecordType();
+        if (recType == null) {
+            staticError("Accessing invalid member for record", node.getLocation());
+            node.setType(Type.ERROR_TYPE);
+            return node;
+        }
 
-            if (record != null) {
-                if ( !record.containsField(node.getIdentifierNode().getId()) ) {
-                    staticError( "Record does not contain '" + node.getIdentifierNode().getId() + "'", lval.getLocation());
+        record.setType(recType);
+        node.setRecord(record);
+
+        boolean foundMatch = false;
+
+        for (Type.Field f : recType.getFieldList()) {
+            String id = f.getId();
+            if (node.getIdentifier().equals(id)) {
+                if (foundMatch == false) {
+                    foundMatch = true;
+                } else {
+                    // foundMatch is true, which means we have a duplicate
+                    staticError("Record has duplicates", node.getLocation());
+                    node.setType(Type.ERROR_TYPE);
+                    return node;
                 }
             }
+        }
+
+        if (foundMatch == false) {
+            staticError("Record does not contain field", node.getLocation());
+            node.setType(Type.ERROR_TYPE);
+            return node;
         }
 
         endCheck( "Record Reference" );
@@ -194,6 +200,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         // Check the left side left value.
         ExpNode left = node.getVariable().transform( this );
         node.setVariable( left );
+
         // Check the right side expression.
         ExpNode exp = node.getExp().transform( this );
         node.setExp( exp );
@@ -210,6 +217,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
              * right side expression is coerced to the dereferenced
              * type of the left side LValue. */
             Type baseType = ((Type.ReferenceType)lvalType).getBaseType();
+
             node.setExp( baseType.coerceExp( exp ) );
         }
         endCheck("Assignment");
@@ -314,6 +322,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         /* Lookup the operator in the symbol table to get its type */
         Type opType = symtab.getCurrentScope().
                 lookupOperator( node.getOp().getName() ).getType();
+
         if( opType instanceof Type.FunctionType ) {
             /* The operator is not overloaded. Its type is represented
              * by a FunctionType from its argument's type to its
@@ -330,6 +339,8 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
              */
             errors.debugMessage("Coercing " + arg + " to " + opType);
             errors.incDebug();
+
+
             for( Type t : ((Type.IntersectionType)opType).getTypes() ) {
                 Type.FunctionType fType = (Type.FunctionType)t;
                 Type opArgType = fType.getArgType();
@@ -410,6 +421,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         // First we look up the identifier in the symbol table.
         ExpNode newNode;
         SymEntry entry = symtab.getCurrentScope().lookup( node.getId() );
+
         if( entry instanceof SymEntry.ConstantEntry ) {
             // Set up a new node which is a constant.
             debugMessage("Transformed " + node.getId() + " to Constant");
@@ -429,6 +441,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             //System.out.println( "Entry = " + entry );
             staticError("Constant or variable identifier required", node.getLocation() );
         }
+
         endCheck("Identifier");
         return newNode;
     }

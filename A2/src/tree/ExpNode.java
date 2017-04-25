@@ -71,15 +71,28 @@ public abstract class ExpNode {
             return (Type.RecordType)getType();
         }
 
+        public boolean hasField(ExpNode field) {
+            return getFieldList().contains(field.getType());
+        }
+
         public List<Type.Field> getFieldList() {
             return getRecordType().getFieldList();
         }
 
+        /**
+         * Adds a list of records to the RecordNode
+         */
         public void addRecordFields(ArrayList<ExpNode> recordFields) {
-            // TODO: Should check duplicates
             for (ExpNode f : recordFields) {
                 records.add(f);
             }
+        }
+
+        /**
+         * Adds a single record to the RecordNode
+         */
+        public void addRecordField(ExpNode recordField) {
+            records.add(recordField);
         }
 
         @Override
@@ -101,30 +114,30 @@ public abstract class ExpNode {
 
     /** Tree node representing a reference to a record (e.g. p.x) */
     public static class RecordReferenceNode extends ExpNode {
-        private ExpNode lval;
-        private IdentifierNode id;
+        // The identifier, .e.g. x in p.x
+        private String id;
+        private ExpNode record;
         
-        public RecordReferenceNode( Location loc, ExpNode lval, IdentifierNode id) {
-            super( loc );
+        public RecordReferenceNode( Location loc, ExpNode record, String id) {
+            super( loc, record.getType() );
+            this.record = record;
             this.id = id;
-            this.lval = lval;
-
         }
 
-        public IdentifierNode getIdentifierNode() {
+        public String getIdentifier() {
             return id;
         }
 
-        public void setIdentifierNode(IdentifierNode node) {
-            id = node;
+        public void setIdentifier(String s) {
+            id = s;
         }
 
-        public ExpNode getLvalueNode() {
-            return lval;
+        public ExpNode getRecord() {
+            return record;
         }
 
-        public void setLvalueNode(ExpNode node) {
-            lval = node;
+        public void setRecord(ExpNode r) {
+            this.record = r;
         }
 
         @Override
@@ -137,25 +150,26 @@ public abstract class ExpNode {
         }
         @Override
         public String toString() {
-            return lval.toString() + "." + id;
+            return record.toString() + "." + id;
         }
     }
 
     /** Tree node representing Pointers */
     public static class PointerNode extends ExpNode {
         
-        private ExpNode item;
+        // The type of the thing the pointer points to
+        private Type pType;
 
         public PointerNode( Location loc, Type type ) {
             super( loc, type );
         }
 
-        public ExpNode getItem() {
-            return item;
+        public Type getPointerType() {
+            return pType;
         }
 
-        public void setItem(ExpNode item) {
-            this.item = item;
+        public void setPointerType( Type type ) {
+            this.pType = type;
         }
 
         @Override
@@ -175,10 +189,26 @@ public abstract class ExpNode {
         }
     }
 
+    
+
+    // TODO: Not sure if required
     /** Tree node for representing a DeferencePointer **/
     public static class DerefPointerNode extends ExpNode {
-        public DerefPointerNode( Location loc ) {
+
+        // The pointer
+        private ExpNode pointer;
+
+        public DerefPointerNode( Location loc, ExpNode pointer ) {
             super( loc ); 
+            this.pointer = pointer;
+        }
+
+        public void setPointer( ExpNode pointer ) {
+            this.pointer = pointer;
+        }
+
+        public ExpNode getPointer() {
+            return this.pointer;
         }
 
         @Override
