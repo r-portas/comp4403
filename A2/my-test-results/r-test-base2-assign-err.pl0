@@ -1,0 +1,10 @@
+Compiling test-pgm/test-base2-assign-err.pl0
+Parsing complete
+     8 	x := true;   // cannot assign boolean to int
+******       ^  Error: can't coerce boolean to int
+     9 	b := 1;      // cannot assign int to boolean
+******       ^  Error: can't coerce int to boolean
+    10 	c := false;  // cannot assign to a constant
+******  ^  Error: variable expected, type = boolean size 1
+Static semantic analysis complete
+3 errors detected.

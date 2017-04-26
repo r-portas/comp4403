@@ -1,0 +1,6 @@
+Compiling test-pgm/test-pointer9.pl0
+Parsing complete
+     7     x := n;   // invalid
+******          ^  Error: cannot treat int size 1 as ^int
+Static semantic analysis complete
+1 error detected.

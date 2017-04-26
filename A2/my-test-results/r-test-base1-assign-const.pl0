@@ -1,0 +1,9 @@
+Compiling test-pgm/test-base1-assign-const.pl0
+Parsing complete
+     6     g = h;       // circular definition
+******     ^  Error: circular reference in constant expression
+     9     j = --g;     // circular definition
+******         ^  Error: can only negate an integer
+******          ^  Error: can only negate an integer
+Static semantic analysis complete
+3 errors detected.

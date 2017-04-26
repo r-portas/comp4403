@@ -1263,7 +1263,6 @@ class CUP$CUPParser$actions {
 		
             // Type of identifier is error?
             RESULT = new ExpNode.IdentifierNode( idxleft, id );
-            System.out.println("Identifier result: " + RESULT);
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("LValue",29, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }

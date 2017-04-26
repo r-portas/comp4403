@@ -1,0 +1,6 @@
+Compiling test-pgm/test-pointerb.pl0
+Parsing complete
+     1   P = ^X;      // undefined type X
+******        ^  Error: undefined type: X
+Static semantic analysis complete
+1 error detected.

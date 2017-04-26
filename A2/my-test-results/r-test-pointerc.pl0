@@ -1,0 +1,6 @@
+Compiling test-pgm/test-pointerc.pl0
+Parsing complete
+     1     PINT = ^intt;      // undefined type intt
+******             ^  Error: undefined type: intt
+Static semantic analysis complete
+1 error detected.

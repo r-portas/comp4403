@@ -552,7 +552,6 @@ LValue ::= IDENTIFIER:id
         {:
             // Type of identifier is error?
             RESULT = new ExpNode.IdentifierNode( idxleft, id );
-            System.out.println("Identifier result: " + RESULT);
         :}
     | LValue:lv POINTER
         {:

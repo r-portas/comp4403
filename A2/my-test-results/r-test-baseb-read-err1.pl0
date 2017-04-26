@@ -1,0 +1,6 @@
+Compiling test-pgm/test-baseb-read-err1.pl0
+Parsing complete
+     7 	read c;  //cannot read into (assign to) a constant
+******       ^  Error: variable expected, type = int size 1
+Static semantic analysis complete
+1 error detected.

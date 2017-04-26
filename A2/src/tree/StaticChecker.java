@@ -81,16 +81,21 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         ExpNode pointer = node.getPointer().transform( this );
         node.setPointer(pointer);
 
+        // Get the type of the pointer
         Type.PointerType pointerType = pointer.getType().getPointerType();
 
         if (pointerType == null) {
-            staticError("Pointer is undefined", node.getLocation());
+            // TODO: This is a runtime thing
+            // staticError("Pointer is undefined", node.getLocation());
+            // node.setType(Type.ERROR_TYPE);
             return node;
         }
 
         Type baseType = pointerType.getBaseType();
 
+        // Create a reference to the base type
         Type.ReferenceType ref = new Type.ReferenceType(baseType);
+        // Update the node's type with the new reference
         node.setType(ref);
 
         endCheck( "Deref Pointer Node" );
@@ -103,14 +108,17 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
         ExpNode record = node.getRecord().transform( this );
 
+        // Convert to a record type
         Type.RecordType recType = record.getType().getRecordType();
 
         if (recType == null) {
-            staticError("Accessing invalid member for record", node.getLocation());
-            node.setType(Type.ERROR_TYPE);
+            // This is a runtime thing
+            // staticError("Accessing invalid member for record", node.getLocation());
+            // node.setType(Type.ERROR_TYPE);
             return node;
         }
 
+        // Update the type
         record.setType(recType);
         node.setRecord(record);
 

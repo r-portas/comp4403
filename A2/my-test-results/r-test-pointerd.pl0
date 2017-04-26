@@ -1,0 +1,8 @@
+Compiling test-pgm/test-pointerd.pl0
+Parsing complete
+    10     if x = y then write 1 else write 2;  // type mismatch in comparison
+******          ^  Error: Type of argument (ref(T)*ref(S)) does not match (((nil_type*nil_type)->boolean) & ((int*int)->boolean) & ((boolean*boolean)->boolean))
+    11     if x = nil then write 1 else write 2
+******          ^  Error: Type of argument (ref(T)*nil_type) does not match (((nil_type*nil_type)->boolean) & ((int*int)->boolean) & ((boolean*boolean)->boolean))
+Static semantic analysis complete
+2 errors detected.
