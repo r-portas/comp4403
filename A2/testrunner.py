@@ -45,15 +45,20 @@ def run_test(pl0_file, path):
 
     with open(result_file, 'w') as result_fd:
         with open(error_file, 'w') as error_fd:
-            print(' '.join(['java', MAIN, path_to_pl0_file, '-classpath', CLASSPATH]))
-            subprocess.Popen(['java', MAIN, path_to_pl0_file, '-classpath', CLASSPATH],
+
+            args = ['java', '-classpath', CLASSPATH, MAIN, path_to_pl0_file]
+            print('>>> ' + ' '.join(args))
+
+            subprocess.Popen(args,
                 stdout=result_fd,
                 stderr=error_fd
             )
 
     # Print the output from stdout
     with open(result_file, 'r') as result_fd:
+        print("Reading file " + result_file)
         print(result_fd.read())
+
     # subprocess.call('java {} {} 2> {}/e-{} | tee {}/r-{}'.format(MAIN, path_to_pl0_file, ERROR_DIR, pl0_file, RESULT_DIR, pl0_file), shell=True)
 
 def compare_file(my_test_file, cmp_test_file):
