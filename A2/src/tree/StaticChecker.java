@@ -10,6 +10,7 @@ import source.Errors;
 import java_cup.runtime.ComplexSymbolFactory.Location;
 import syms.Predefined;
 import syms.SymEntry;
+import syms.Scope;
 import syms.SymbolTable;
 import syms.Type;
 import syms.Type.IncompatibleTypes;
@@ -71,6 +72,11 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         Type type = node.getPointerType();
         node.setType(type.resolveType(node.getLocation()));
 
+        SymEntry.TypeEntry symType = symtab.getCurrentScope().lookupType(type.getName());
+        if (symType == null) {
+            errors.error("Undefined type: " + symType, node.getLocation());
+        }
+        
         endCheck( "Pointer" );
         return node;
     }
@@ -79,17 +85,19 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         beginCheck( "Deref Pointer Node" );
 
         ExpNode pointer = node.getPointer().transform( this );
-        node.setPointer(pointer);
 
         // Get the type of the pointer
-        Type.PointerType pointerType = pointer.getType().getPointerType();
+        Type resolvedType = pointer.getType().resolveType(pointer.getLocation());
+        Type.PointerType pointerType = resolvedType.getPointerType();
 
         if (pointerType == null) {
-            // TODO: This is a runtime thing
-            // staticError("Pointer is undefined", node.getLocation());
-            // node.setType(Type.ERROR_TYPE);
+            staticError("type must be a pointer", node.getLocation());
+            node.setType(Type.ERROR_TYPE);
+            endCheck( "Deref Pointer Node" );
             return node;
         }
+
+        node.setPointer(pointer);
 
         Type baseType = pointerType.getBaseType();
 
@@ -115,6 +123,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             // This is a runtime thing
             // staticError("Accessing invalid member for record", node.getLocation());
             // node.setType(Type.ERROR_TYPE);
+            endCheck( "Record Reference" );
             return node;
         }
 
@@ -133,7 +142,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
                     // foundMatch is true, which means we have a duplicate
                     staticError("Record has duplicates", node.getLocation());
                     node.setType(Type.ERROR_TYPE);
-                    return node;
+                    // return node;
                 }
             }
         }
@@ -141,7 +150,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         if (foundMatch == false) {
             staticError("Record does not contain field", node.getLocation());
             node.setType(Type.ERROR_TYPE);
-            return node;
+            // return node;
         }
 
         endCheck( "Record Reference" );
@@ -330,7 +339,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         /* Lookup the operator in the symbol table to get its type */
         Type opType = symtab.getCurrentScope().
                 lookupOperator( node.getOp().getName() ).getType();
-
+        
         if( opType instanceof Type.FunctionType ) {
             /* The operator is not overloaded. Its type is represented
              * by a FunctionType from its argument's type to its
@@ -347,7 +356,6 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
              */
             errors.debugMessage("Coercing " + arg + " to " + opType);
             errors.incDebug();
-
 
             for( Type t : ((Type.IntersectionType)opType).getTypes() ) {
                 Type.FunctionType fType = (Type.FunctionType)t;
@@ -391,8 +399,17 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         List<Type> types = new LinkedList<Type>();
         for( ExpNode exp : node.getArgs() ) {
             ExpNode newExp = exp.transform( this );
+            
+            if (newExp.getType().getPointerType() != null) {
+            	// If its a pointer, we want to use it instead
+            	newExp.setType(newExp.getType().getPointerType());
+            	Type.PointerType pType = (Type.PointerType)newExp.getType();
+            	types.add(pType);
+            } else {
+            	types.add( newExp.getType() );
+            }
             newExps.add( newExp );
-            types.add( newExp.getType() );
+            
         }
         node.setArgs( newExps );
         node.setType( new Type.ProductType( types ) );

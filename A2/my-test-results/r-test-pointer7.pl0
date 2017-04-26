@@ -1,9 +1,6 @@
 Compiling test-pgm/test-pointer7.pl0
 Parsing complete
+     7   write p^.next^.x   // next is undefined pointer
+******         ^  Error: type must be a pointer
 Static semantic analysis complete
-Code generation complete
-No errors detected.
-Running ...
-0
-
-Terminated
+1 error detected.

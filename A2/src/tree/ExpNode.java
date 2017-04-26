@@ -185,7 +185,7 @@ public abstract class ExpNode {
         @Override
         public String toString( ) {
             // TODO: Improve toString
-            return "Pointer Node";
+            return "PointerNode(" + pType + ")";
         }
     }
 
@@ -224,7 +224,7 @@ public abstract class ExpNode {
         @Override
         public String toString( ) {
             // TODO: Improve toString
-            return "Deref Pointer Node";
+            return "DerefPointerNode(" + pointer + ")";
         }
 
     }

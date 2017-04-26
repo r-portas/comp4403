@@ -861,15 +861,28 @@ class CUP$CUPParser$actions {
 		Type ti = (Type)((java_cup.runtime.Symbol) CUP$CUPParser$stack.peek()).value;
 		
             // Check that the type is in the scope
-
-            // TODO: This should be done in StaticChecker
-            /* SymEntry.TypeEntry type = symtab.getCurrentScope().lookupType(ti.getName()); */
-            /* System.out.println(type); */
-            /* if (type == null) { */
-            /*     errors.error("Cannot point to type that does not exist", tixleft); */
-            /* } */
-
             Type.PointerType pointer = new Type.PointerType(ti);
+
+            /**
+             * Equality and Inequality of pointers
+             * =  PointerType(ti) x PointerType(ti)
+             */
+
+            // Roughly based on implementation in Predefined.java
+
+            Type.ProductType pointerCrossPointer = new Type.ProductType(pointer, pointer);
+            Type.ProductType pointerCrossNil = new Type.ProductType(pointer, Predefined.NIL_TYPE);
+            Type.FunctionType pointerType = new Type.FunctionType(pointerCrossPointer, Predefined.BOOLEAN_TYPE);
+            Type.FunctionType nilPointerType = new Type.FunctionType(pointerCrossNil, Predefined.BOOLEAN_TYPE);
+
+            Scope curScope = symtab.getCurrentScope();
+            SymEntry.OperatorEntry equal = curScope.lookupOperator("_=_");
+            equal.extendType(pointerType);
+            equal.extendType(nilPointerType);
+
+            SymEntry.OperatorEntry notEqual = curScope.lookupOperator("_!=_");
+            notEqual.extendType(pointerType);
+            notEqual.extendType(nilPointerType);
 
             RESULT = pointer;
 
@@ -1681,7 +1694,6 @@ class CUP$CUPParser$actions {
             if (type == null || !(type.getType() instanceof Type.PointerType)) {
                 errors.error("Cannot create a new instance of a type that does not exist", tixleft);
             }
-           
 
             ExpNode.PointerNode pointer = new ExpNode.PointerNode(tixleft,
                 new Type.PointerType(ti));

@@ -4,7 +4,6 @@ import os
 import subprocess
 import difflib
 import sys
-import platform
 
 ERROR_DIR='my-test-errors'
 RESULT_DIR='my-test-results'
@@ -15,21 +14,7 @@ CMP_RESULT_DIR='test-pgm/results'
 
 PATH = 'test-pgm'
 FILE_EXTENSION = '.pl0'
-# Double quotes are important, as well as semicolon
-
-SEPARATOR = ':'
-
-if platform.system() == 'Windows':
-    SEPARATOR = ';'
-
-classpath_items = ['bin', 'java-cup-11b.jar']
-full_path_items = []
-
-for classpath_item in classpath_items:
-    full_path_items.append(os.path.join(os.getcwd(), classpath_item))
-
-CLASSPATH = '"' + SEPARATOR.join(full_path_items) + '"'
-
+CLASSPATH = 'bin:java-cup-11b.jar'
 MAIN = 'pl0.PL0_LALR'
 
 def set_class_path():
@@ -52,29 +37,10 @@ def get_test_files(path):
             pl0_files.append(f)
 
     return pl0_files
+
 def run_test(pl0_file, path):
-    path_to_pl0_file = os.path.join(os.getcwd(), path, pl0_file)
-    result_file = os.path.join(os.getcwd(), RESULT_DIR, 'r-{}'.format(pl0_file))
-    error_file = os.path.join(os.getcwd(), ERROR_DIR, 'e-{}'.format(pl0_file))
-
-    with open(result_file, 'w') as result_fd:
-        with open(error_file, 'w') as error_fd:
-
-            args = ['java', '-cp', CLASSPATH, MAIN, path_to_pl0_file]
-            print('>>> ' + ' '.join(args))
-
-            subprocess.Popen(' '.join(args),
-                stdout=result_fd,
-                stderr=error_fd,
-                shell=True
-            )
-
-    # Print the output from stdout
-    with open(result_file, 'r') as result_fd:
-        print("Reading file " + result_file)
-        print(result_fd.read())
-
-    # subprocess.call('java {} {} 2> {}/e-{} | tee {}/r-{}'.format(MAIN, path_to_pl0_file, ERROR_DIR, pl0_file, RESULT_DIR, pl0_file), shell=True)
+    path_to_pl0_file = os.path.join(path, pl0_file)
+    subprocess.call('java {} {} 2> {}/e-{} | tee {}/r-{}'.format(MAIN, path_to_pl0_file, ERROR_DIR, pl0_file, RESULT_DIR, pl0_file), shell=True)
 
 def compare_file(my_test_file, cmp_test_file):
     
@@ -109,8 +75,8 @@ def main():
 
     html_tables = []
     for pl0_file in pl0_files:
-        html_tables.append(compare_file(os.path.join(os.getcwd(), RESULT_DIR, 'r-' + pl0_file),
-                os.path.join(os.getcwd(), CMP_RESULT_DIR, 'r-' + pl0_file)))
+        html_tables.append(compare_file(os.path.join(RESULT_DIR, 'r-' + pl0_file),
+                os.path.join(CMP_RESULT_DIR, 'r-' + pl0_file)))
 
     create_html_report('output.html', html_tables)
 main()
