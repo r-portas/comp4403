@@ -14,7 +14,16 @@ CMP_RESULT_DIR='test-pgm/results'
 
 PATH = 'test-pgm'
 FILE_EXTENSION = '.pl0'
-CLASSPATH = 'bin:java-cup-11b.jar'
+# Double quotes are important, as well as semicolon
+
+CLASSPATH = '"'
+classpath_items = ['bin', 'java-cup-11b.jar']
+for classpath_item in classpath_items:
+    CLASSPATH += os.path.join(os.getcwd(), classpath_item)
+    CLASSPATH += ';'
+
+CLASSPATH += '"'
+
 MAIN = 'pl0.PL0_LALR'
 
 def set_class_path():
@@ -37,7 +46,6 @@ def get_test_files(path):
             pl0_files.append(f)
 
     return pl0_files
-
 def run_test(pl0_file, path):
     path_to_pl0_file = os.path.join(path, pl0_file)
     result_file = os.path.join(RESULT_DIR, 'r-{}'.format(pl0_file))
@@ -46,12 +54,13 @@ def run_test(pl0_file, path):
     with open(result_file, 'w') as result_fd:
         with open(error_file, 'w') as error_fd:
 
-            args = ['java', '-classpath', CLASSPATH, MAIN, path_to_pl0_file]
+            args = ['java', '-cp', CLASSPATH, MAIN, path_to_pl0_file]
             print('>>> ' + ' '.join(args))
 
-            subprocess.Popen(args,
+            subprocess.Popen(' '.join(args),
                 stdout=result_fd,
-                stderr=error_fd
+                stderr=error_fd,
+                cwd=os.getcwd()
             )
 
     # Print the output from stdout
