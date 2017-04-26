@@ -40,7 +40,21 @@ def get_test_files(path):
 
 def run_test(pl0_file, path):
     path_to_pl0_file = os.path.join(path, pl0_file)
-    subprocess.call('java {} {} 2> {}/e-{} | tee {}/r-{}'.format(MAIN, path_to_pl0_file, ERROR_DIR, pl0_file, RESULT_DIR, pl0_file), shell=True)
+    result_file = os.path.join(RESULT_DIR, 'r-{}'.format(pl0_file))
+    error_file = os.path.join(ERROR_DIR, 'e-{}'.format(pl0_file))
+
+    with open(result_file, 'w') as result_fd:
+        with open(error_file, 'w') as error_fd:
+            print(' '.join(['java', MAIN, path_to_pl0_file, '-classpath', CLASSPATH]))
+            subprocess.Popen(['java', MAIN, path_to_pl0_file, '-classpath', CLASSPATH],
+                stdout=result_fd,
+                stderr=error_fd
+            )
+
+    # Print the output from stdout
+    with open(result_file, 'r') as result_fd:
+        print(result_fd.read())
+    # subprocess.call('java {} {} 2> {}/e-{} | tee {}/r-{}'.format(MAIN, path_to_pl0_file, ERROR_DIR, pl0_file, RESULT_DIR, pl0_file), shell=True)
 
 def compare_file(my_test_file, cmp_test_file):
     
