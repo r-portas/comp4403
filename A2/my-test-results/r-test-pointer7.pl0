@@ -1,6 +1,9 @@
-Compiling test-pgm/test-pointer7.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer7.pl0
 Parsing complete
+error_type
+error_type
      7   write p^.next^.x   // next is undefined pointer
 ******         ^  Error: type must be a pointer
+******         ^  Error: type must be a pointer
 Static semantic analysis complete
-1 error detected.
+2 errors detected.

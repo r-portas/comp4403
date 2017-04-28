@@ -1,4 +1,4 @@
-Compiling test-pgm/test-base6-fwd.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-base6-fwd.pl0
 Parsing complete
      6   D = E;   // circularly defined type
 ******       ^  Error: E is circularly defined

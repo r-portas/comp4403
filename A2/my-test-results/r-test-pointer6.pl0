@@ -1,3 +1,18 @@
-Compiling test-pgm/test-pointer6.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer6.pl0
 Parsing complete
+error_type
+error_type
+error_type
+error_type
+error_type
+     8   x^ := 22;
+******   ^  Error: type must be a pointer
+    10   y^ := x;
+******   ^  Error: type must be a pointer
+    11   y^^ := 33;
+******   ^  Error: type must be a pointer
+******   ^  Error: type must be a pointer
+    12   write x^  // writes out 33
+******         ^  Error: type must be a pointer
 Static semantic analysis complete
+5 errors detected.

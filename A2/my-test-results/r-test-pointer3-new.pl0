@@ -1,3 +1,18 @@
-Compiling test-pgm/test-pointer3-new.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer3-new.pl0
 Parsing complete
+error_type
+error_type
+error_type
+error_type
+error_type
+    12     p^.val := 101;
+******     ^  Error: type must be a pointer
+    13     write p^.val   // 101
+******           ^  Error: type must be a pointer
+    17   p^.val := p^.val-1;
+******   ^  Error: type must be a pointer
+******             ^  Error: type must be a pointer
+    18   write p^.val     // 100
+******         ^  Error: type must be a pointer
 Static semantic analysis complete
+5 errors detected.

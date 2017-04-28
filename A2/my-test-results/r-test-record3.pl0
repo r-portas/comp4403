@@ -1,3 +1,19 @@
-Compiling test-pgm/test-record3.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-record3.pl0
 Parsing complete
+error_type
+error_type
+error_type
+error_type
+error_type
+    14   p^.f := 107;
+******   ^  Error: type must be a pointer
+    15   write p^.f;
+******         ^  Error: type must be a pointer
+    28   q^ := r;
+******   ^  Error: type must be a pointer
+    29   write q^.f;
+******         ^  Error: type must be a pointer
+    30   write q^.n
+******         ^  Error: type must be a pointer
 Static semantic analysis complete
+5 errors detected.

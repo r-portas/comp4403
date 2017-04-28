@@ -1,4 +1,4 @@
-Compiling test-pgm/test-basef-coerce.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-basef-coerce.pl0
 Parsing complete
     10   y := (x = 1); // incompatible
 ******           ^  Error: can't coerce boolean to int

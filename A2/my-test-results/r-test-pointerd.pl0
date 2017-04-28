@@ -1,6 +1,9 @@
-Compiling test-pgm/test-pointerd.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointerd.pl0
 Parsing complete
+error_type
+     8     x^ := 22;
+******     ^  Error: type must be a pointer
     10     if x = y then write 1 else write 2;  // type mismatch in comparison
 ******          ^  Error: Type of argument (T*S) does not match (((nil_type*nil_type)->boolean) & ((int*int)->boolean) & ((boolean*boolean)->boolean) & ((T*T)->boolean) & ((T*nil_type)->boolean) & ((S*S)->boolean) & ((S*nil_type)->boolean))
 Static semantic analysis complete
-1 error detected.
+2 errors detected.

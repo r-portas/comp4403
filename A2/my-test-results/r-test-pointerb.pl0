@@ -1,6 +1,11 @@
-Compiling test-pgm/test-pointerb.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointerb.pl0
 Parsing complete
+error_type
+error_type
      1   P = ^X;      // undefined type X
 ******        ^  Error: undefined type: X
+     6   v^ := v^ + 1
+******   ^  Error: type must be a pointer
+******         ^  Error: type must be a pointer
 Static semantic analysis complete
-1 error detected.
+3 errors detected.

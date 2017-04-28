@@ -85,12 +85,16 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         beginCheck( "Deref Pointer Node" );
 
         ExpNode pointer = node.getPointer().transform( this );
+        // System.out.println(pointer);
+        // System.out.println(pointer.getType().getClass());
 
-        // Get the type of the pointer
+        // Get the type of the pointer and resolve it
         Type resolvedType = pointer.getType().resolveType(pointer.getLocation());
+
         Type.PointerType pointerType = resolvedType.getPointerType();
 
         if (pointerType == null) {
+            System.out.println(resolvedType.getName());
             staticError("type must be a pointer", node.getLocation());
             node.setType(Type.ERROR_TYPE);
             endCheck( "Deref Pointer Node" );

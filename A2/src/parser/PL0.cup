@@ -576,10 +576,6 @@ LValue ::= IDENTIFIER:id
     | LValue:lv PERIOD IDENTIFIER:id
         {:
             RESULT = new ExpNode.RecordReferenceNode(lvxleft, lv, id);
-
-            /* ExpNode.RecordNode record = new ExpNode.RecordNode(lvxleft); */
-            /* record.addRecordField(id); */
-            /* RESULT = record; */
         :}
     ;
 

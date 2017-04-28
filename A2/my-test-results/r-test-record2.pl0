@@ -1,10 +1,14 @@
-Compiling test-pgm/test-record2.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-record2.pl0
 Parsing complete
+error_type
+error_type
      4   P = Q;        // circularly defined
 ******       ^  Error: Q is circularly defined
     11   A = ^X;       // X undefined
 ******        ^  Error: undefined type: X
+    17   write v^;
+******         ^  Error: type must be a pointer
     20   write x^     // type must be pointer
 ******         ^  Error: type must be a pointer
 Static semantic analysis complete
-3 errors detected.
+4 errors detected.

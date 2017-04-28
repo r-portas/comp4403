@@ -89,6 +89,13 @@ public abstract class ExpNode {
         }
 
         /**
+         * Returns a list of the record fields
+         */
+        public List<ExpNode> getRecordFields() {
+            return records;
+        }
+
+        /**
          * Adds a single record to the RecordNode
          */
         public void addRecordField(ExpNode recordField) {
@@ -189,9 +196,6 @@ public abstract class ExpNode {
         }
     }
 
-    
-
-    // TODO: Not sure if required
     /** Tree node for representing a DeferencePointer **/
     public static class DerefPointerNode extends ExpNode {
 

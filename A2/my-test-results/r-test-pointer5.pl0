@@ -1,4 +1,4 @@
-Compiling test-pgm/test-pointer5.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer5.pl0
 Parsing complete
     16   r1 := r2; // invalid - not same record type
 ******         ^  Error: cannot treat R2 as R1

@@ -102,6 +102,18 @@ public class Scope {
             //System.out.println( "Resolved entry " + entry );
         }
         //System.out.println( currentScope );
+		/** Need to resolve base types of pointer types in a second pass
+		 * to avoid them being flagged as circularly defined.
+		 */
+		for( SymEntry entry : entries.values() ) {
+			if( entry instanceof SymEntry.TypeEntry ) {
+				SymEntry.TypeEntry typeEntry = (SymEntry.TypeEntry)entry;
+				if( typeEntry.getType() instanceof Type.PointerType ) {
+					Type.PointerType pointerType = (Type.PointerType)typeEntry.getType();
+					pointerType.resolveBaseType(entry.getLocation());
+				}
+			}
+		}
     }
     /** @return the amount of space allocated to local variables
      * within the current scope. */

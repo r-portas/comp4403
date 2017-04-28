@@ -1,4 +1,4 @@
-Compiling test-pgm/test-base1-assign-const.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-base1-assign-const.pl0
 Parsing complete
      6     g = h;       // circular definition
 ******     ^  Error: circular reference in constant expression

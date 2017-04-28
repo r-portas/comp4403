@@ -1,4 +1,4 @@
-Compiling test-pgm/test-base-exp-err.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-base-exp-err.pl0
      5     i = 42;    // duplicate declaration
 ******     ^  Error: i already defined
      6     S = 27;    // duplicate declaration

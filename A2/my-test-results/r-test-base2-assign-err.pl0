@@ -1,4 +1,4 @@
-Compiling test-pgm/test-base2-assign-err.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-base2-assign-err.pl0
 Parsing complete
      8 	x := true;   // cannot assign boolean to int
 ******       ^  Error: can't coerce boolean to int

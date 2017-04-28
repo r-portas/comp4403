@@ -1,9 +1,7 @@
-Compiling test-pgm/test-pointer2-nil.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer2-nil.pl0
 Parsing complete
+error_type
+    10     write p^.val  // nil pointer dereference (at runtime)
+******           ^  Error: type must be a pointer
 Static semantic analysis complete
-Code generation complete
-No errors detected.
-Running ...
-1019
-
-Terminated
+1 error detected.

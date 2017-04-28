@@ -1,3 +1,16 @@
-Compiling test-pgm/test-pointer1.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer1.pl0
 Parsing complete
+error_type
+error_type
+error_type
+error_type
+    20     q^.val := n;
+******     ^  Error: type must be a pointer
+    21     q^.next := p;
+******     ^  Error: type must be a pointer
+    29     write q^.val;
+******           ^  Error: type must be a pointer
+    30     q := q^.next
+******          ^  Error: type must be a pointer
 Static semantic analysis complete
+4 errors detected.

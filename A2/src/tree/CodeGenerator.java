@@ -54,6 +54,10 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Record" ); 
         Code code = new Code();
 
+        for (ExpNode recordField : node.getRecordFields()) {
+            code.append(recordField.genCode( this ));
+        }
+    
         endGen( "Record" );
         return code;
     }
@@ -72,7 +76,21 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Pointer" );
         Code code = new Code();
 
+        // Allocate the space needed to store the type the pointer points to
+        code.genLoadConstant(node.getType().getPointerType().getBaseType().getSpace());
+        code.generateOp(Operation.ALLOC_HEAP);
+
         endGen( "Pointer" );
+        return code;
+    }
+
+    public Code visitDerefPointerNode( ExpNode.DerefPointerNode node ) {
+        beginGen( "Deref Pointer" );
+        Code code = new Code();
+
+        code.append(node.getPointer().genCode( this ));
+
+        endGen( "Deref Pointer" );
         return code;
     }
 

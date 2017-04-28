@@ -1,6 +1,9 @@
-Compiling test-pgm/test-pointerc.pl0
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointerc.pl0
 Parsing complete
+error_type
      1     PINT = ^intt;      // undefined type intt
 ******             ^  Error: undefined type: intt
+     7 	p^ := 0
+******  ^  Error: type must be a pointer
 Static semantic analysis complete
-1 error detected.
+2 errors detected.
