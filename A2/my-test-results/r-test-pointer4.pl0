@@ -1,25 +1,12 @@
 Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer4.pl0
 Parsing complete
-error_type
-error_type
-error_type
-error_type
-error_type
-error_type
-error_type
-error_type
-    11   p^ := new List;
-******   ^  Error: type must be a pointer
-    12   p^^.x := 100;
-******   ^  Error: type must be a pointer
-******   ^  Error: type must be a pointer
-    13   write p^^.x;   // 100
-******         ^  Error: type must be a pointer
-******         ^  Error: type must be a pointer
-    14   p^ := nil;
-******   ^  Error: type must be a pointer
-    15   write p^^.x    // nil pointer dereference (at runtime)
-******         ^  Error: type must be a pointer
-******         ^  Error: type must be a pointer
 Static semantic analysis complete
-8 errors detected.
+Code generation complete
+No errors detected.
+Running ...
+0
+0
+
+Runtime error: PC = 10000 out of range of code
+
+Terminated

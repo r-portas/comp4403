@@ -126,7 +126,7 @@ public abstract class ExpNode {
         private ExpNode record;
         
         public RecordReferenceNode( Location loc, ExpNode record, String id) {
-            super( loc, record.getType() );
+            super( loc );
             this.record = record;
             this.id = id;
         }
@@ -157,7 +157,7 @@ public abstract class ExpNode {
         }
         @Override
         public String toString() {
-            return record.toString() + "." + id;
+            return "RecordReference(" + record.toString() + "." + id + ")";
         }
     }
 

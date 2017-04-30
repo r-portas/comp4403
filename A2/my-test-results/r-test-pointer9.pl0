@@ -1,9 +1,6 @@
 Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer9.pl0
 Parsing complete
-error_type
      7     x := n;   // invalid
 ******          ^  Error: cannot treat int size 1 as ^int
-     8     x^ := 4;
-******     ^  Error: type must be a pointer
 Static semantic analysis complete
-2 errors detected.
+1 error detected.

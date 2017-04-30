@@ -1310,10 +1310,6 @@ class CUP$CUPParser$actions {
 		String id = (String)((java_cup.runtime.Symbol) CUP$CUPParser$stack.peek()).value;
 		
             RESULT = new ExpNode.RecordReferenceNode(lvxleft, lv, id);
-
-            /* ExpNode.RecordNode record = new ExpNode.RecordNode(lvxleft); */
-            /* record.addRecordField(id); */
-            /* RESULT = record; */
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("LValue",29, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-2)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }

@@ -67,6 +67,16 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Record Reference" ); 
         Code code = new Code();
 
+        // String id = node.getIdentifier();
+        // ExpNode record = node.getRecord();
+        // code.append(record.genCode( this ));
+
+        // Type.RecordType recordType = record.getType().getRecordType();
+
+        // int offset = recordType.getOffset( id );
+        // code.genLoadConstant( offset );
+        // code.generateOp( Operation.ADD );
+
         endGen( "Record Reference" );
         return code;
     }
@@ -87,6 +97,8 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     public Code visitDerefPointerNode( ExpNode.DerefPointerNode node ) {
         beginGen( "Deref Pointer" );
         Code code = new Code();
+
+        // STORE_MULTI
 
         code.append(node.getPointer().genCode( this ));
 

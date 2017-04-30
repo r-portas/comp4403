@@ -1,16 +1,15 @@
 Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-pointer1.pl0
 Parsing complete
-error_type
-error_type
-error_type
-error_type
-    20     q^.val := n;
-******     ^  Error: type must be a pointer
-    21     q^.next := p;
-******     ^  Error: type must be a pointer
-    29     write q^.val;
-******           ^  Error: type must be a pointer
-    30     q := q^.next
-******          ^  Error: type must be a pointer
 Static semantic analysis complete
-4 errors detected.
+Code generation complete
+No errors detected.
+Running ...
+
+Runtime error: store outside memory pc=1038: address=10000
+PC=1039 in PROC   <main> : PROCEDURE level 0 start 1000 : 1083 FP=0 SL=0 DL=0 RA=0
+  n(3) = 100
+  p(4) = 10000
+  q(5) = 10000
+End of traceBack
+
+Terminated

@@ -85,23 +85,17 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         beginCheck( "Deref Pointer Node" );
 
         ExpNode pointer = node.getPointer().transform( this );
-        // System.out.println(pointer);
-        // System.out.println(pointer.getType().getClass());
+        node.setPointer(pointer);
 
-        // Get the type of the pointer and resolve it
-        Type resolvedType = pointer.getType().resolveType(pointer.getLocation());
-
-        Type.PointerType pointerType = resolvedType.getPointerType();
+        Type.PointerType pointerType = pointer.getType().getPointerType();
 
         if (pointerType == null) {
-            System.out.println(resolvedType.getName());
             staticError("type must be a pointer", node.getLocation());
             node.setType(Type.ERROR_TYPE);
             endCheck( "Deref Pointer Node" );
             return node;
         }
 
-        node.setPointer(pointer);
 
         Type baseType = pointerType.getBaseType();
 
@@ -125,8 +119,8 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
         if (recType == null) {
             // This is a runtime thing
-            // staticError("Accessing invalid member for record", node.getLocation());
-            // node.setType(Type.ERROR_TYPE);
+            staticError("Accessing invalid member for record", node.getLocation());
+            node.setType(Type.ERROR_TYPE);
             endCheck( "Record Reference" );
             return node;
         }
@@ -146,7 +140,6 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
                     // foundMatch is true, which means we have a duplicate
                     staticError("Record has duplicates", node.getLocation());
                     node.setType(Type.ERROR_TYPE);
-                    // return node;
                 }
             }
         }
@@ -154,7 +147,14 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         if (foundMatch == false) {
             staticError("Record does not contain field", node.getLocation());
             node.setType(Type.ERROR_TYPE);
-            // return node;
+        }
+
+        // Update the type of the node
+        node.setType(recType.getFieldType(node.getIdentifier()));
+
+        if (node.getType() != Type.ERROR_TYPE) {
+            Type refType = new Type.ReferenceType(node.getType());
+            node.setType(refType);
         }
 
         endCheck( "Record Reference" );
