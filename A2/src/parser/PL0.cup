@@ -405,7 +405,6 @@ Type ::= TypeIdentifier:type
         :}
     | KW_RECORD FieldList:fl KW_END
         {:
-            // TODO: Set location
             Type.RecordType record = new Type.RecordType();
             record.setLocation(flxleft);
 
@@ -414,6 +413,7 @@ Type ::= TypeIdentifier:type
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
                 String identifier = f.getId();
 
+                // TODO: move to static checker
                 if (fieldIdentifiers.contains(identifier)) {
                     errors.error("Duplicate record keys", flxleft);
                 }
@@ -722,7 +722,6 @@ Factor ::= PLUS Factor:e
         :}
     | TypeIdentifier:ti LCURLY RecordFields:rf RCURLY
         {:
-            // TODO: Might be incorrect
             ExpNode.RecordNode node = new ExpNode.RecordNode(tixleft, ti);
             node.addRecordFields(rf);
 

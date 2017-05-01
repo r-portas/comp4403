@@ -863,13 +863,7 @@ class CUP$CUPParser$actions {
             // Check that the type is in the scope
             Type.PointerType pointer = new Type.PointerType(ti);
 
-            /**
-             * Equality and Inequality of pointers
-             * =  PointerType(ti) x PointerType(ti)
-             */
-
             // Roughly based on implementation in Predefined.java
-
             Type.ProductType pointerCrossPointer = new Type.ProductType(pointer, pointer);
             Type.ProductType pointerCrossNil = new Type.ProductType(pointer, Predefined.NIL_TYPE);
             Type.FunctionType pointerType = new Type.FunctionType(pointerCrossPointer, Predefined.BOOLEAN_TYPE);
@@ -899,7 +893,6 @@ class CUP$CUPParser$actions {
 		Location flxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xright;
 		ArrayList<Type.Field> fl = (ArrayList<Type.Field>)((java_cup.runtime.Symbol) CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).value;
 		
-            // TODO: Set location
             Type.RecordType record = new Type.RecordType();
             record.setLocation(flxleft);
 
@@ -908,6 +901,7 @@ class CUP$CUPParser$actions {
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
                 String identifier = f.getId();
 
+                // TODO: move to static checker
                 if (fieldIdentifiers.contains(identifier)) {
                     errors.error("Duplicate record keys", flxleft);
                 }
@@ -1712,7 +1706,6 @@ class CUP$CUPParser$actions {
 		Location rfxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xright;
 		ArrayList<ExpNode> rf = (ArrayList<ExpNode>)((java_cup.runtime.Symbol) CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).value;
 		
-            // TODO: Might be incorrect
             ExpNode.RecordNode node = new ExpNode.RecordNode(tixleft, ti);
             node.addRecordFields(rf);
 

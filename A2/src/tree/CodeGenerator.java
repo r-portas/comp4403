@@ -117,6 +117,9 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return code;
     }
 
+    /**
+     * Visits a deref pointer node, i.e. p.x
+     */
     public Code visitDerefPointerNode( ExpNode.DerefPointerNode node ) {
         beginGen( "Deref Pointer" );
         Code code = new Code();
@@ -137,6 +140,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         code.genLoadConstant(StackMachine.NIL_POINTER);
         code.generateOp(Operation.STOP);
 
+        // Otherwise loadcon then convert it to a local variable
         code.append(node.getPointer().genCode( this ));
         code.genLoad(node.getPointer().getType());
         code.generateOp(Operation.TO_LOCAL);
@@ -386,22 +390,20 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
             code.append( exp.genCode( this ) );
 
-            // This is a hack to get around errors I have in comparisons
-            if (true) {
-                // This is required to fix pointers in comparisons
-                if (exp.getType() instanceof Type.PointerType) {
-                    code.generateOp(Operation.DUP);
-                    code.genLoadConstant(StackMachine.NULL_ADDR);
-                    code.generateOp(Operation.EQUAL);
-                    code.genBoolNot();
-                    code.genLoadConstant(1);
-                    code.generateOp(Operation.BR_FALSE);
+            // This is required to fix pointers in comparisons
+            if (exp.getType() instanceof Type.PointerType) {
+                // Dup the value, check if its equal to NULL_ADDR
+                code.generateOp(Operation.DUP);
+                code.genLoadConstant(StackMachine.NULL_ADDR);
+                code.generateOp(Operation.EQUAL);
+                code.genBoolNot();
+                // Jump over the LOAD_FRAME if we have the NULL_ADDR
+                code.genLoadConstant(1);
+                code.generateOp(Operation.BR_FALSE);
 
-                    // // If its not a NULL_ADDR, load it
-                    code.generateOp(Operation.LOAD_FRAME);
+                // If its not a NULL_ADDR, load it
+                code.generateOp(Operation.LOAD_FRAME);
 
-                    // code.append(print());
-                }
             }
         }
         endGen( "Arguments" );
@@ -439,13 +441,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         SymEntry.VarEntry var = node.getVariable();
 
         Code code = new Code();
-        if (false) {
-            if (var.getType().getBaseType() instanceof Type.PointerType) {
-                // If its a pointer, we need to call loadframe on it to get the address
-                // code.append(print());
-                // code.genLoad(var.getType());
-            }
-        }
 
         code.genMemRef( staticLevel - var.getLevel(), var.getOffset() );
 

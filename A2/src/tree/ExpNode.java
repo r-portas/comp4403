@@ -114,8 +114,7 @@ public abstract class ExpNode {
 
         @Override
         public String toString( ) {
-            // TODO: Improve toString
-            return "Record Node";
+            return "Record Node(" + getRecordFields().toString() + ")";
         }
     }
 
@@ -191,7 +190,6 @@ public abstract class ExpNode {
 
         @Override
         public String toString( ) {
-            // TODO: Improve toString
             return "PointerNode(" + pType + ")";
         }
     }
@@ -227,7 +225,6 @@ public abstract class ExpNode {
 
         @Override
         public String toString( ) {
-            // TODO: Improve toString
             return "DerefPointerNode(" + pointer + ")";
         }
 
