@@ -385,13 +385,7 @@ Type ::= TypeIdentifier:type
             // Check that the type is in the scope
             Type.PointerType pointer = new Type.PointerType(ti);
 
-            /**
-             * Equality and Inequality of pointers
-             * =  PointerType(ti) x PointerType(ti)
-             */
-
             // Roughly based on implementation in Predefined.java
-
             Type.ProductType pointerCrossPointer = new Type.ProductType(pointer, pointer);
             Type.ProductType pointerCrossNil = new Type.ProductType(pointer, Predefined.NIL_TYPE);
             Type.FunctionType pointerType = new Type.FunctionType(pointerCrossPointer, Predefined.BOOLEAN_TYPE);

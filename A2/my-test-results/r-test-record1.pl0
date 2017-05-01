@@ -4,17 +4,9 @@ Static semantic analysis complete
 Code generation complete
 No errors detected.
 Running ...
-
-Runtime error: load outside memory pc=1008: address=10000
-PC=1009 in PROC   <main> : PROCEDURE level 0 start 1000 : 1050 FP=0 SL=0 DL=10000 RA=0
-  q(3) = 10000 10000
-  r(5) = 10000 1
-Trace back terminated early - invalid dynamic link 10000 FP= 0
-
-Stack pointer = 4
- FP: 0   : 0
-     1   : 10000
-     2   : 0
-     3   : 10000
+103
+102
+101
+100
 
 Terminated

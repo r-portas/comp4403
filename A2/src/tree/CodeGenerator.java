@@ -46,6 +46,21 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         endGen( "Program" );
         return procedures;
     }
+
+
+    /* -------------------- Debug methods ----------------------------*/
+    /**
+     * Duplicates the value on the top of the stack
+     * then writes it, leaving the stack untouched afterwards
+     */
+    public Code print() {
+        Code code = new Code();
+        
+        code.generateOp(Operation.DUP);
+        code.generateOp(Operation.WRITE);
+
+        return code;
+    }
     
     /* -------------------- Visitor methods ----------------------------*/
 
@@ -57,7 +72,11 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         for (ExpNode recordField : node.getRecordFields()) {
             code.append(recordField.genCode( this ));
         }
+
+        // int requiredWords = node.getRecordType().getSpace();
+        // code.genLoadConstant(requiredWords);
     
+        // The code after we return will call genStore
         endGen( "Record" );
         return code;
     }
@@ -67,15 +86,18 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Record Reference" ); 
         Code code = new Code();
 
-        // String id = node.getIdentifier();
-        // ExpNode record = node.getRecord();
-        // code.append(record.genCode( this ));
+        String id = node.getIdentifier();
+        ExpNode record = node.getRecord();
 
-        // Type.RecordType recordType = record.getType().getRecordType();
+        Type.RecordType recordType = record.getType().getRecordType();
 
-        // int offset = recordType.getOffset( id );
-        // code.genLoadConstant( offset );
-        // code.generateOp( Operation.ADD );
+        int offset = recordType.getOffset( id );
+
+        // The variable is located at the address of the record + offset
+        code.append(record.genCode( this ));
+        code.genLoadConstant( offset );
+        code.generateOp( Operation.ADD );
+        // code.generateOp(Operation.WRITE);
 
         endGen( "Record Reference" );
         return code;
@@ -89,6 +111,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         // Allocate the space needed to store the type the pointer points to
         code.genLoadConstant(node.getType().getPointerType().getBaseType().getSpace());
         code.generateOp(Operation.ALLOC_HEAP);
+        // The top of the stack now has the address of the memory
 
         endGen( "Pointer" );
         return code;
@@ -98,9 +121,25 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Deref Pointer" );
         Code code = new Code();
 
-        // STORE_MULTI
+        // Dup the top of the stack
+        code.append(node.getPointer().genCode( this ));
+        code.genLoad(node.getPointer().getType());
+
+        // Check if we are dealing with a nil pointer (address = 10000)
+        code.genLoadConstant(StackMachine.NULL_ADDR);
+        code.generateOp(Operation.EQUAL);
+        // Jump past the error if it isn't a nil pointer
+        // 3 = 1 (STOP) + 2 (LOADCON ERROR)
+        code.genLoadConstant(3);
+        code.generateOp(Operation.BR_FALSE);
+
+        // Kill the program
+        code.genLoadConstant(StackMachine.NIL_POINTER);
+        code.generateOp(Operation.STOP);
 
         code.append(node.getPointer().genCode( this ));
+        code.genLoad(node.getPointer().getType());
+        code.generateOp(Operation.TO_LOCAL);
 
         endGen( "Deref Pointer" );
         return code;
@@ -159,8 +198,11 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Assignment" );
         /* Generate code to evaluate the expression */
         Code code = node.getExp().genCode( this );
+        // code.append(print());
         /* Generate the code to load the address of the variable */
         code.append( node.getVariable().genCode( this ) );
+        // code.append(print());
+
         /* Generate the store based on the type/size of value */
         code.genStore( (Type.ReferenceType)node.getVariable().getType() );
         endGen( "Assignment" );
@@ -376,8 +418,15 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     public Code visitVariableNode( ExpNode.VariableNode node ) {
         beginGen( "Variable" );
         SymEntry.VarEntry var = node.getVariable();
+
         Code code = new Code();
+        // if (var.getType().getBaseType() instanceof Type.PointerType) {
+            // If its a pointer, we need to call loadframe on it to get the address
+            // code.genLoad(var.getType());
+        // }
+
         code.genMemRef( staticLevel - var.getLevel(), var.getOffset() );
+
         endGen( "Variable" );
         return code;
     }

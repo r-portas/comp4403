@@ -4,12 +4,13 @@ Static semantic analysis complete
 Code generation complete
 No errors detected.
 Running ...
-
-Runtime error: load outside memory pc=1012: address=10000
-PC=1013 in PROC   <main> : PROCEDURE level 0 start 1000 : 1108 FP=0 SL=0 DL=0 RA=0
-  p(3) = 997
-  q(4) = 10000
-  r(5) = 10000 10000 10000
-End of traceBack
+107
+99
+105
+104
+103
+102
+101
+100
 
 Terminated

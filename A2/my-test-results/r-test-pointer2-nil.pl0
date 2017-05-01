@@ -4,8 +4,11 @@ Static semantic analysis complete
 Code generation complete
 No errors detected.
 Running ...
-10000
 
-Runtime error: PC = 10000 out of range of code
+Runtime error: nil pointer dereference
+PC=1025 in PROC   q : PROCEDURE level 1 start 1000 : 1039 FP=4 SL=0 DL=0 RA=1047
+PC=1047 in PROC   <main> : PROCEDURE level 0 start 1039 : 1048 FP=0 SL=0 DL=0 RA=0
+  p(3) = 10000
+End of traceBack
 
 Terminated

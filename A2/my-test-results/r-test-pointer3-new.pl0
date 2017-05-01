@@ -4,11 +4,7 @@ Static semantic analysis complete
 Code generation complete
 No errors detected.
 Running ...
-0
-
-Runtime error: store outside memory pc=1028: address=9999
-PC=1029 in PROC   <main> : PROCEDURE level 0 start 1016 : 1032 FP=0 SL=0 DL=0 RA=0
-  p(3) = 9999
-End of traceBack
+101
+100
 
 Terminated
