@@ -383,7 +383,26 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Arguments" );
         Code code = new Code();
         for( ExpNode exp : node.getArgs() ) {
+
             code.append( exp.genCode( this ) );
+
+            // This is a hack to get around errors I have in comparisons
+            if (true) {
+                // This is required to fix pointers in comparisons
+                if (exp.getType() instanceof Type.PointerType) {
+                    code.generateOp(Operation.DUP);
+                    code.genLoadConstant(StackMachine.NULL_ADDR);
+                    code.generateOp(Operation.EQUAL);
+                    code.genBoolNot();
+                    code.genLoadConstant(1);
+                    code.generateOp(Operation.BR_FALSE);
+
+                    // // If its not a NULL_ADDR, load it
+                    code.generateOp(Operation.LOAD_FRAME);
+
+                    // code.append(print());
+                }
+            }
         }
         endGen( "Arguments" );
         return code;
@@ -420,10 +439,13 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         SymEntry.VarEntry var = node.getVariable();
 
         Code code = new Code();
-        // if (var.getType().getBaseType() instanceof Type.PointerType) {
-            // If its a pointer, we need to call loadframe on it to get the address
-            // code.genLoad(var.getType());
-        // }
+        if (false) {
+            if (var.getType().getBaseType() instanceof Type.PointerType) {
+                // If its a pointer, we need to call loadframe on it to get the address
+                // code.append(print());
+                // code.genLoad(var.getType());
+            }
+        }
 
         code.genMemRef( staticLevel - var.getLevel(), var.getOffset() );
 

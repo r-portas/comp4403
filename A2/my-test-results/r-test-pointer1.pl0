@@ -9,11 +9,4 @@ Running ...
 101
 100
 
-Runtime error: nil pointer dereference
-PC=1123 in PROC   <main> : PROCEDURE level 0 start 1000 : 1159 FP=0 SL=0 DL=0 RA=0
-  n(3) = 104
-  p(4) = 992
-  q(5) = 10000
-End of traceBack
-
 Terminated
