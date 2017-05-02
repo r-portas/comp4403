@@ -124,7 +124,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Deref Pointer" );
         Code code = new Code();
 
-        // Dup the top of the stack
         code.append(node.getPointer().genCode( this ));
         code.genLoad(node.getPointer().getType());
 
@@ -392,6 +391,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
             // This is required to fix pointers in comparisons
             if (exp.getType() instanceof Type.PointerType) {
+                // code.append(print());
                 // Dup the value, check if its equal to NULL_ADDR
                 code.generateOp(Operation.DUP);
                 code.genLoadConstant(StackMachine.NULL_ADDR);

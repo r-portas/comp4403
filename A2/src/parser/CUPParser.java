@@ -870,13 +870,17 @@ class CUP$CUPParser$actions {
             Type.FunctionType nilPointerType = new Type.FunctionType(pointerCrossNil, Predefined.BOOLEAN_TYPE);
 
             Scope curScope = symtab.getCurrentScope();
-            SymEntry.OperatorEntry equal = curScope.lookupOperator("_=_");
-            equal.extendType(pointerType);
-            equal.extendType(nilPointerType);
+            /* SymEntry.OperatorEntry equal = curScope.lookupOperator("_=_"); */
+            /* equal.extendType(pointerType); */
+            /* equal.extendType(nilPointerType); */
+            curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, pointerType );
+            curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, nilPointerType );
 
-            SymEntry.OperatorEntry notEqual = curScope.lookupOperator("_!=_");
-            notEqual.extendType(pointerType);
-            notEqual.extendType(nilPointerType);
+            /* SymEntry.OperatorEntry notEqual = curScope.lookupOperator("_!=_"); */
+            /* notEqual.extendType(pointerType); */
+            /* notEqual.extendType(nilPointerType); */
+            curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, pointerType );
+            curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, nilPointerType );
 
             RESULT = pointer;
 
@@ -896,17 +900,7 @@ class CUP$CUPParser$actions {
             Type.RecordType record = new Type.RecordType();
             record.setLocation(flxleft);
 
-            ArrayList<String> fieldIdentifiers = new ArrayList<String>();
-
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
-                String identifier = f.getId();
-
-                // TODO: move to static checker
-                if (fieldIdentifiers.contains(identifier)) {
-                    errors.error("Duplicate record keys", flxleft);
-                }
-
-                fieldIdentifiers.add(identifier);
                 record.add(f);
             }
 
