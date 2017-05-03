@@ -1,0 +1,31 @@
+// Circularly defined records
+type
+    RT = record
+          x: int;
+          y: RX     // circularly defined
+         end;
+    RX = record
+          r: RT;    // circularly defined
+          z : int;
+          w: XX
+         end;
+    L = ^RX;
+var 
+    r1: RT;
+    r2: RT;
+    p: L;
+begin
+  r1 := RT{ 1, 2 };
+  r2 := r1;
+  write r2.x;  
+  write r2.y;
+  p := new L;
+  p^ := RX{ r1, 3 };
+  write p^.r.x;
+  write p^.r.y;
+  write p^.z;
+  p^ := RX{ RT{ 4, 5 }, 6 };
+  write p^.r.x;
+  write p^.r.y;
+  write p^.z
+end

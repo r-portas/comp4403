@@ -1,0 +1,10 @@
+// Syntax error: missing keyword END and semicolon
+type
+    RT = record
+          x: int;
+          y: int  // syntax error
+var 
+    r: RT;
+begin
+  write 0
+end

@@ -1,0 +1,15 @@
+// Correct program with 2 integer fields
+type
+    RT = record
+          x: int;
+          y: int
+        end;
+var 
+    r: RT;
+begin
+  r.x := 101;
+  r.y := 100;
+  write r.x;
+  write r.y
+end
+

@@ -48,10 +48,17 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     public ExpNode visitRecordNode(ExpNode.RecordNode node) {
         beginCheck( "Record" );
 
-        ArrayList<String> fieldNames = new ArrayList<String>();
+        Type type = node.getType().resolveType( node.getLocation() );
+        node.setType(type);
 
         // Check uniqueness
-        for (Type.Field field : node.getFieldList()) {
+        Type.RecordType recType = type.getRecordType();
+        if (recType == null) {
+            staticError("Type is not a record type", node.getLocation());
+        }
+
+        ArrayList<String> fieldNames = new ArrayList<String>();
+        for (Type.Field field : recType.getFieldList()) {
             String fieldName = field.getId();
 
             if (fieldNames.contains(fieldName)) {
@@ -59,6 +66,14 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             }
 
             fieldNames.add(fieldName);
+        }
+
+        // Check the number of elements
+        int numOfElements = node.getRecordFields().size();
+        int numOfFields = recType.getFieldList().size();
+
+        if (numOfElements != numOfFields) {
+            staticError("Too few expressions for fields in record", node.getLocation());
         }
 
         endCheck( "Record" );
@@ -69,12 +84,12 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         beginCheck( "Pointer" );
 
         // Resolve the type
-        Type type = node.getPointerType();
-        node.setType(type.resolveType(node.getLocation()));
+        Type type = node.getPointerType().resolveType( node.getLocation() );
+        node.setType(type);
 
         SymEntry.TypeEntry symType = symtab.getCurrentScope().lookupType(type.getName());
         if (symType == null) {
-            errors.error("Undefined type: " + symType, node.getLocation());
+            staticError("Undefined type: " + symType, node.getLocation());
         }
         
         endCheck( "Pointer" );
@@ -119,7 +134,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
         if (recType == null) {
             // This is a runtime thing
-            staticError("Accessing invalid member for record", node.getLocation());
+            staticError("must be a record type, found " + record.getType(), node.getLocation());
             node.setType(Type.ERROR_TYPE);
             endCheck( "Record Reference" );
             return node;
@@ -138,14 +153,14 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
                     foundMatch = true;
                 } else {
                     // foundMatch is true, which means we have a duplicate
-                    staticError("Record has duplicates", node.getLocation());
-                    node.setType(Type.ERROR_TYPE);
+                    // staticError("Record has duplicates", node.getLocation());
+                    // node.setType(Type.ERROR_TYPE);
                 }
             }
         }
 
         if (foundMatch == false) {
-            staticError("Record does not contain field", node.getLocation());
+            staticError("record doesn't contain attribute " + node.getIdentifier(), node.getLocation());
             node.setType(Type.ERROR_TYPE);
         }
 

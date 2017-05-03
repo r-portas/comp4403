@@ -1,0 +1,33 @@
+// Correct program with triply nested record.
+// Includes boolean and integer fields and tests.
+// Output should be 100
+type
+    RT1 = record
+            x: int;
+            y: boolean
+          end;
+    RT2 = record
+            w: boolean;
+            v: RT1
+          end;
+    RT3 = record
+            a: boolean;
+            b: RT2
+          end;
+var 
+    r: RT3;
+begin
+  r.a := false;
+  r.b.w := true;
+  r.b.v.x := 99;
+  r.b.v.y := false;
+  if r.b.v.y = false then
+    if r.b.w = true then
+      r.b.v.x := 100
+    else
+      r.b.v.x := 9999
+  else 
+    r.b.v.x := 99999;
+  write r.b.v.x      // 100
+end
+

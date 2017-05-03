@@ -1,0 +1,10 @@
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-rec06.pl0
+    12     r: RT2;    // duplicate declaration
+******     ^  Error: r already declared
+Parsing complete
+    15   r.w := true;
+******   ^  Error: record doesn't contain attribute w
+    17   write r.v
+******         ^  Error: record doesn't contain attribute v
+Static semantic analysis complete
+3 errors detected.

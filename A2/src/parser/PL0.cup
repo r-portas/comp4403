@@ -179,8 +179,6 @@ non terminal ArrayList<Type.Field> Fields,
 
 non terminal Type.Field       Field;
 
-non terminal Type.PointerType PointerType;
-
 // ExpLists should contain conditions, which are ExpNodes
 non terminal ArrayList<ExpNode> ExpList,
                                 RecordFields;
@@ -387,22 +385,18 @@ Type ::= TypeIdentifier:type
 
             // Roughly based on implementation in Predefined.java
             Type.ProductType pointerCrossPointer = new Type.ProductType(pointer, pointer);
-            Type.ProductType pointerCrossNil = new Type.ProductType(pointer, Predefined.NIL_TYPE);
             Type.FunctionType pointerType = new Type.FunctionType(pointerCrossPointer, Predefined.BOOLEAN_TYPE);
-            Type.FunctionType nilPointerType = new Type.FunctionType(pointerCrossNil, Predefined.BOOLEAN_TYPE);
 
             Scope curScope = symtab.getCurrentScope();
-            /* SymEntry.OperatorEntry equal = curScope.lookupOperator("_=_"); */
-            /* equal.extendType(pointerType); */
+            SymEntry.OperatorEntry equal = curScope.lookupOperator("_=_");
+            equal.extendType(pointerType);
             /* equal.extendType(nilPointerType); */
-            curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, pointerType );
-            curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, nilPointerType );
+            /* curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, pointerType ); */
 
-            /* SymEntry.OperatorEntry notEqual = curScope.lookupOperator("_!=_"); */
-            /* notEqual.extendType(pointerType); */
+            SymEntry.OperatorEntry notEqual = curScope.lookupOperator("_!=_");
+            notEqual.extendType(pointerType);
             /* notEqual.extendType(nilPointerType); */
-            curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, pointerType );
-            curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, nilPointerType );
+            /* curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, pointerType ); */
 
             RESULT = pointer;
 
@@ -413,6 +407,9 @@ Type ::= TypeIdentifier:type
             record.setLocation(flxleft);
 
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
+                if (record.containsField(f.getId())) {
+                    errors.error(f.getId() + " repeated field name", flxleft);
+                }
                 record.add(f);
             }
 

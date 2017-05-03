@@ -73,9 +73,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
             code.append(recordField.genCode( this ));
         }
 
-        // int requiredWords = node.getRecordType().getSpace();
-        // code.genLoadConstant(requiredWords);
-    
         // The code after we return will call genStore
         endGen( "Record" );
         return code;
@@ -97,7 +94,6 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         code.append(record.genCode( this ));
         code.genLoadConstant( offset );
         code.generateOp( Operation.ADD );
-        // code.generateOp(Operation.WRITE);
 
         endGen( "Record Reference" );
         return code;
@@ -201,10 +197,8 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Assignment" );
         /* Generate code to evaluate the expression */
         Code code = node.getExp().genCode( this );
-        // code.append(print());
         /* Generate the code to load the address of the variable */
         code.append( node.getVariable().genCode( this ) );
-        // code.append(print());
 
         /* Generate the store based on the type/size of value */
         code.genStore( (Type.ReferenceType)node.getVariable().getType() );
@@ -390,6 +384,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
             code.append( exp.genCode( this ) );
 
             // This is required to fix pointers in comparisons
+            // Seems like the extra load frame is not called
             if (exp.getType() instanceof Type.PointerType) {
                 // code.append(print());
                 // Dup the value, check if its equal to NULL_ADDR

@@ -1,0 +1,16 @@
+// Syntax error: missing colon in field and missing period in access.
+// Also missing field identifier after period.
+type
+    RT = record
+          x int;  // syntax error
+          y: int
+        end;
+var 
+    r: RT;
+begin
+  r.x := 0;
+  r y := 1;  //syntax error
+  write r.;  //syntax error
+  write r.y
+end
+

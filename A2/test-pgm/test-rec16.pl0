@@ -1,0 +1,40 @@
+// Incorrect: record comparison not supported
+//   and assignment of incompatible record types.
+type
+    RT1 = record
+            x: int;
+            y: boolean
+          end;
+    RT2 = record
+            w: boolean;
+            v: RT1
+          end;
+    RT3 = record
+            a: boolean;
+            b: RT2
+          end;
+var 
+    r1: RT1;
+    r2: RT2;
+begin
+  r2.w := true;
+  r2.v.x := 99;
+  r2.v.y := false;
+  if r2.v.y = false then
+    write 0
+  else
+    write 1;
+  write r2.v.x;
+  r1 := r2.v;
+  if r1.y = false then
+    write 0
+  else
+    write 1;
+  write r1.x;
+  if r1 = r2.v then // cannot compare records
+    write 11
+  else
+    write 22;
+  r1 := r2    // r1 and r2 are different types
+end
+

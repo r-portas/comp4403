@@ -1,0 +1,12 @@
+Compiling test-rec-constructor4.pl0
+Parsing complete
+     4           y: RX     // circularly defined
+******              ^  Error: RX is circularly defined
+     9           w: XX
+******              ^  Error: undefined type: XX
+    22   p^ := RX{ r1, 3 };
+******         ^  Error: Too few expressions for fields in record
+    26   p^ := RX{ RT{ 4, 5 }, 6 };
+******         ^  Error: Too few expressions for fields in record
+Static semantic analysis complete
+4 errors detected.

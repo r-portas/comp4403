@@ -1,0 +1,12 @@
+type
+  R = record x: int; next: P end;
+  P = ^R;
+var
+  r: R;
+begin
+  r := R{ 101, new P };
+  r.next^.x := 100;
+  r.next^.next := nil;
+  write r.x;      // 101
+  write r.next^.x // 100
+end

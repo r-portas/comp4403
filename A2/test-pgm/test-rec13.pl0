@@ -1,0 +1,38 @@
+// Correct program with triply nested records.
+// Record Assignment with RHS record field.
+type
+    RT1 = record
+            x: int;
+            y: boolean;
+            z: int
+          end;
+    RT2 = record
+            w: boolean;
+            v: RT1
+          end;
+    RT3 = record
+            a: boolean;
+            b: RT2
+          end;
+var 
+    r1: RT1;
+    r3: RT3;
+begin
+  r3.a := false;
+  r3.b.w := true;
+  r3.b.v.x := 102;
+  r3.b.v.y := false;
+  r3.b.v.z := 100;
+  if r3.b.v.y = false then
+    write 103
+  else
+    write -93;
+  write r3.b.v.x;
+  r1 := r3.b.v;
+  if r1.y = false then
+    write 101
+  else 
+    write -91;
+  write r1.z
+end
+

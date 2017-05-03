@@ -1,0 +1,5 @@
+type
+    Q = ^X;
+begin
+    write 100
+end

@@ -1,0 +1,8 @@
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-rec16.pl0
+Parsing complete
+    33   if r1 = r2.v then // cannot compare records
+******         ^  Error: Type of argument (ref(RT1)*ref(RT1)) does not match (((nil_type*nil_type)->boolean) & ((int*int)->boolean) & ((boolean*boolean)->boolean))
+    37   r1 := r2    // r1 and r2 are different types
+******         ^  Error: cannot treat RT2 as RT1
+Static semantic analysis complete
+2 errors detected.

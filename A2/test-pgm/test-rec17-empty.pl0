@@ -1,0 +1,21 @@
+type
+    Empty = record
+            end;
+    RT = record
+          x: int;
+          y: Empty;
+          z: int
+         end;
+    CQ = record
+          x: int;
+          z: int
+         end;
+var
+    r: RT;
+    q: CQ;
+    e: Empty;
+begin
+  r.y := e;
+  write r.y;  // r.y is not of type int
+  r := q      // r and q are of different types
+end

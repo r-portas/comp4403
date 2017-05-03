@@ -1,0 +1,8 @@
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-rec17-empty.pl0
+Parsing complete
+    18   write r.y;  // r.y is not of type int
+******         ^  Error: can't coerce Empty to int
+    19   r := q      // r and q are of different types
+******        ^  Error: cannot treat CQ as RT
+Static semantic analysis complete
+2 errors detected.

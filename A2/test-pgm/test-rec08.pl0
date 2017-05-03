@@ -1,0 +1,15 @@
+// Syntax error: missing semicolon on field and missing END
+// Java-CUP takes care of syntax errors but compiler should not crash
+type
+    RT = record
+          x: int   // syntax error
+          y: int;  // syntax error
+var 
+    r: RT;
+begin
+  r.x := 0;
+  r.y := 1;
+  write r.x;
+  write r.y
+end
+

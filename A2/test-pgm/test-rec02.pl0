@@ -1,0 +1,13 @@
+// Erroneous record: duplicate field
+type
+    RT = record
+          x: int;
+          x: int  // x repeated field name
+         end;
+var 
+    r: RT;
+begin
+  r.x := 100;
+  write r.x
+end
+

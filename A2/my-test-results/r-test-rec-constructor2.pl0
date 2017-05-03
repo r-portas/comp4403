@@ -1,0 +1,6 @@
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-rec-constructor2.pl0
+Parsing complete
+Static semantic analysis complete
+    21   p^ := RX{ r1, 3 };
+******             ^ Fatal: Internal error: code generator called on IdentifierNode
+1 error detected.

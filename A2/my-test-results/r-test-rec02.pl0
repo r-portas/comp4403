@@ -1,0 +1,6 @@
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-rec02.pl0
+     3           x: int;
+******           ^  Error: x repeated field name
+Parsing complete
+Static semantic analysis complete
+1 error detected.

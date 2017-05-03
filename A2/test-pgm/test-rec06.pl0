@@ -1,0 +1,20 @@
+// Erroneous program: r declared twice as two different record types.
+type
+    RT1 = record
+            x: int;
+            y: boolean
+          end;
+    RT2 = record
+            w: boolean;
+            v: int
+          end;
+var 
+    r: RT1;
+    r: RT2;    // duplicate declaration
+begin
+  r.x := 0;
+  r.w := true;
+  write r.x;
+  write r.v
+end
+

@@ -1,0 +1,10 @@
+// Correct program with 0 fields
+type
+    RT = record
+         end;
+var
+    r1: RT;
+    r2: RT;
+begin
+    write 100
+end

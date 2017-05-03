@@ -1,0 +1,6 @@
+Compiling test-pointerg.pl0
+Parsing complete
+     1     Q = ^X;
+******          ^  Error: undefined type: X
+Static semantic analysis complete
+1 error detected.

@@ -1,0 +1,11 @@
+// Correct program with 0 fields
+// with record assignment
+type
+    RT = record
+         end;
+var
+    r1: RT;
+    r2: RT;
+begin
+    r1 := r2
+end

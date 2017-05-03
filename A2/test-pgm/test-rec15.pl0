@@ -1,0 +1,21 @@
+// Incorrect program: record assignment 
+// Records must have the same type name or alias 
+type
+    RT = record
+           x: int;
+           y: int
+         end;
+    PT = record
+    	  y: int;
+          x: int
+         end;
+var
+    r: RT;
+    p: PT;
+begin
+    p.x := 100;
+    p.y := 101;
+    r := p;     // r and p have different types
+    write r.y;
+    write r.x
+end

@@ -1,0 +1,6 @@
+Compiling test-rec02.pl0
+     4           x: int  // x repeated field name
+******           ^  Error: x repeated field name
+Parsing complete
+Static semantic analysis complete
+1 error detected.

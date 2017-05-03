@@ -1,0 +1,14 @@
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-rec08.pl0
+     5           y: int;  // syntax error
+******           ^  Error: PL0 syntax error
+Parsing complete
+     9   r.x := 0;
+******   ^  Error: must be a record type, found ref(RT)
+    10   r.y := 1;
+******   ^  Error: must be a record type, found ref(RT)
+    11   write r.x;
+******         ^  Error: must be a record type, found ref(RT)
+    12   write r.y
+******         ^  Error: must be a record type, found ref(RT)
+Static semantic analysis complete
+5 errors detected.

@@ -44,7 +44,7 @@ public class CUPParser extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\127\000\002\046\002\000\002\002\004\000\002\002" +
+    "\000\127\000\002\045\002\000\002\002\004\000\002\002" +
     "\004\000\002\002\003\000\002\003\004\000\002\004\005" +
     "\000\002\004\004\000\002\004\002\000\002\005\004\000" +
     "\002\005\004\000\002\005\004\000\002\006\003\000\002" +
@@ -67,8 +67,8 @@ public class CUPParser extends java_cup.runtime.lr_parser {
     "\033\003\000\002\033\003\000\002\030\003\000\002\030" +
     "\005\000\002\034\003\000\002\034\003\000\002\031\003" +
     "\000\002\031\005\000\002\035\003\000\002\035\003\000" +
-    "\002\044\003\000\002\044\005\000\002\045\002\000\002" +
-    "\045\003\000\002\032\004\000\002\032\004\000\002\032" +
+    "\002\043\003\000\002\043\005\000\002\044\002\000\002" +
+    "\044\003\000\002\032\004\000\002\032\004\000\002\032" +
     "\005\000\002\032\003\000\002\032\003\000\002\032\004" +
     "\000\002\032\006\000\002\032\003\000\002\036\003" });
 
@@ -258,7 +258,7 @@ public class CUPParser extends java_cup.runtime.lr_parser {
   /** <code>reduce_goto</code> table. */
   protected static final short[][] _reduce_table = 
     unpackFromStrings(new String[] {
-    "\000\224\000\006\002\003\046\005\001\001\000\002\001" +
+    "\000\224\000\006\002\003\045\005\001\001\000\002\001" +
     "\001\000\002\001\001\000\006\003\006\004\007\001\001" +
     "\000\002\001\001\000\012\005\014\017\013\020\015\025" +
     "\011\001\001\000\002\001\001\000\002\001\001\000\006" +
@@ -297,7 +297,7 @@ public class CUPParser extends java_cup.runtime.lr_parser {
     "\030\117\031\063\032\065\036\067\037\072\001\001\000" +
     "\002\001\001\000\004\034\113\001\001\000\004\035\102" +
     "\001\001\000\026\014\057\026\123\027\055\030\060\031" +
-    "\063\032\065\036\067\037\072\044\124\045\122\001\001" +
+    "\063\032\065\036\067\037\072\043\124\044\122\001\001" +
     "\000\002\001\001\000\002\001\001\000\002\001\001\000" +
     "\022\014\057\026\126\027\055\030\060\031\063\032\065" +
     "\036\067\037\072\001\001\000\002\001\001\000\002\001" +
@@ -444,7 +444,7 @@ class CUP$CUPParser$actions {
             Scope blockLocals = symtab.newScope( proc );
             proc.setLocalScope( blockLocals );
         
-              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("NT$0",36, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
+              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("NT$0",35, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
           return CUP$CUPParser$result;
 
@@ -865,22 +865,18 @@ class CUP$CUPParser$actions {
 
             // Roughly based on implementation in Predefined.java
             Type.ProductType pointerCrossPointer = new Type.ProductType(pointer, pointer);
-            Type.ProductType pointerCrossNil = new Type.ProductType(pointer, Predefined.NIL_TYPE);
             Type.FunctionType pointerType = new Type.FunctionType(pointerCrossPointer, Predefined.BOOLEAN_TYPE);
-            Type.FunctionType nilPointerType = new Type.FunctionType(pointerCrossNil, Predefined.BOOLEAN_TYPE);
 
             Scope curScope = symtab.getCurrentScope();
-            /* SymEntry.OperatorEntry equal = curScope.lookupOperator("_=_"); */
-            /* equal.extendType(pointerType); */
+            SymEntry.OperatorEntry equal = curScope.lookupOperator("_=_");
+            equal.extendType(pointerType);
             /* equal.extendType(nilPointerType); */
-            curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, pointerType );
-            curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, nilPointerType );
+            /* curScope.addOperator("_=_", ErrorHandler.NO_LOCATION, pointerType ); */
 
-            /* SymEntry.OperatorEntry notEqual = curScope.lookupOperator("_!=_"); */
-            /* notEqual.extendType(pointerType); */
+            SymEntry.OperatorEntry notEqual = curScope.lookupOperator("_!=_");
+            notEqual.extendType(pointerType);
             /* notEqual.extendType(nilPointerType); */
-            curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, pointerType );
-            curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, nilPointerType );
+            /* curScope.addOperator("_!=_", ErrorHandler.NO_LOCATION, pointerType ); */
 
             RESULT = pointer;
 
@@ -901,6 +897,9 @@ class CUP$CUPParser$actions {
             record.setLocation(flxleft);
 
             for (Type.Field f : ((ArrayList<Type.Field>)fl)) {
+                if (record.containsField(f.getId())) {
+                    errors.error(f.getId() + " repeated field name", flxleft);
+                }
                 record.add(f);
             }
 
@@ -1544,7 +1543,7 @@ class CUP$CUPParser$actions {
             exps.add(c);
             RESULT = exps;
         
-              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("ExpList",34, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
+              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("ExpList",33, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
           return CUP$CUPParser$result;
 
@@ -1562,7 +1561,7 @@ class CUP$CUPParser$actions {
             el.add(c);
             RESULT = el;
         
-              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("ExpList",34, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-2)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
+              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("ExpList",33, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-2)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
           return CUP$CUPParser$result;
 
@@ -1573,7 +1572,7 @@ class CUP$CUPParser$actions {
 		
             RESULT = new ArrayList<ExpNode>();
         
-              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("RecordFields",35, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
+              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("RecordFields",34, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
           return CUP$CUPParser$result;
 
@@ -1587,7 +1586,7 @@ class CUP$CUPParser$actions {
 		
             RESULT = el;
         
-              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("RecordFields",35, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
+              CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("RecordFields",34, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
           return CUP$CUPParser$result;
 

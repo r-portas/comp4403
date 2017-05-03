@@ -1,0 +1,30 @@
+// Record value assignment with pointers
+type
+    RT = record
+          x: int;
+          y: int
+         end;
+    RX = record
+          r: RT;
+          z : int
+         end;
+    L = ^RX;
+var 
+    r1: RT;
+    r2: RT;
+    p: L;
+begin
+  r1 := RT{ 1, 2 };
+  r2 := r1;
+  write r2.x;  // 1
+  write r2.y;  // 2
+  p := new L;
+  p^ := RX{ r1, 3 };
+  write p^.r.x;  // 1
+  write p^.r.y;  // 2
+  write p^.z;    // 3
+  p^ := RX{ RT{ 4, 5 }, 6 };
+  write p^.r.x;  // 4
+  write p^.r.y;  // 5
+  write p^.z     // 6
+end

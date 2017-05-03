@@ -1,0 +1,38 @@
+// Correct program: contains a record assignment
+// Output should be 19, 4, 2002
+type
+  Day = [1..31];
+  Month = [1..12];
+  Date = record
+           d: Day;
+           m: Month;
+           y: int
+         end;
+  Hour = [0..23];
+  Minute = [0..59];
+  Second = [0..59];
+  Time = record
+           h: Hour;
+           m: Minute;
+           s: Second
+         end;
+  DateTime = record
+               t: Time;
+               d: Date
+             end;
+var 
+  d: Date;
+  dt: DateTime;
+begin
+  dt.t.s := 27;
+  dt.t.m := 1;
+  dt.t.h := 14;
+  d.d := 19;
+  d.m := 4;
+  d.y := 2002;
+  dt.d := d;
+  write dt.d.d; // 19
+  write dt.d.m; // 4
+  write dt.d.y  // 2002
+end
+

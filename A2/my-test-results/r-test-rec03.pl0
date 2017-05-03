@@ -1,0 +1,8 @@
+Compiling /Users/roy/projects/comp4403/A2/test-pgm/test-rec03.pl0
+Parsing complete
+     9   r.y := 1;
+******   ^  Error: record doesn't contain attribute y
+    11   write r.y
+******         ^  Error: record doesn't contain attribute y
+Static semantic analysis complete
+2 errors detected.

@@ -1,0 +1,14 @@
+// Erroneous field access: undeclared field referenced
+type
+    RT = record
+          x: int
+         end;
+var 
+    r: RT;
+begin
+  r.x := 0;
+  r.y := 1;
+  write r.x;
+  write r.y
+end
+

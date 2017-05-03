@@ -1,0 +1,14 @@
+Compiling test-rec09.pl0
+     4           x int;  // syntax error
+******             ^  Error: PL0 syntax error
+    11   r y := 1;  //syntax error
+******     ^  Error: PL0 syntax error
+    12   write r.;  //syntax error
+******           ^  Error: PL0 syntax error
+Parsing complete
+    10   r.x := 0;
+******   ^  Error: must be a record type, found ref(RT)
+    13   write r.y
+******         ^  Error: must be a record type, found ref(RT)
+Static semantic analysis complete
+5 errors detected.
