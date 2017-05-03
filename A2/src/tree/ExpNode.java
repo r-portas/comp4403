@@ -67,18 +67,6 @@ public abstract class ExpNode {
             records = new ArrayList<ExpNode>();
         }
 
-        // public Type.RecordType getRecordType() {
-        //     return (Type.RecordType)getType();
-        // }
-
-        // public boolean hasField(ExpNode field) {
-        //     return getFieldList().contains(field.getType());
-        // }
-
-        // public List<Type.Field> getFieldList() {
-        //     return getRecordType().getFieldList();
-        // }
-
         /**
          * Adds a list of records to the RecordNode
          */

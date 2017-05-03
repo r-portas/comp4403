@@ -51,13 +51,13 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         Type type = node.getType().resolveType( node.getLocation() );
         node.setType(type);
 
-        // Check uniqueness
         Type.RecordType recType = type.getRecordType();
         if (recType == null) {
             staticError("Type is not a record type", node.getLocation());
         }
 
         ArrayList<String> fieldNames = new ArrayList<String>();
+        // Check for duplicates
         for (Type.Field field : recType.getFieldList()) {
             String fieldName = field.getId();
 
@@ -66,6 +66,12 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             }
 
             fieldNames.add(fieldName);
+        }
+
+        // Transform the expressions
+        for (int i = 0; i < node.getRecordFields().size(); i++) {
+            ExpNode exp  = node.getRecordFields().get(i);
+            node.getRecordFields().set(i, exp.transform( this ));
         }
 
         // Check the number of elements
