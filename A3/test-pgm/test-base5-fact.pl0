@@ -1,0 +1,21 @@
+var n: int;
+    f: int;
+procedure fact() =
+  begin
+    if n = 0 then
+        f := 1
+    else 
+      begin
+        // calculate factorial of n-1 and place in f
+        n := n - 1;
+        call fact(); 
+        n := n + 1;  // restore value of n
+        // now calculate factorial n
+        f := f * n
+      end
+  end;
+begin
+    n := 5;
+    call fact();
+    write f
+end

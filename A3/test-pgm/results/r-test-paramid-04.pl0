@@ -1,0 +1,10 @@
+Compiling test-paramid-04.pl0
+    10   call p(n <- 101, n <- 100); // duplicate actual parameter
+******                    ^  Error: n repeated
+Parsing complete
+    11   call p(n <- true);          // wrong type 
+******               ^  Error: can't coerce boolean to int
+    12   call p(n <- 100, x <- 99)   // x is not a formal parameter
+******                    ^  Error: not a parameter of procedure
+Static semantic analysis complete
+3 errors detected.

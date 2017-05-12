@@ -1,0 +1,15 @@
+procedure p() =
+  const h = 5;
+  begin
+    y := g + h
+  end;
+var y: S;
+type S = T;
+type T = [g..h];
+const g = -h;
+const h = 10;
+begin
+  call p();
+  write y
+end
+  

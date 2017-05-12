@@ -1,0 +1,26 @@
+<project name="PL0-Compiler" default="cup" basedir=".">
+
+<!--
+    <property name="home" value="${basedir}" />
+
+    <property name="cuphome" value="${home}" />
+
+    <path id="cupclasspath">
+        <pathelement location="${cuphome}/java-cup-v11a.jar" />
+    </path>
+
+    <taskdef name="cuptask" classname="java_cup.anttask.CUPTask" />
+		classpathref="cupclasspath" />
+-->
+
+    <target name="cup" description="Generate CUPParser.java and CUPToken.java">
+    	<echo message="cup basedir=${basedir}" />
+		<CUPTask srcfile="${basedir}/src/parser/PL0.cup"
+                     destdir="${basedir}/src"
+                     interface="true"
+        			 locations="true"
+					 force="true"
+                     parser="CUPParser" symbols="CUPToken" />
+    </target>
+	
+</project>

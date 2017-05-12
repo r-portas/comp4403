@@ -1,0 +1,10 @@
+procedure fact( n : int ): int =
+  begin
+    if n = 0 then
+      return 1
+    else
+      return n*fact(n <- n-1)
+  end;
+begin
+  write fact(n <- 5)   // writes 120
+end

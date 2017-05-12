@@ -1,0 +1,23 @@
+// One parameter - default an expression
+var x : int;
+
+procedure p( n : int <- -1 ) =
+
+  procedure q( n : int <- n+x ) =
+    begin
+      write n;       // writes 103, 102, 101
+      x := x-1;
+      if n = 101 then
+        write n-1    // write 100
+      else 
+        call p()
+    end; //q
+    
+  begin //p
+    call q()
+  end; // p
+  
+begin
+  x := 104;
+  call p() // writes 101 201
+end

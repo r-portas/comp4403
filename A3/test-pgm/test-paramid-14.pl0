@@ -1,0 +1,18 @@
+// test for stack memory leakage on calls
+var
+    i: int;
+    z: int;
+
+procedure p( n: int ) =
+  begin
+    z := n
+  end;
+begin
+  i := 10100;
+  while i >= 100 do
+   begin
+    call p(n <- i);
+    i := i - 1
+  end;
+  write z   // writes 100
+end

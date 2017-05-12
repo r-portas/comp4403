@@ -1,0 +1,12 @@
+Compiling test-funcid-5-sem-err.pl0
+Parsing complete
+    10     return x // return result but not a function
+******            ^  Error: can only return from a function
+    15     call f();  // cannot call a function in a call statement
+******          ^  Error: cannot call a function from a call statement
+    16     write p(); // p not declared
+******           ^  Error: p should be a function
+    17     write q()  // q is not a function
+******           ^  Error: q should be a function
+Static semantic analysis complete
+4 errors detected.

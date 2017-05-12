@@ -1,0 +1,12 @@
+// Triplicate formal parameter
+type S = [1..100];
+
+procedure p( n : int <- 100, n : boolean <- true, n: S <- 99 ) = // repeated formal parameters
+  begin
+    write n
+  end;
+
+begin
+  call p(n <- 101); 
+  call p()          
+end

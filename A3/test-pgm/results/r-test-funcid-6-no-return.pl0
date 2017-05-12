@@ -1,0 +1,14 @@
+Compiling test-funcid-6-no-return.pl0
+Parsing complete
+Static semantic analysis complete
+Code generation complete
+No errors detected.
+Running ...
+
+Runtime error: no return executed in function
+PC=1012 in PROC   f : PROCEDURE) : int level 1 start 1000 : 1012 FP=5 SL=0 DL=0 RA=1028
+PC=1028 in PROC   <main> : PROCEDURE) : void level 0 start 1012 : 1030 FP=0 SL=0 DL=0 RA=0
+  x(3) = 101
+End of traceBack
+
+Terminated

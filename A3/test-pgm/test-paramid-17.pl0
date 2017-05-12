@@ -1,0 +1,14 @@
+type 
+  subr = [1 ..10];
+var x: int;
+
+procedure p( a: int, b: boolean ) =
+  begin
+    x := a
+  end;
+begin
+  x := 0;
+  call p( , b<-true );       // extra comma
+  call p( a<-5, b<-true, );  // extra comma
+  write x
+end

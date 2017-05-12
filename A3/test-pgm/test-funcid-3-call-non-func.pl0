@@ -1,0 +1,19 @@
+var
+  x : int;
+procedure one() : T =
+  begin
+    x := x;
+    return 1
+  end;
+  
+procedure p() =
+  begin
+    write 1
+  end;
+  
+type T = int;
+
+begin
+  write one();
+  write p()    // p is not a function
+end

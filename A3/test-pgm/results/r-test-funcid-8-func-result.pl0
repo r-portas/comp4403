@@ -1,0 +1,8 @@
+Compiling test-funcid-8-func-result.pl0
+Parsing complete
+     6     return true  // invalid type of expression being returned
+******            ^  Error: can't coerce boolean to int
+    11     return true  // invalid type of expression being returned
+******            ^  Error: can't coerce boolean to int
+Static semantic analysis complete
+2 errors detected.

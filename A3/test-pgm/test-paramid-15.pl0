@@ -1,0 +1,12 @@
+type 
+  subr = [1..10];
+var 
+  x: int;
+
+procedure p( n: subr ) =
+  begin
+    x := n
+  end;
+begin
+  call p(n<-13)  // runtime failure as 13 outside subr
+end

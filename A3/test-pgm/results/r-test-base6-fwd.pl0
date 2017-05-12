@@ -1,0 +1,14 @@
+Compiling test-base6-fwd.pl0
+Parsing complete
+     7   D = E;   // circularly defined type
+******       ^  Error: E is circularly defined
+    22     q := 1;     // within p, B is boolean and hence q is boolean
+******          ^  Error: can't coerce int to boolean
+    24     y := true;  // within p, D is A is int and hence y is int
+******          ^  Error: can't coerce boolean to int
+    26     x := true   // x declared in main of type A which is int
+******          ^  Error: can't coerce boolean to int
+    30   x := true   // x declared in main of type A which is int
+******        ^  Error: can't coerce boolean to int
+Static semantic analysis complete
+5 errors detected.

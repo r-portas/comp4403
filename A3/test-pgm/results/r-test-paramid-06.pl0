@@ -1,0 +1,8 @@
+Compiling test-paramid-06.pl0
+     2 procedure p( n : int <- 100, n : boolean <- true ) =
+******                              ^  Error: n repeated
+     3   var n: boolean;  // clashes with parameter name
+******       ^  Error: n already declared
+Parsing complete
+Static semantic analysis complete
+2 errors detected.

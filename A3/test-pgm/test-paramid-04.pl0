@@ -1,0 +1,13 @@
+// One parameter - default
+var
+  x : int; // not used
+procedure p( n : int <- 100 ) =
+  begin
+    write n
+  end;
+
+begin
+  call p(n <- 101, n <- 100); // duplicate actual parameter
+  call p(n <- true);          // wrong type 
+  call p(n <- 100, x <- 99)   // x is not a formal parameter
+end

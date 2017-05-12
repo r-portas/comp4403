@@ -1,0 +1,18 @@
+var x: int;
+
+procedure f() : int =
+  begin
+    return 100
+  end;
+  
+procedure q() =
+  begin
+    return x // return result but not a function
+  end;
+
+begin
+    x := 100;
+    call f();  // cannot call a function in a call statement
+    write p(); // p not declared
+    write q()  // q is not a function
+end

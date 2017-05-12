@@ -1,0 +1,22 @@
+// Nested procedures
+procedure p( n : int ) =
+
+  procedure q( x : int ) =
+    begin
+      write x;   // writes 103, 101
+      call p( n <- x-1 ) // parameter n of p set using parameter x of q
+    end; // q
+
+  begin // p
+    if n > 100 then
+      begin
+        write n;  // writes 104, 102
+        call q( x <- n-1 ) // parameter n of q set using value of parameter n of p
+      end
+    else
+       write n  // writes 100
+  end; // p
+
+begin
+  call p( n <- 104 )
+end

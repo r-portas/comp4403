@@ -1,0 +1,22 @@
+procedure C( x : int, y : int ) : int =
+
+   procedure fact( n : int ) : int =
+    var f : int;
+    begin
+      // assume 0 <= n
+      if n = 0 then
+        f := 1    
+        // f = n!
+      else // 0 < n
+        f := n * fact( n <- n-1 );
+        // f = n!
+      return f
+    end; // fact
+    
+  begin // C
+    return fact(n <- x) / (fact(n <- y) * fact(n <- x-y))
+  end; // C
+  
+begin // main program
+  write C( x <- 6, y <- 2)  // writes 15
+end

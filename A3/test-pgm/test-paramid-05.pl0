@@ -1,0 +1,13 @@
+// Two parameters
+procedure p( n : int <- 100, b : boolean ) =
+  begin
+    if b then
+      write n+1
+    else 
+      write n
+  end;
+
+begin
+  call p( b <- true );  // writes 101
+  call p( b <- false )  // writes 100
+end

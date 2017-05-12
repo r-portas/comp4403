@@ -1,0 +1,9 @@
+// One parameter - no default
+procedure p( n : int, b : boolean ) =
+  begin
+    write n  // writes 100
+  end;
+
+begin
+  call p()  // error no default and no n
+end

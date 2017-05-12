@@ -1,0 +1,36 @@
+// nested procedures and many parameters
+var 
+    cret: int;
+    fret: int;
+
+procedure C(n: int, m: int) =
+  var f: int;
+      nf: int;
+      mf: int;
+      nmmf: int;
+
+  procedure fact( n: int ) =
+	var innerfret : int;
+    begin
+      if n = 0 then
+        fret := 1
+      else 
+       begin
+         call fact( n <- n-1 );
+         fret := fret * n
+       end
+    end; // fact
+  begin // C
+    call fact( n <- n );
+    nf := fret;
+    call fact( n <- m );
+    mf := fret;
+    call fact( n <- n-m );
+    nmmf := fret;
+    cret := nf / (mf * nmmf)
+  end; // C
+begin // main
+  call C( n <- 6, m <- 2 );
+  write cret      // writes 15
+end
+

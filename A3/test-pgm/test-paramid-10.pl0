@@ -1,0 +1,18 @@
+// The reuse of parameter names here is not good style 
+// but it does check the correct ones are being used
+procedure p( n : int ) =
+  procedure q( n : int ) =
+    begin
+      write n;   // writes 102, 100
+      call p( n <- n-1 ) // parameter n of p set using parameter n of q
+    end; // q
+  begin // p
+    write n;  // writes 103, 101
+    if n > 100 then
+       call q( n <- n-1 ) // parameter n of q set using value of parameter n of p
+    else
+       n := n
+  end; // p
+begin
+  call p( n <- 104 )
+end

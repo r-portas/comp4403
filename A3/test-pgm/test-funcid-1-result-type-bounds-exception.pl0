@@ -1,0 +1,33 @@
+var x: int;
+procedure one() : int =
+  begin
+    x := x;
+    return 1
+  end;
+// Has forward reference to incx
+procedure twiceincx() : int =
+  var t: int;
+  begin
+    t := incx();
+    return incx()
+  end;
+procedure incx() : int =
+  begin
+    x := x + 1;
+    return x
+  end;
+type S = [0..2];
+procedure rangex() : S =
+  begin
+    x := x;
+    return x
+  end;
+begin
+    write one();       // write 1
+    x := 0;
+    write rangex();    // write 0
+    write incx();      // write 1
+    write rangex();    // write 1
+    write twiceincx(); // write 3
+    write rangex()     // bounds exception on function result
+end

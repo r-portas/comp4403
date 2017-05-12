@@ -1,0 +1,18 @@
+var x: int;
+type S = [1..10];
+
+procedure f() : int =
+  begin
+    return true  // invalid type of expression being returned
+  end;
+  
+procedure q() : S =
+  begin
+    return true  // invalid type of expression being returned
+  end;
+
+begin
+    x := 100;
+    write f();  // cannot call a function in a call statement
+    write q()  // q is not a function
+end

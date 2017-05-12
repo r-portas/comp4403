@@ -1,0 +1,15 @@
+procedure fact( n : int ): int =
+  var
+    f: int;
+  begin
+    if n = 0 then
+      f := 1
+    else
+      f := n*fact(n <- n-1);
+    return f
+  end;
+begin
+  write fact(n <- 3);           // 6
+  write fact(n <- 6);           // 720
+  write fact(n <- fact(n <- 3)) // 720
+end

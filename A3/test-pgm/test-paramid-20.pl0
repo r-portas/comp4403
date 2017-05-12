@@ -1,0 +1,15 @@
+// One parameter - confusing parameter of p as being of q
+procedure p( n : int ) =
+
+  procedure q () =
+    begin
+      write n
+    end;
+  begin
+    call q(n<-99); // q doesn't have a parameter but p does
+    write n  
+  end;
+
+begin
+  call p(n <- 100)
+end

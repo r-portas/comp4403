@@ -1,0 +1,17 @@
+// No parameters
+procedure p() =
+  var x: int;
+  
+  begin
+    x := y;
+    write x;  // writes 101
+    x := x-1;
+    y := x
+  end;
+
+var y: int;
+begin
+  y := 101;
+  call p();
+  write y    // writes 100
+end

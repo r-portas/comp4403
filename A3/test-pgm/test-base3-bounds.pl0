@@ -1,0 +1,15 @@
+type S = [100..102];
+var x: S;
+    y: int;
+begin
+  y := 102;
+  write y;
+  x := 101;
+  write x;
+  x := 100;
+  write x;
+  x := 99;
+  write x;
+  x := 103;
+  write x
+end

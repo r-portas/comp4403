@@ -1,0 +1,18 @@
+procedure p( x : int, b : boolean ) = 
+  // redefining the predefined type int
+  // to make sure the types of params are 
+  // processed in the global scope
+  type int = boolean;  // definitions like this aren't recommended style!
+  begin
+    write x;  // valid as x is an integer
+    write b   // invalid as b is boolean
+ end;
+var
+   i: int;
+   c: boolean;
+begin
+   i := 1;
+   call p( x<-i, b<-c );  // types ok
+   call p( x<-c, b<-c );  // type mismatch first
+   call p( x<-i, b<-i )   // type mismatch second
+end

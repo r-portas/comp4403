@@ -1,0 +1,11 @@
+var x: int;
+
+procedure f() : int =
+  begin 
+    x := 101 // no return run time error
+  end;
+
+begin
+    x := 100;
+    write f()
+end

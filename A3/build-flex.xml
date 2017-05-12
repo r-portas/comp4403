@@ -1,0 +1,21 @@
+<project name="PL0-Compiler-JFlex" default="jflex">
+
+<!--
+    <property name="home" value="${basedir}" />
+
+	<property name="jflexhome" value="${home}" />
+
+	<path id="jflexclasspath">
+		<pathelement location="${jflexhome}/JFlex.jar" />
+	</path>
+	
+    <taskdef name="jflextask" classname="JFlex.anttask.JFlexTask" />
+        classpathref="jflexclasspath" />
+-->
+
+    <target name="jflex" description="Generate Lexer.java">
+		<JFlexTask file="src/parser/PL0.flex"
+                       destdir="src" />
+	</target>
+	
+</project>

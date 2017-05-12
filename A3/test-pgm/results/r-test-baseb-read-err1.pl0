@@ -1,0 +1,6 @@
+Compiling test-baseb-read-err1.pl0
+Parsing complete
+     8 	read c;  //cannot read into (assign to) a constant
+******       ^  Error: variable expected, type = int
+Static semantic analysis complete
+1 error detected.

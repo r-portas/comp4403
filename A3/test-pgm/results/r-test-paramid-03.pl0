@@ -1,0 +1,7 @@
+Compiling test-paramid-03.pl0
+     4 procedure p( n : int <- 100, n : boolean <- true, n: S <- 99 ) = // repeated formal parameters
+******                              ^  Error: n repeated
+******                                                   ^  Error: n repeated
+Parsing complete
+Static semantic analysis complete
+2 errors detected.

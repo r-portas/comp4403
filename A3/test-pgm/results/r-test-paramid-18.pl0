@@ -1,0 +1,10 @@
+Compiling test-paramid-18.pl0
+Parsing complete
+     8     write b   // invalid as b is boolean
+******           ^  Error: can't coerce boolean to int
+    16    call p( x<-c, b<-c );  // type mismatch first
+******               ^  Error: can't coerce boolean to int
+    17    call p( x<-i, b<-i )   // type mismatch second
+******                     ^  Error: can't coerce int to boolean
+Static semantic analysis complete
+3 errors detected.

@@ -1,0 +1,9 @@
+// One parameter - no default
+procedure p( n : int ) =
+  begin
+    write n  // writes 100
+  end;
+
+begin
+  call p(n <- 100)
+end

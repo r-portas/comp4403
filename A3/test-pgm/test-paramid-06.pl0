@@ -1,0 +1,11 @@
+// Duplicate formal parameter of different type
+procedure p( n : int <- 100, n : boolean <- true ) =
+  var n: boolean;  // clashes with parameter name
+  begin
+    write n
+  end;
+
+begin
+  call p(n <- 101); 
+  call p()          
+end

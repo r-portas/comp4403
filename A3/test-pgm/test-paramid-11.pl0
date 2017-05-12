@@ -1,0 +1,30 @@
+// The reuse of parameter names is not good style 
+// but it does check the correct ones are being used
+var 
+    n : int;  // 107, 104, 101
+    
+procedure setn( i : int ) =
+  begin
+    n := i
+  end; // setn
+procedure p( n : int <- n-1 ) =   // default uses global n; param = 106, 103, 100
+
+  procedure q( n : int <- n-1 ) = // default uses parameter to p; param = 105, 102
+    begin
+      write n;   // writes 105, 102
+      write n-1; // writes 104, 101
+      call setn( i<-n-1 ); // set global n to 104, 101
+      call p()   // uses default global value of n
+    end; // q
+
+  begin // p
+    write n;  // writes 106, 103, 100
+    if n > 100 then
+       call q()  // uses default with n being parameter to p
+    else
+       n := n // no-op
+  end; // p
+begin
+  n := 107;
+  call p()
+end

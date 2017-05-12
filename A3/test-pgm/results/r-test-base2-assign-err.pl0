@@ -1,0 +1,10 @@
+Compiling test-base2-assign-err.pl0
+Parsing complete
+     9 	x := true;   // cannot assign boolean to int
+******       ^  Error: can't coerce boolean to int
+    10 	b := 1;      // cannot assign int to boolean
+******       ^  Error: can't coerce int to boolean
+    11 	c := false;  // cannot assign to a constant
+******  ^  Error: variable expected, type = boolean
+Static semantic analysis complete
+3 errors detected.
