@@ -2,6 +2,7 @@ package tree;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -55,12 +56,54 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         visitProcedureNode( node );
         endCheck( "Program" );
     }
+
+    public ExpNode.ActualParamNode visitActualParamNode( ExpNode.ActualParamNode node) {
+        
+        // Get the parameter type from the FormalParameters
+        // then update the type of the actual parameter
+        //
+        // TODO: Move this to call node?
+
+        return node;
+    }
+
+    public void visitReturnNode( StatementNode.ReturnNode node) {
+        beginCheck("ReturnNode");
+
+        node.setReturnCondition(node.getReturnCondition().transform(this));
+
+        endCheck("ReturnNode");
+    }
+
     /** Procedure, function or main program node */
     public void visitProcedureNode(DeclNode.ProcedureNode node) {
         beginCheck("Procedure");
         SymEntry.ProcedureEntry procEntry = node.getProcEntry();
+
+        // Check parameters
+        Type.ProcedureType procType = procEntry.getType();
+
+        // Used to check for duplicate identifiers
+        ArrayList<String> identifiers = new ArrayList<String>();
+
         // Set the current symbol table scope to that for the procedure.
         Scope localScope = procEntry.getLocalScope();
+
+        for (SymEntry.ParamEntry param : procType.getFormalParams()) {
+            
+            String id = param.getIdent();
+            if (identifiers.contains(id)) {
+                // Duplicate
+                // TODO: Improve message
+                staticError("Duplicate identifiers", param.getLocation());
+            }
+            identifiers.add(id);
+
+            // Add the parameter to the local scope
+            // TODO: Should this override?, see addEntry function
+            localScope.addEntry(param);
+        }
+
         // resolve all references to identifiers with the declarations
         localScope.resolveScope();
         // Enter the local scope
@@ -145,6 +188,54 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             endCheck("Call");
             return;
         }
+
+        // Check the parameters
+        Type.ProcedureType procType = procEntry.getType();
+
+        // Formal parameters list
+        List<SymEntry.ParamEntry> formalParams = procType.getFormalParams();
+
+        ArrayList<String> identifiers = new ArrayList<String>();
+
+        for (int i = 0; i < node.getParameters().size(); i++) {
+            // Transform the node
+            // Typecast should never fail
+            node.getParameters().set(i, (ExpNode.ActualParamNode)node.getParameters().get(i).transform(this));
+
+            ExpNode.ActualParamNode param = node.getParameters().get(i);
+            if (identifiers.contains(param.getIdentifier())) {
+                // TODO: Fix message
+                staticError("Duplicate identifiers in call", param.getLocation());
+            }
+            identifiers.add(param.getIdentifier());
+
+            boolean foundParam = false;
+
+            for (SymEntry.ParamEntry f : formalParams) {
+                if (f.getIdent().equals(param.getIdentifier())) {
+                    foundParam = true;
+
+                    // Check the types
+                    // TODO: Coerce?
+                    System.out.println(f.getType());
+                    System.out.println(param.getCondition().getType());
+                    try {
+                        ExpNode cond = f.getType().coerceToType(param.getCondition());
+                    } catch (Type.IncompatibleTypes e) {
+                        staticError("Invalid type for parameter '" + f.getIdent() + "'", param.getLocation());
+                    }
+                    // if ( !(f.getType().equals(param.getCondition().getType())) ) {
+                    //     staticError("Invalid type for parameter '" + f.getIdent() + "'", param.getLocation());
+                    // }
+                }
+            }
+
+            if (foundParam == false) {
+                // TODO: Fix message
+                staticError("Unknown parameter '" + param.getIdentifier() + "'", param.getLocation());
+            }
+        }
+
         endCheck("Call");
     }
     /** Statement list node */

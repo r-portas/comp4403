@@ -23,4 +23,6 @@ public interface StatementVisitor {
     void visitIfNode( StatementNode.IfNode node);
 
     void visitWhileNode( StatementNode.WhileNode node);
+
+    void visitReturnNode( StatementNode.ReturnNode node);
 }

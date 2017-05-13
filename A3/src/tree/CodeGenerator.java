@@ -50,6 +50,22 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     
     /* -------------------- Visitor methods ----------------------------*/
 
+    public Code visitActualParamNode( ExpNode.ActualParamNode node) {
+        beginGen( "ActualParam" );
+
+
+        endGen( "ActualParam" );
+        return null;
+    }
+
+    public Code visitReturnNode( StatementNode.ReturnNode node) {
+        beginGen( "ReturnNode" );
+
+
+        endGen( "ReturnNode" );
+        return null;
+    }
+
     /** Generate code for a single procedure. */
     public void visitProcedureNode( DeclNode.ProcedureNode node ) {
         beginGen( "Procedure" );

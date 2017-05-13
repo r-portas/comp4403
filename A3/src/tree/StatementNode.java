@@ -193,14 +193,65 @@ public abstract class StatementNode {
             return "WRITE " + exp.toString();
         }
     }
+
+
+    /**
+     * Tree node for returning from a function
+     */
+    public static class ReturnNode extends StatementNode {
+        private ExpNode condition;
+
+        public ReturnNode( Location loc, ExpNode condition ) {
+            super( loc );
+            this.condition = condition;
+        }
+
+        /**
+         * Returns the condition of the return
+         *
+         * @return The return condition
+         */
+        public ExpNode getReturnCondition() {
+            return condition;
+        }
+
+        /**
+         * Updates the return condition
+         *
+         * @param condition The new return condition
+         */
+        public void setReturnCondition(ExpNode condition) {
+            this.condition = condition;
+        }
+
+        @Override
+        public void accept( StatementVisitor visitor ) {
+            visitor.visitReturnNode( this );
+        }
+
+        @Override
+        public Code genCode( StatementTransform<Code> visitor ) {
+            return visitor.visitReturnNode( this );
+        }
+
+        @Override
+        public String toString( int level ) {
+            return "RETURN " + condition.toString();
+        }
+    }
+
+
     /** Tree node representing a "call" statement. */
     public static class CallNode extends StatementNode {
         private String id;
         private SymEntry.ProcedureEntry procEntry;
+        private List<ExpNode.ActualParamNode> parameters;
 
         public CallNode( Location loc, String id ) {
             super( loc );
             this.id = id;
+
+            this.parameters = new ArrayList<ExpNode.ActualParamNode>();
         }
         @Override
         public void accept( StatementVisitor visitor ) {
@@ -210,6 +261,24 @@ public abstract class StatementNode {
         public Code genCode( StatementTransform<Code> visitor ) {
             return visitor.visitCallNode( this );
         }
+
+        /**
+         * Sets the parameters of the call
+         * @param parameters The list of parameters
+         */
+        public void setParameters(List<ExpNode.ActualParamNode> parameters) {
+            this.parameters = parameters;
+        }
+
+        /**
+         * Returns a list of parameters
+         *
+         * @return A list of parameters
+         */
+        public List<ExpNode.ActualParamNode> getParameters() {
+            return this.parameters;
+        }
+
         public String getId() {
             return id;
         }

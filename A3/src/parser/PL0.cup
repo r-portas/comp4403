@@ -156,10 +156,6 @@ non terminal                  VarDeclSeq,
 non terminal DeclNode.ProcedureNode  ProcedureDef;
 non terminal SymEntry.ProcedureEntry ProcedureHead;
 non terminal SymEntry.ParamEntry FormalParam;
-non terminal 
-                            ActualParam,
-                            OptActualParams,
-                            ActualParamList;
 non terminal StatementNode.ListNode StatementList;
 non terminal StatementNode    Statement,
                               CompoundStatement;
@@ -177,6 +173,12 @@ non terminal ExpNode          LValue;
 
 non terminal List<SymEntry.ParamEntry> FormalParamList,
                               OptFormalParams;
+
+non terminal ExpNode.ActualParamNode ActualParam;
+
+non terminal List<ExpNode.ActualParamNode>
+                            OptActualParams,
+                            ActualParamList;
 
 /**-------------------------------------------------------------*
  *------------------------ GRAMMAR RULES -----------------------*
@@ -394,6 +396,9 @@ ProcedureHead ::= KW_PROCEDURE IDENTIFIER:id LPAREN FormalParamList:pl RPAREN Op
             // Set the result type, will either be a Type or null
             procType.setResultType(ort);
 
+            // Set the formal parameters
+            procType.setFormalParams(pl);
+
             RESULT = procEntry;
         :}
     |  KW_PROCEDURE IDENTIFIER:id error
@@ -518,7 +523,11 @@ Statement ::= KW_WHILE Condition:c KW_DO Statement:s
        :} 
     |  KW_CALL IDENTIFIER:id LPAREN ActualParamList:pl RPAREN
         {: 
-            RESULT = new StatementNode.CallNode( idxleft, id );
+            StatementNode.CallNode call = new StatementNode.CallNode( idxleft, id );
+            
+            call.setParameters(pl);
+
+            RESULT = call;
         :}
     | KW_RETURN Condition:c
         {:
@@ -532,27 +541,33 @@ Statement ::= KW_WHILE Condition:c KW_DO Statement:s
 
 ActualParamList ::= ActualParam:ap OptActualParams:oap
         {:
-            // TODO 
+            // Add the parameter
+            oap.add(ap);
+
+            RESULT = oap;
         :}
     | /* empty */
         {:
-            // TODO
+            RESULT = new ArrayList<ExpNode.ActualParamNode>();
         :}
     ;
 
 OptActualParams ::= COMMA ActualParam:ap OptActualParams:oap
         {:
-            // TODO
+            // Add the parameter
+            oap.add(ap);
+
+            RESULT = oap;
         :}
     | /* empty */
         {:
-            // TODO
+            RESULT = new ArrayList<ExpNode.ActualParamNode>();
         :}
     ;
 
 ActualParam ::= IDENTIFIER:id GETS Condition:c
         {:
-            // TODO
+            RESULT = new ExpNode.ActualParamNode( idxleft, id, c );
         :}
     ;
 
@@ -671,7 +686,7 @@ Factor ::= PLUS Factor:e
         {:
             RESULT = lval;
         :}
-    | IDENTIFIER:id LPAREN ActualParamList RPAREN
+    | IDENTIFIER:id LPAREN ActualParamList:apl RPAREN
         {:
             // TODO
         :}

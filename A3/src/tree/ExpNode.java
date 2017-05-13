@@ -77,6 +77,50 @@ public abstract class ExpNode {
         }
     }
 
+    /** Tree node representing an actual parameter */
+    public static class ActualParamNode extends ExpNode { 
+        // The condition of the parameter
+        private ExpNode condition;
+
+        // The identifier
+        private String identifier;
+
+        public ActualParamNode( Location loc, String identifier, ExpNode condition ) {
+            super( loc );
+           
+            this.identifier = identifier;
+            this.condition = condition;
+        }
+
+        /**
+         * Returns the identifier
+         *
+         * @return String
+         */
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        /**
+         * Returns the condition
+         *
+         * @return ExpNode
+         */
+        public ExpNode getCondition() {
+            return condition;
+        }
+
+        @Override
+        public ExpNode transform( ExpTransform<ExpNode> visitor ) {
+            return visitor.visitActualParamNode( this );
+        }
+
+        @Override
+        public Code genCode( ExpTransform<Code> visitor ) {
+            return visitor.visitActualParamNode( this );
+        }
+    }
+
     /** Tree node representing a constant within an expression. */
     public static class ConstNode extends ExpNode {
         /** constant's value */
