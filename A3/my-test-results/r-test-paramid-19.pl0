@@ -1,0 +1,10 @@
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-19.pl0
+Parsing complete
+    10     write x;  // valid as x is an integer
+******           ^  Error: Constant or variable identifier required
+    11     write b;   // invalid as b is boolean
+******           ^  Error: Constant or variable identifier required
+    12     write int  // valid as the parameter and not the type
+******           ^  Error: Constant or variable identifier required
+Static semantic analysis complete
+3 errors detected.

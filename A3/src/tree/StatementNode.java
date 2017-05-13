@@ -197,6 +197,7 @@ public abstract class StatementNode {
     public static class CallNode extends StatementNode {
         private String id;
         private SymEntry.ProcedureEntry procEntry;
+
         public CallNode( Location loc, String id ) {
             super( loc );
             this.id = id;

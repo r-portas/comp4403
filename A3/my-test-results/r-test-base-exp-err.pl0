@@ -1,0 +1,35 @@
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-base-exp-err.pl0
+     6     i = 42;    // duplicate declaration
+******     ^  Error: i already defined
+     7     S = 27;    // duplicate declaration
+******     ^  Error: S already defined
+     8     big = 5000000000; // too big
+******           ^  Error: integer too large
+Parsing complete
+    10   i := true;   // cannot assign boolean to int
+******        ^  Error: can't coerce boolean to int
+    11   b := 8;      // cannot assign int to boolean
+******        ^  Error: can't coerce int to boolean
+    12   i := b;      // cannot assign boolean to int
+******        ^  Error: can't coerce boolean to int
+    13   i := i + b;  // cannot add int and boolean
+******            ^  Error: can't coerce boolean to int
+    14   b := i + b;  // cannot add int and boolean
+******          ^  Error: can't coerce int to boolean
+******            ^  Error: can't coerce boolean to int
+    18   b := j;      // cannot assign int subrange to boolean
+******        ^  Error: can't coerce S to boolean
+    19   j := b;      // cannot assign boolean to int subrange
+******        ^  Error: can't coerce boolean to int
+    20   j := i = j;  // cannot assign boolean to int
+******          ^  Error: can't coerce boolean to int
+    21   b := x * y;  // x and y not declared
+******        ^  Error: Constant or variable identifier required
+******          ^  Error: can't coerce int to boolean
+******            ^  Error: Constant or variable identifier required
+    22   i := i + (j * x);  // x not declared
+******                 ^  Error: Constant or variable identifier required
+    23   write undefined // undefined not declared
+******         ^  Error: Constant or variable identifier required
+Static semantic analysis complete
+17 errors detected.

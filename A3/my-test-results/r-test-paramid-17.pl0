@@ -1,0 +1,10 @@
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-17.pl0
+    11   call p( , b<-true );       // extra comma
+******           ^  Error: PL0 syntax error
+    12   call p( a<-5, b<-true, );  // extra comma
+******                          ^  Error: PL0 syntax error
+Parsing complete
+     7     x := a
+******          ^  Error: Constant or variable identifier required
+Static semantic analysis complete
+3 errors detected.

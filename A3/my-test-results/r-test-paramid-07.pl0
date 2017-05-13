@@ -1,0 +1,10 @@
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-07.pl0
+Parsing complete
+     8       write n;       // writes 103, 102, 101
+******             ^  Error: Constant or variable identifier required
+    10       if n = 101 then
+******          ^  Error: Constant or variable identifier required
+    11         write n-1    // write 100
+******               ^  Error: Constant or variable identifier required
+Static semantic analysis complete
+3 errors detected.

@@ -1,0 +1,8 @@
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-20.pl0
+Parsing complete
+     6       write n
+******             ^  Error: Constant or variable identifier required
+    10     write n  
+******           ^  Error: Constant or variable identifier required
+Static semantic analysis complete
+2 errors detected.

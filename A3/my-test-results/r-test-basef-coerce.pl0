@@ -1,0 +1,20 @@
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-basef-coerce.pl0
+Parsing complete
+    11   y := (x = 1); // incompatible
+******           ^  Error: can't coerce boolean to int
+    12   b := x; // incompatible
+******        ^  Error: can't coerce int to boolean
+    13   x := (x = b); // mismatch in expression and assignment
+******           ^  Error: Type of argument (ref(int)*ref(boolean)) does not match (((int*int)->boolean) & ((boolean*boolean)->boolean))
+    14   b := (x + b); // mismatch in expression and assignment
+******           ^  Error: can't coerce int to boolean
+******             ^  Error: can't coerce boolean to int
+    16   x := z;  // z undeclared (Error_TYPE for coercion)
+******        ^  Error: Constant or variable identifier required
+    17   y := z;  // z undeclared (Error_TYPE for coercion)
+******        ^  Error: Constant or variable identifier required
+    18   A := z   // z undeclared (Error_TYPE for coercion)
+******   ^  Error: Constant or variable identifier required
+******        ^  Error: Constant or variable identifier required
+Static semantic analysis complete
+9 errors detected.

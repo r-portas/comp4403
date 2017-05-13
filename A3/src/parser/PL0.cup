@@ -149,19 +149,22 @@ non terminal ConstExp         Constant;
 non terminal                  TypeDefSeq, 
                               TypeDef;
 non terminal Type             Type,
+                              OptReturnType,
                               TypeIdentifier;
 non terminal                  VarDeclSeq, 
                               VarDecl;
 non terminal DeclNode.ProcedureNode  ProcedureDef;
 non terminal SymEntry.ProcedureEntry ProcedureHead;
+non terminal SymEntry.ParamEntry FormalParam;
 non terminal 
-                              FormalParamList;
-non terminal 
-                              ActualParamList;
+                            ActualParam,
+                            OptActualParams,
+                            ActualParamList;
 non terminal StatementNode.ListNode StatementList;
 non terminal StatementNode    Statement,
                               CompoundStatement;
 non terminal ExpNode          Condition,
+                              OptDefaultValue,
                               RelCondition,
                               Exp,
                               Term,
@@ -171,6 +174,9 @@ non terminal Operator         Relation,
                               MulOp,
                               UnaryOperator;
 non terminal ExpNode          LValue;
+
+non terminal List<SymEntry.ParamEntry> FormalParamList,
+                              OptFormalParams;
 
 /**-------------------------------------------------------------*
  *------------------------ GRAMMAR RULES -----------------------*
@@ -366,8 +372,7 @@ ProcedureDef ::= ProcedureHead:procEntry EQUALS Block:b
         :}
     ;
 
-ProcedureHead ::= KW_PROCEDURE IDENTIFIER:id
-            LPAREN FormalParamList:pl RPAREN 
+ProcedureHead ::= KW_PROCEDURE IDENTIFIER:id LPAREN FormalParamList:pl RPAREN OptReturnType:ort
         {: 
             SymEntry.ProcedureEntry procEntry;
             /* Add an entry for the procedure to the current scope */
@@ -382,6 +387,13 @@ ProcedureHead ::= KW_PROCEDURE IDENTIFIER:id
             /* Create a new scope for the symbols local to
              * the procedure. */
             currentScope = currentScope.newScope( procEntry );
+
+            // Set up the return type and formal parameters
+            Type.ProcedureType procType = procEntry.getType();
+
+            // Set the result type, will either be a Type or null
+            procType.setResultType(ort);
+
             RESULT = procEntry;
         :}
     |  KW_PROCEDURE IDENTIFIER:id error
@@ -394,9 +406,71 @@ ProcedureHead ::= KW_PROCEDURE IDENTIFIER:id
         :}
     ;
 
+/* The optional return type */
+OptReturnType ::= COLON TypeIdentifier:ti
+        {:
+            RESULT = ti;    
+        :}
+    |  /* empty */
+        {:
+            RESULT = null;
+        :}
+    ;
+
+FormalParam ::= IDENTIFIER:id COLON TypeIdentifier:ti OptDefaultValue:odf
+        {:
+            // Create a new reference type to ti
+            Type.ReferenceType refType = new Type.ReferenceType(ti);
+
+            SymEntry.ParamEntry param = new SymEntry.ParamEntry(id, idxleft, refType);
+
+            // Set the default parameter, will either be a ExpNode or null
+            param.setDefaultParam(odf);
+
+            RESULT = param;
+
+        :}
+    ;
+
+OptDefaultValue ::= GETS Condition:c
+        {:
+            // Return the condition
+            RESULT = c;
+        :}
+    |  /* empty */
+        {:
+            // No default value
+            RESULT = null;
+        :}
+    ;
 
 /* To allow for the addition of procedure parameters. */
-FormalParamList ::= /* empty */
+FormalParamList ::= FormalParam:fp OptFormalParams:ofp
+        {:
+            // Add the first parameter
+            ofp.add(fp);
+
+            RESULT = ofp;
+        :}
+    | /* empty */
+        {:
+            // Return an empty list
+            List<SymEntry.ParamEntry> params = new ArrayList<SymEntry.ParamEntry>();
+            RESULT = params;
+        :}
+    ;
+
+OptFormalParams ::= COMMA FormalParam:fp OptFormalParams:ofp
+        {:
+            // Add to the current list then return
+            ofp.add(fp);
+            RESULT = ofp;
+        :}
+    |  /* empty */
+        {:
+            // Create the list
+            RESULT = new ArrayList<SymEntry.ParamEntry>();
+        :}
     ;
 
 CompoundStatement ::= KW_BEGIN StatementList:sl KW_END
@@ -446,13 +520,40 @@ Statement ::= KW_WHILE Condition:c KW_DO Statement:s
         {: 
             RESULT = new StatementNode.CallNode( idxleft, id );
         :}
+    | KW_RETURN Condition:c
+        {:
+            // Return a statement node for the return statement?
+        :}
     |  error:p 
         {: 
             RESULT = new StatementNode.ErrorNode( pxleft );
         :}
     ;
 
-ActualParamList ::= /* empty */
+ActualParamList ::= ActualParam:ap OptActualParams:oap
+        {:
+            // TODO 
+        :}
+    | /* empty */
+        {:
+            // TODO
+        :}
+    ;
+
+OptActualParams ::= COMMA ActualParam:ap OptActualParams:oap
+        {:
+            // TODO
+        :}
+    | /* empty */
+        {:
+            // TODO
+        :}
+    ;
+
+ActualParam ::= IDENTIFIER:id GETS Condition:c
+        {:
+            // TODO
+        :}
     ;
 
 LValue ::= IDENTIFIER:id
@@ -569,6 +670,10 @@ Factor ::= PLUS Factor:e
     |  LValue:lval
         {:
             RESULT = lval;
+        :}
+    | IDENTIFIER:id LPAREN ActualParamList RPAREN
+        {:
+            // TODO
         :}
     | error:e
         {:

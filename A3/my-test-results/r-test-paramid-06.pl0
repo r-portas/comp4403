@@ -1,0 +1,6 @@
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-06.pl0
+Parsing complete
+     5     write n
+******           ^  Error: can't coerce boolean to int
+Static semantic analysis complete
+1 error detected.
