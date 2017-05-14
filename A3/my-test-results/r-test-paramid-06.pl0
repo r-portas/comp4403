@@ -1,6 +1,8 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-06.pl0
+     2 procedure p( n : int <- 100, n : boolean <- true ) =
+******                              ^  Error: n repeated
 Parsing complete
      5     write n
 ******           ^  Error: can't coerce boolean to int
 Static semantic analysis complete
-1 error detected.
+2 errors detected.

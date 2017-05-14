@@ -1,8 +1,10 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-18.pl0
 Parsing complete
-     7     write x;  // valid as x is an integer
-******           ^  Error: Constant or variable identifier required
      8     write b   // invalid as b is boolean
-******           ^  Error: Constant or variable identifier required
+******           ^  Error: can't coerce boolean to int
+    16    call p( x<-c, b<-c );  // type mismatch first
+******               ^  Error: can't coerce boolean to int
+    17    call p( x<-i, b<-i )   // type mismatch second
+******                     ^  Error: can't coerce int to boolean
 Static semantic analysis complete
-2 errors detected.
+3 errors detected.

@@ -110,6 +110,15 @@ public abstract class ExpNode {
             return condition;
         }
 
+        /**
+         * Sets the condition
+         *
+         * @param condition The condition to set to
+         */
+        public void setCondition(ExpNode condition) {
+            this.condition = condition;
+        }
+
         @Override
         public ExpNode transform( ExpTransform<ExpNode> visitor ) {
             return visitor.visitActualParamNode( this );

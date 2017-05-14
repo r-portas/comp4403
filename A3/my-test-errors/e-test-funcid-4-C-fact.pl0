@@ -1,8 +1,8 @@
 Exception in thread "main" java.lang.NullPointerException
-	at tree.ExpNode$ArgumentsNode.<init>(ExpNode.java:227)
-	at tree.ExpNode$ArgumentsNode.<init>(ExpNode.java:232)
-	at parser.CUPParser$CUP$CUPParser$actions.CUP$CUPParser$do_action_part00000000(CUPParser.java:1541)
-	at parser.CUPParser$CUP$CUPParser$actions.CUP$CUPParser$do_action(CUPParser.java:1701)
+	at tree.ExpNode$ArgumentsNode.<init>(ExpNode.java:280)
+	at tree.ExpNode$ArgumentsNode.<init>(ExpNode.java:285)
+	at parser.CUPParser$CUP$CUPParser$actions.CUP$CUPParser$do_action_part00000000(CUPParser.java:1579)
+	at parser.CUPParser$CUP$CUPParser$actions.CUP$CUPParser$do_action(CUPParser.java:1742)
 	at parser.CUPParser.do_action(CUPParser.java:336)
 	at java_cup.runtime.lr_parser.parse(lr_parser.java:699)
 	at pl0.PL0_LALR.compile(PL0_LALR.java:155)

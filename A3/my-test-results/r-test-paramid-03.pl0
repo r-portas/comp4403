@@ -1,6 +1,7 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-03.pl0
+     4 procedure p( n : int <- 100, n : boolean <- true, n: S <- 99 ) = // repeated formal parameters
+******                              ^  Error: n repeated
+******                                                   ^  Error: n repeated
 Parsing complete
-     6     write n
-******           ^  Error: Constant or variable identifier required
 Static semantic analysis complete
-1 error detected.
+2 errors detected.

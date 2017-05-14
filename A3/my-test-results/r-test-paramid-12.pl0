@@ -1,8 +1,4 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-12.pl0
 Parsing complete
-    15       if n = 0 then
-******          ^  Error: Constant or variable identifier required
-    20          fret := fret * n
-******                         ^  Error: Constant or variable identifier required
 Static semantic analysis complete
-2 errors detected.
+No errors detected.

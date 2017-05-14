@@ -83,21 +83,10 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         // Check parameters
         Type.ProcedureType procType = procEntry.getType();
 
-        // Used to check for duplicate identifiers
-        ArrayList<String> identifiers = new ArrayList<String>();
-
         // Set the current symbol table scope to that for the procedure.
         Scope localScope = procEntry.getLocalScope();
 
         for (SymEntry.ParamEntry param : procType.getFormalParams()) {
-            
-            String id = param.getIdent();
-            if (identifiers.contains(id)) {
-                // Duplicate
-                // TODO: Improve message
-                staticError("Duplicate identifiers", param.getLocation());
-            }
-            identifiers.add(id);
 
             // Add the parameter to the local scope
             // TODO: Should this override?, see addEntry function
@@ -195,19 +184,12 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         // Formal parameters list
         List<SymEntry.ParamEntry> formalParams = procType.getFormalParams();
 
-        ArrayList<String> identifiers = new ArrayList<String>();
-
         for (int i = 0; i < node.getParameters().size(); i++) {
             // Transform the node
             // Typecast should never fail
             node.getParameters().set(i, (ExpNode.ActualParamNode)node.getParameters().get(i).transform(this));
 
             ExpNode.ActualParamNode param = node.getParameters().get(i);
-            if (identifiers.contains(param.getIdentifier())) {
-                // TODO: Fix message
-                staticError("Duplicate identifiers in call", param.getLocation());
-            }
-            identifiers.add(param.getIdentifier());
 
             boolean foundParam = false;
 
@@ -215,24 +197,28 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
                 if (f.getIdent().equals(param.getIdentifier())) {
                     foundParam = true;
 
+                    // Transform the condition
+                    param.setCondition( param.getCondition().transform(this) ); 
+
                     // Check the types
-                    // TODO: Coerce?
-                    System.out.println(f.getType());
-                    System.out.println(param.getCondition().getType());
-                    try {
-                        ExpNode cond = f.getType().coerceToType(param.getCondition());
-                    } catch (Type.IncompatibleTypes e) {
-                        staticError("Invalid type for parameter '" + f.getIdent() + "'", param.getLocation());
-                    }
-                    // if ( !(f.getType().equals(param.getCondition().getType())) ) {
-                    //     staticError("Invalid type for parameter '" + f.getIdent() + "'", param.getLocation());
+                    Type formalParamType = f.getType().optDereferenceType();
+                    Type paramType = param.getCondition().getType().optDereferenceType();
+
+                    // Check the types are compatible
+                    // if ( !(formalParamType.equals(paramType)) ) {
+                    //     staticError("Can't coerce " + paramType + " to " + formalParamType, param.getLocation());
                     // }
+                    try {
+                        ExpNode cond = formalParamType.coerceToType(param.getCondition());
+                    } catch (Type.IncompatibleTypes e) {
+                        staticError("can't coerce " + paramType + " to " + formalParamType, param.getCondition().getLocation());
+                    }
+
                 }
             }
 
             if (foundParam == false) {
-                // TODO: Fix message
-                staticError("Unknown parameter '" + param.getIdentifier() + "'", param.getLocation());
+                staticError("not a parameter of procedure", param.getLocation());
             }
         }
 

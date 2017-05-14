@@ -889,8 +889,22 @@ class CUP$CUPParser$actions {
             // Set the result type, will either be a Type or null
             procType.setResultType(ort);
 
-            // Set the formal parameters
-            procType.setFormalParams(pl);
+
+            // Used to check for duplicate identifiers
+            ArrayList<String> identifiers = new ArrayList<String>();
+
+            for (int i = (pl.size() - 1); i >= 0; i--) {
+                SymEntry.ParamEntry param = pl.get(i);
+
+                String paramId = param.getIdent();
+                if (identifiers.contains(paramId)) {
+                    errors.error(paramId + " repeated", param.getLocation());
+                } else {
+                    identifiers.add(paramId);
+                    // Add to the formal parameters
+                    procType.getFormalParams().add(param);
+                }
+            }
 
             RESULT = procEntry;
         
@@ -1220,6 +1234,17 @@ class CUP$CUPParser$actions {
 		List<ExpNode.ActualParamNode> pl = (List<ExpNode.ActualParamNode>)((java_cup.runtime.Symbol) CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).value;
 		 
             StatementNode.CallNode call = new StatementNode.CallNode( idxleft, id );
+
+            ArrayList<String> identifiers = new ArrayList<String>();
+
+            for (int i = pl.size() - 1; i >= 0; i--) {
+                ExpNode.ActualParamNode param = pl.get(i);
+                if (identifiers.contains(param.getIdentifier())) {
+                    // TODO: Move to cup
+                    errors.error(param.getIdentifier() + " repeated", param.getLocation());
+                }
+                identifiers.add(param.getIdentifier());
+            }
             
             call.setParameters(pl);
 

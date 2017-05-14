@@ -1,20 +1,4 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-13.pl0
 Parsing complete
-    25     if a10 then 
-******        ^  Error: Constant or variable identifier required
-    27         o1 := a1 + 100;
-******               ^  Error: Constant or variable identifier required
-    28         o2 := a2 + 100; 
-******               ^  Error: Constant or variable identifier required
-    33         o4 := a5 + 100; 
-******               ^  Error: Constant or variable identifier required
-    34         o5 := a6 + 100;
-******               ^  Error: Constant or variable identifier required
-    37     o7 := a8+a1;
-******           ^  Error: Constant or variable identifier required
-******              ^  Error: Constant or variable identifier required
-    38     o8 := a9+a2
-******           ^  Error: Constant or variable identifier required
-******              ^  Error: Constant or variable identifier required
 Static semantic analysis complete
-9 errors detected.
+No errors detected.

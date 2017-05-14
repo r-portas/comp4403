@@ -1,6 +1,4 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-15.pl0
 Parsing complete
-     8     x := n
-******          ^  Error: Constant or variable identifier required
 Static semantic analysis complete
-1 error detected.
+No errors detected.

@@ -1,8 +1,6 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-20.pl0
 Parsing complete
-     6       write n
-******             ^  Error: Constant or variable identifier required
-    10     write n  
-******           ^  Error: Constant or variable identifier required
+     9     call q(n<-99); // q doesn't have a parameter but p does
+******            ^  Error: not a parameter of procedure
 Static semantic analysis complete
-2 errors detected.
+1 error detected.
