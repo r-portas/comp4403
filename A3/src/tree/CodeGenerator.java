@@ -58,6 +58,14 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         return null;
     }
 
+    public Code visitReturnExpNode( ExpNode.ReturnExpNode node) {
+        beginGen( "ReturnExp" );
+
+
+        endGen( "ReturnExp" );
+        return null;
+    }
+
     public Code visitReturnNode( StatementNode.ReturnNode node) {
         beginGen( "ReturnNode" );
 

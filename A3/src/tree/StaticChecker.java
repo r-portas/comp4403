@@ -1,5 +1,6 @@
 package tree;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
@@ -67,10 +68,93 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         return node;
     }
 
+    public ExpNode.ReturnExpNode visitReturnExpNode( ExpNode.ReturnExpNode node ) {
+        beginCheck("ReturnExpNode");
+
+        SymEntry.ProcedureEntry procEntry = null;
+        // Look up the symbol table entry for the procedure.
+        SymEntry entry = currentScope.lookup( node.getId() );
+        if( entry instanceof SymEntry.ProcedureEntry ) {
+            procEntry = (SymEntry.ProcedureEntry)entry;
+            node.setEntry( procEntry );
+        } else {
+            staticError( "Procedure identifier required", node.getLocation() );
+            endCheck("Call");
+            // TODO: Might need to be changed to error later
+            return node;
+        }
+
+        // Check the parameters
+        Type.ProcedureType procType = procEntry.getType();
+
+        // Formal parameters list
+        List<SymEntry.ParamEntry> formalParams = procType.getFormalParams();
+
+        HashSet<String> suppliedActualParams = new HashSet<String>();
+
+        for (int i = 0; i < node.getParameters().size(); i++) {
+            // Transform the node
+            // Typecast should never fail
+            node.getParameters().set(i, (ExpNode.ActualParamNode)node.getParameters().get(i).transform(this));
+
+            ExpNode.ActualParamNode param = node.getParameters().get(i);
+            suppliedActualParams.add(param.getIdentifier());
+
+            boolean foundParam = false;
+
+            for (SymEntry.ParamEntry f : formalParams) {
+                if (f.getIdent().equals(param.getIdentifier())) {
+                    foundParam = true;
+
+                    // Transform the condition
+                    param.setCondition( param.getCondition().transform(this) ); 
+
+                    // Check the types
+                    Type formalParamType = f.getType().optDereferenceType();
+                    Type paramType = param.getCondition().getType().optDereferenceType();
+
+                    // Check the types are compatible
+                    // if ( !(formalParamType.equals(paramType)) ) {
+                    //     staticError("Can't coerce " + paramType + " to " + formalParamType, param.getLocation());
+                    // }
+                    try {
+                        ExpNode cond = formalParamType.coerceToType(param.getCondition());
+                    } catch (Type.IncompatibleTypes e) {
+                        staticError("can't coerce " + paramType + " to " + formalParamType, param.getCondition().getLocation());
+                    }
+
+                }
+            }
+
+            if (foundParam == false) {
+                staticError("not a parameter of procedure", param.getLocation());
+            }
+        }
+
+        // Check that all non default parameters have been supplied
+        for (SymEntry.ParamEntry p : formalParams) {
+            // No default value
+            if (p.getDefaultExp() == null) {
+                if ( !(suppliedActualParams.contains(p.getIdent())) ) {
+                    staticError("no value for parameter " + p.getIdent(), node.getLocation());
+                }
+            }
+        }
+
+
+        endCheck("ReturnExpNode");
+        return node;
+    }
+
     public void visitReturnNode( StatementNode.ReturnNode node) {
         beginCheck("ReturnNode");
 
-        node.setReturnCondition(node.getReturnCondition().transform(this));
+        SymEntry.ProcedureEntry proc = currentScope.getOwnerEntry();
+        Type resultType = proc.getType().getResultType();
+
+        ExpNode returnCondition = node.getReturnCondition().transform(this);
+
+        node.setReturnCondition(resultType.coerceExp(returnCondition));
 
         endCheck("ReturnNode");
     }
@@ -184,12 +268,15 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         // Formal parameters list
         List<SymEntry.ParamEntry> formalParams = procType.getFormalParams();
 
+        HashSet<String> suppliedActualParams = new HashSet<String>();
+
         for (int i = 0; i < node.getParameters().size(); i++) {
             // Transform the node
             // Typecast should never fail
             node.getParameters().set(i, (ExpNode.ActualParamNode)node.getParameters().get(i).transform(this));
 
             ExpNode.ActualParamNode param = node.getParameters().get(i);
+            suppliedActualParams.add(param.getIdentifier());
 
             boolean foundParam = false;
 
@@ -219,6 +306,16 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
             if (foundParam == false) {
                 staticError("not a parameter of procedure", param.getLocation());
+            }
+        }
+
+        // Check that all non default parameters have been supplied
+        for (SymEntry.ParamEntry p : formalParams) {
+            // No default value
+            if (p.getDefaultExp() == null) {
+                if ( !(suppliedActualParams.contains(p.getIdent())) ) {
+                    staticError("no value for parameter " + p.getIdent(), node.getLocation());
+                }
             }
         }
 

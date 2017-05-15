@@ -1,6 +1,7 @@
 package tree;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,60 @@ public abstract class ExpNode {
         @Override
         public String toString() {
             return "ErrorNode";
+        }
+    }
+
+    /** Tree node representing a return node */
+    public static class ReturnExpNode extends ExpNode {
+        private String id;
+        private SymEntry.ProcedureEntry procEntry;
+        private List<ExpNode.ActualParamNode> parameters;
+
+        public ReturnExpNode( Location loc, String id ) {
+            super( loc );
+            this.id = id;
+
+            this.parameters = new ArrayList<ExpNode.ActualParamNode>();
+        }
+        @Override
+        public ExpNode transform( ExpTransform<ExpNode> visitor ) {
+            return visitor.visitReturnExpNode( this );
+        }
+        @Override
+        public Code genCode( ExpTransform<Code> visitor ) {
+            return visitor.visitReturnExpNode( this );
+        }
+
+        /**
+         * Sets the parameters of the call
+         * @param parameters The list of parameters
+         */
+        public void setParameters(List<ExpNode.ActualParamNode> parameters) {
+            this.parameters = parameters;
+        }
+
+        /**
+         * Returns a list of parameters
+         *
+         * @return A list of parameters
+         */
+        public List<ExpNode.ActualParamNode> getParameters() {
+            return this.parameters;
+        }
+
+        public String getId() {
+            return id;
+        }
+        public SymEntry.ProcedureEntry getEntry() {
+            return procEntry;
+        }
+        public void setEntry(SymEntry.ProcedureEntry entry) {
+            this.procEntry = entry;
+        }
+        @Override
+        public String toString() {
+            String s = "RETURN " + id;
+            return s + ")";
         }
     }
 

@@ -17,4 +17,5 @@ public interface ExpTransform<ResultType> {
     ResultType visitWidenSubrangeNode(ExpNode.WidenSubrangeNode node);
 
     ResultType visitActualParamNode(ExpNode.ActualParamNode node);
+    ResultType visitReturnExpNode(ExpNode.ReturnExpNode node);
 }

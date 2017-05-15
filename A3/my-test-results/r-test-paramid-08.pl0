@@ -1,4 +1,7 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-08.pl0
 Parsing complete
+     8   call p()  // error no default and no n
+******        ^  Error: no value for parameter n
+******        ^  Error: no value for parameter b
 Static semantic analysis complete
-No errors detected.
+2 errors detected.

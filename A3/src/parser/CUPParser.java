@@ -903,6 +903,9 @@ class CUP$CUPParser$actions {
                     identifiers.add(paramId);
                     // Add to the formal parameters
                     procType.getFormalParams().add(param);
+
+                    // Add the variable to the scope
+                    currentScope.addEntry(param);
                 }
             }
 
@@ -1240,7 +1243,6 @@ class CUP$CUPParser$actions {
             for (int i = pl.size() - 1; i >= 0; i--) {
                 ExpNode.ActualParamNode param = pl.get(i);
                 if (identifiers.contains(param.getIdentifier())) {
-                    // TODO: Move to cup
                     errors.error(param.getIdentifier() + " repeated", param.getLocation());
                 }
                 identifiers.add(param.getIdentifier());
@@ -1262,7 +1264,8 @@ class CUP$CUPParser$actions {
 		Location cxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.peek()).xright;
 		ExpNode c = (ExpNode)((java_cup.runtime.Symbol) CUP$CUPParser$stack.peek()).value;
 		
-            // Return a statement node for the return statement?
+            StatementNode.ReturnNode rt = new StatementNode.ReturnNode(cxleft, c);
+            RESULT = rt;
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("Statement",18, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }
@@ -1685,11 +1688,26 @@ class CUP$CUPParser$actions {
 		Location idxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-3)).xleft;
 		Location idxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-3)).xright;
 		String id = (String)((java_cup.runtime.Symbol) CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-3)).value;
-		Location aplxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xleft;
-		Location aplxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xright;
-		List<ExpNode.ActualParamNode> apl = (List<ExpNode.ActualParamNode>)((java_cup.runtime.Symbol) CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).value;
+		Location plxleft = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xleft;
+		Location plxright = ((java_cup.runtime.ComplexSymbolFactory.ComplexSymbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).xright;
+		List<ExpNode.ActualParamNode> pl = (List<ExpNode.ActualParamNode>)((java_cup.runtime.Symbol) CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-1)).value;
 		
-            // TODO
+            // Similar to call node
+            ExpNode.ReturnExpNode call = new ExpNode.ReturnExpNode( idxleft, id );
+
+            ArrayList<String> identifiers = new ArrayList<String>();
+
+            for (int i = pl.size() - 1; i >= 0; i--) {
+                ExpNode.ActualParamNode param = pl.get(i);
+                if (identifiers.contains(param.getIdentifier())) {
+                    errors.error(param.getIdentifier() + " repeated", param.getLocation());
+                }
+                identifiers.add(param.getIdentifier());
+            }
+            
+            call.setParameters(pl);
+
+            RESULT = call;
         
               CUP$CUPParser$result = parser.getSymbolFactory().newSymbol("Factor",25, ((java_cup.runtime.Symbol)CUP$CUPParser$stack.elementAt(CUP$CUPParser$top-3)), ((java_cup.runtime.Symbol)CUP$CUPParser$stack.peek()), RESULT);
             }

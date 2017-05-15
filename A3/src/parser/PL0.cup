@@ -410,6 +410,9 @@ ProcedureHead ::= KW_PROCEDURE IDENTIFIER:id LPAREN FormalParamList:pl RPAREN Op
                     identifiers.add(paramId);
                     // Add to the formal parameters
                     procType.getFormalParams().add(param);
+
+                    // Add the variable to the scope
+                    currentScope.addEntry(param);
                 }
             }
 
@@ -544,7 +547,6 @@ Statement ::= KW_WHILE Condition:c KW_DO Statement:s
             for (int i = pl.size() - 1; i >= 0; i--) {
                 ExpNode.ActualParamNode param = pl.get(i);
                 if (identifiers.contains(param.getIdentifier())) {
-                    // TODO: Move to cup
                     errors.error(param.getIdentifier() + " repeated", param.getLocation());
                 }
                 identifiers.add(param.getIdentifier());
@@ -556,7 +558,8 @@ Statement ::= KW_WHILE Condition:c KW_DO Statement:s
         :}
     | KW_RETURN Condition:c
         {:
-            // Return a statement node for the return statement?
+            StatementNode.ReturnNode rt = new StatementNode.ReturnNode(cxleft, c);
+            RESULT = rt;
         :}
     |  error:p 
         {: 
@@ -711,9 +714,24 @@ Factor ::= PLUS Factor:e
         {:
             RESULT = lval;
         :}
-    | IDENTIFIER:id LPAREN ActualParamList:apl RPAREN
+    | IDENTIFIER:id LPAREN ActualParamList:pl RPAREN
         {:
-            // TODO
+            // Similar to call node
+            ExpNode.ReturnExpNode call = new ExpNode.ReturnExpNode( idxleft, id );
+
+            ArrayList<String> identifiers = new ArrayList<String>();
+
+            for (int i = pl.size() - 1; i >= 0; i--) {
+                ExpNode.ActualParamNode param = pl.get(i);
+                if (identifiers.contains(param.getIdentifier())) {
+                    errors.error(param.getIdentifier() + " repeated", param.getLocation());
+                }
+                identifiers.add(param.getIdentifier());
+            }
+            
+            call.setParameters(pl);
+
+            RESULT = call;
         :}
     | error:e
         {:
