@@ -87,8 +87,6 @@ public abstract class ExpNode {
         public ReturnExpNode( Location loc, String id ) {
             super( loc );
             this.id = id;
-
-            this.parameters = new ArrayList<ExpNode.ActualParamNode>();
         }
         @Override
         public ExpNode transform( ExpTransform<ExpNode> visitor ) {

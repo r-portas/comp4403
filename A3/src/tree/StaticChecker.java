@@ -87,6 +87,10 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         // Check the parameters
         Type.ProcedureType procType = procEntry.getType();
 
+        if (procType.getResultType() == null) {
+            staticError( node.getId() + " should be a function", node.getLocation());
+        }
+
         // Formal parameters list
         List<SymEntry.ParamEntry> formalParams = procType.getFormalParams();
 

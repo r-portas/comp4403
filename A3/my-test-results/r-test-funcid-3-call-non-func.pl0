@@ -1,4 +1,6 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-funcid-3-call-non-func.pl0
 Parsing complete
+    18   write p()    // p is not a function
+******         ^  Error: p should be a function
 Static semantic analysis complete
-No errors detected.
+1 error detected.

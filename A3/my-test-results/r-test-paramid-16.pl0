@@ -4,7 +4,5 @@ Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-16.pl0
     11   call p(a<-5, b<-true, c<-6, );  // invalid: extra comma
 ******                               ^  Error: PL0 syntax error
 Parsing complete
-     7     x := a
-******          ^  Error: Constant or variable identifier required
 Static semantic analysis complete
-3 errors detected.
+2 errors detected.

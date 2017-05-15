@@ -493,6 +493,11 @@ OptFormalParams ::= COMMA FormalParam:fp OptFormalParams:ofp
             // Create the list
             RESULT = new ArrayList<SymEntry.ParamEntry>();
         :}
+    | error
+        {:
+            // If we have errors, still get a list of parameters
+            RESULT = new ArrayList<SymEntry.ParamEntry>();
+        :}
     ;
 
 CompoundStatement ::= KW_BEGIN StatementList:sl KW_END
