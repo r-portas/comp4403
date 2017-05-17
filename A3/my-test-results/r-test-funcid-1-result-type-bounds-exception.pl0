@@ -1,3 +1,21 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-funcid-1-result-type-bounds-exception.pl0
 Parsing complete
 Static semantic analysis complete
+Code generation complete
+No errors detected.
+Running ...
+1
+0
+1
+
+Runtime error: bounds check failed at 1093: 3 not in 0..2
+PC=1094 in PROC   rangex : PROCEDURE) : int[0..2] level 1 start 1068 : 1098 FP=1 SL=1 DL=1 RA=1128
+Trace back terminated early - invalid dynamic link 1 FP= 1
+
+Stack pointer = 4
+     0   : 0
+ FP: 1   : 1
+     2   : 1
+     3   : 1128
+
+Terminated

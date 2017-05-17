@@ -1,14 +1,14 @@
-Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-13.pl0
+Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-test.pl0
 Parsing complete
 Static semantic analysis complete
+a > -3
+b > -2
+c > -1
 Code generation complete
 No errors detected.
 Running ...
-101
-102
-103
-104
-105
-106
+100
+1
+90
 
 Terminated

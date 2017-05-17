@@ -1,6 +1,12 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-07.pl0
 Parsing complete
 Static semantic analysis complete
-     6   procedure q( n : int <- n+x ) =
-******                           ^ Fatal: Internal error: code generator called on IdentifierNode
-1 error detected.
+Code generation complete
+No errors detected.
+Running ...
+103
+102
+101
+100
+
+Terminated

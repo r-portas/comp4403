@@ -200,10 +200,29 @@ public abstract class StatementNode {
      */
     public static class ReturnNode extends StatementNode {
         private ExpNode condition;
+        private SymEntry.ProcedureEntry proc;
 
-        public ReturnNode( Location loc, ExpNode condition ) {
+        public ReturnNode( Location loc, ExpNode condition) {
             super( loc );
             this.condition = condition;
+        }
+
+        /**
+         * Returns the procedure entry of the return node
+         *
+         * @return The proc entry
+         */
+        public SymEntry.ProcedureEntry getProcEntry() {
+            return proc;
+        }
+
+        /**
+         * Sets the procedure entry
+         *
+         * @param proc The procedure entry
+         */
+        public void setProcEntry(SymEntry.ProcedureEntry proc) {
+            this.proc = proc;
         }
 
         /**

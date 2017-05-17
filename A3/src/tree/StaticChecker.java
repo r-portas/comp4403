@@ -59,9 +59,12 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
     }
 
     public ExpNode.ActualParamNode visitActualParamNode( ExpNode.ActualParamNode node) {
+        beginCheck( "ActualNode" );
 
         // Transform the expression
         node.setCondition(node.getCondition().transform( this ));
+
+        endCheck( "ActualNode" );
         return node;
     }
 
@@ -71,12 +74,6 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         SymEntry.ProcedureEntry procEntry = null;
         // Look up the symbol table entry for the procedure.
         SymEntry entry = currentScope.lookup( node.getId() );
-
-        // if (procEntry == null) {
-        //     staticError( node.getId() + " should be a function", node.getLocation());
-        //     endCheck("Call");
-        //     return node;
-        // }
 
         if( entry instanceof SymEntry.ProcedureEntry ) {
             procEntry = (SymEntry.ProcedureEntry)entry;
@@ -158,6 +155,8 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         beginCheck("ReturnNode");
 
         SymEntry.ProcedureEntry proc = currentScope.getOwnerEntry();
+        node.setProcEntry(proc);
+
         Type resultType = proc.getType().getResultType();
 
         ExpNode returnCondition = node.getReturnCondition().transform(this);

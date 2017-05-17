@@ -1,3 +1,11 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-funcid-7-nested-calls.pl0
 Parsing complete
 Static semantic analysis complete
+Code generation complete
+No errors detected.
+Running ...
+6
+720
+720
+
+Terminated
