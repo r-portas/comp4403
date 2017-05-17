@@ -26,7 +26,7 @@ FILE_EXTENSION = '.pl0'
 PATH_ITEMS = ['bin', 'java-cup-11b.jar']
 
 # The main java class
-MAIN = 'pl0.PL0_LALR -c'
+MAIN = 'pl0.PL0_LALR'
 
 def generate_classpath(path_items, working_dir):
     """ Generate the classpath for running a PL0 file """

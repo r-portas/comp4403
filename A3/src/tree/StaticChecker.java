@@ -187,6 +187,10 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             // Add the parameter to the local scope
             // TODO: Should this override?, see addEntry function
             localScope.addEntry(param);
+
+            if (param.getDefaultExp() != null) {
+                param.setDefaultParam( param.getDefaultExp().transform( this ) );
+            }
         }
 
         // resolve all references to identifiers with the declarations
@@ -314,6 +318,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
                     // }
                     try {
                         ExpNode cond = formalParamType.coerceToType(param.getCondition());
+                        param.setCondition(cond);
                     } catch (Type.IncompatibleTypes e) {
                         staticError("can't coerce " + paramType + " to " + formalParamType, param.getCondition().getLocation());
                     }

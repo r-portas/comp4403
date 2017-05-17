@@ -9,6 +9,7 @@ import machine.StackMachine;
 import source.Errors;
 import syms.SymEntry;
 import syms.Type;
+import syms.Scope;
 import tree.StatementNode.*;
 
 /** class CodeGenerator implements code generation using the
@@ -50,28 +51,98 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
     
     /* -------------------- Visitor methods ----------------------------*/
 
+    /**
+     * Generates code for the parameters
+     *
+     * @param proc The procedure entry
+     * @param params The actual parmaeters of the node
+     */
+    private Code generateParams(SymEntry.ProcedureEntry proc, List<ExpNode.ActualParamNode> params) {
+        Code code = new Code();
+        Scope scope = proc.getLocalScope();
+
+        int offsetCounter = 0;
+        int totalOffset = 1;
+
+        for (SymEntry.ParamEntry formal : proc.getType().getFormalParams()) {
+            totalOffset += formal.getType().getSpace();
+        }
+
+        for (SymEntry.ParamEntry formal : proc.getType().getFormalParams()) {
+            boolean foundParam = false;
+
+            for (ExpNode.ActualParamNode param : params) {
+                // Check the identifier
+                if (param.getIdentifier().equals(formal.getIdent())) {
+                    foundParam = true;
+                    // TODO: Check that this is reverse
+                    SymEntry.ParamEntry paramEntry = (SymEntry.ParamEntry)scope.lookup( param.getIdentifier() );
+                    int paramSpace = paramEntry.getType().getSpace();
+                    offsetCounter += paramSpace;
+
+                    // Negative offset
+                    paramEntry.setOffset(-(totalOffset - offsetCounter));
+
+                    code.append( param.genCode( this ) );
+                }
+            }
+            
+            // Use the default parameter
+            if (foundParam == false) {
+                int paramSpace = formal.getType().getSpace();
+                offsetCounter += paramSpace;
+
+                // Negative offset
+                formal.setOffset(-(totalOffset - offsetCounter));
+
+                code.append( formal.getDefaultExp().genCode( this ) );
+            }
+        }
+
+        return code;
+    }
+
     public Code visitActualParamNode( ExpNode.ActualParamNode node) {
         beginGen( "ActualParam" );
 
+        Code code = new Code();
+
+        System.out.println("Actual node");
+        code.append( node.getCondition().genCode( this ) );
 
         endGen( "ActualParam" );
-        return null;
+        return code;
     }
 
     public Code visitReturnExpNode( ExpNode.ReturnExpNode node) {
         beginGen( "ReturnExp" );
 
+        SymEntry.ProcedureEntry proc = node.getEntry();
+        Code code = new Code();
+
+        code.append( generateParams(proc, node.getParameters()) );
+
+        /* Generate the call instruction. The second parameter is the
+         * procedure's symbol table entry. The actual address is resolved 
+         * at load time.
+         */
+        code.genCall( staticLevel - proc.getLevel(), proc );
+
+        // Return address is here
 
         endGen( "ReturnExp" );
-        return null;
+        return code;
     }
 
     public Code visitReturnNode( StatementNode.ReturnNode node) {
         beginGen( "ReturnNode" );
 
+        Code code = new Code();
+        // Push return onto stack before returning?
+        code.append( node.getReturnCondition().genCode( this ) );
 
         endGen( "ReturnNode" );
-        return null;
+        return code;
     }
 
     /** Generate code for a single procedure. */
@@ -147,6 +218,9 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Call" );
         SymEntry.ProcedureEntry proc = node.getEntry();
         Code code = new Code();
+
+        code.append( generateParams(proc, node.getParameters()) );
+
         /* Generate the call instruction. The second parameter is the
          * procedure's symbol table entry. The actual address is resolved 
          * at load time.

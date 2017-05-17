@@ -1,4 +1,17 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-base3-bounds.pl0
 Parsing complete
 Static semantic analysis complete
+Code generation complete
 No errors detected.
+Running ...
+102
+101
+100
+
+Runtime error: bounds check failed at 1046: 99 not in 100..102
+PC=1047 in PROC   <main> : PROCEDURE) : void level 0 start 1000 : 1069 FP=0 SL=0 DL=0 RA=0
+  x(3) = 100
+  y(4) = 102
+End of traceBack
+
+Terminated

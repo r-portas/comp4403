@@ -1,4 +1,6 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-13.pl0
 Parsing complete
 Static semantic analysis complete
-No errors detected.
+    17 	     a4: boolean <- true,
+******                      ^ Fatal: Internal error: code generator called on IdentifierNode
+1 error detected.

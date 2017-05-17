@@ -1,4 +1,24 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-base9-proc.pl0
 Parsing complete
 Static semantic analysis complete
+Code generation complete
 No errors detected.
+Running ...
+2
+
+Runtime error: divide by zero
+PC=1032 in PROC   r : PROCEDURE) level 2 start 1006 : 1069 FP=22 SL=18 DL=18 RA=1095
+  z(3) = 0
+PC=1095 in PROC   p : PROCEDURE) level 1 start 1069 : 1106 FP=18 SL=0 DL=15 RA=1005
+  y(3) = 0
+PC=1005 in PROC   q : PROCEDURE) level 1 start 1000 : 1006 FP=15 SL=0 DL=11 RA=1068
+PC=1068 in PROC   r : PROCEDURE) level 2 start 1006 : 1069 FP=11 SL=7 DL=7 RA=1095
+  z(3) = 1
+PC=1095 in PROC   p : PROCEDURE) level 1 start 1069 : 1106 FP=7 SL=0 DL=4 RA=1005
+  y(3) = 1
+PC=1005 in PROC   q : PROCEDURE) level 1 start 1000 : 1006 FP=4 SL=0 DL=0 RA=1123
+PC=1123 in PROC   <main> : PROCEDURE) : void level 0 start 1106 : 1128 FP=0 SL=0 DL=0 RA=0
+  x(3) = 1
+End of traceBack
+
+Terminated

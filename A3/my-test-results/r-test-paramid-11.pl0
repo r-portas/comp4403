@@ -1,4 +1,6 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-paramid-11.pl0
 Parsing complete
 Static semantic analysis complete
-No errors detected.
+    10 procedure p( n : int <- n-1 ) =   // default uses global n; param = 106, 103, 100
+******                         ^ Fatal: Internal error: code generator called on IdentifierNode
+1 error detected.
