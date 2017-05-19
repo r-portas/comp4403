@@ -6,6 +6,7 @@ procedure fact( n : int ): int =
       f := 1
     else
       f := n*fact(n <- n-1);
+      //write 10;
     return f
   end;
 begin

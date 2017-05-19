@@ -4,7 +4,10 @@ Static semantic analysis complete
 Code generation complete
 No errors detected.
 Running ...
-101
-100
+
+Runtime error: non-boolean operand in branch
+PC=1006 in PROC   p : PROCEDURE(PARAM  n : ref(int) level 2 offset -3, PARAM  b : ref(boolean) level 2 offset -2) level 1 start 1000 : 1020 FP=5 SL=0 DL=0 RA=1028
+PC=1028 in PROC   <main> : PROCEDURE) : void level 0 start 1020 : 1037 FP=0 SL=0 DL=0 RA=0
+End of traceBack
 
 Terminated

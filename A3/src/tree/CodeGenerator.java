@@ -57,15 +57,10 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
      * @param proc The procedure entry
      * @param params The actual parmaeters of the node
      */
-    private Code generateParams(SymEntry.ProcedureEntry proc, List<ExpNode.ActualParamNode> params) {
+    private Code generateParams(SymEntry.ProcedureEntry proc, List<ExpNode.ActualParamNode> params, Scope scope) {
         Code code = new Code();
-        
-        Scope scope = proc.getLocalScope();
-        // Create a new scope
-        scope = scope.newScope(proc);
-        proc.setLocalScope(scope);
 
-        int totalParamSpace = 1;
+        int totalParamSpace = 2;
 
         for (SymEntry.ParamEntry formal : proc.getType().getFormalParams()) {
             boolean foundParam = false;
@@ -142,10 +137,18 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
         // Generate a position to store the return value
         Scope scope = proc.getLocalScope();
-        // This should be -1
-        scope.allocValueParameterSpace(((Type.ProcedureType)proc.getType()).getResultType().getSpace());
+        
+        // Create a new scope
+        scope = scope.newScope(proc);
+        proc.setLocalScope(scope);
 
-        code.append( generateParams(proc, node.getParameters()) );
+        // This should be -1 position
+        scope.allocValueParameterSpace(((Type.ProcedureType)proc.getType()).getResultType().getSpace());
+        // Set the return value, and a garbage value
+        code.genLoadConstant( 0x80808080 );
+        
+        // Generate the parameters
+        code.append( generateParams(proc, node.getParameters(), scope) );
 
         /* Generate the call instruction. The second parameter is the
          * procedure's symbol table entry. The actual address is resolved 
@@ -153,8 +156,20 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
          */
         code.genCall( staticLevel - proc.getLevel(), proc );
 
+        int paramValueSize = scope.getValueParameterSpace();
+        code.genDeallocStack(paramValueSize - 1);
+        
         // Return address is here, should be top of the stack
-        // code.generateOp( Operation.WRITE );
+        code.generateOp( Operation.DUP );
+        code.genLoadConstant( 0x80808080 );
+        code.generateOp( Operation.EQUAL );
+
+        code.genLoadConstant( 3 );
+        code.generateOp( Operation.BR_FALSE );
+
+        // These are 3 instructions
+        code.genLoadConstant( StackMachine.NO_RETURN );
+        code.generateOp( Operation.STOP );
 
         endGen( "ReturnExp" );
         return code;
@@ -167,10 +182,11 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         // Push return onto stack before returning?
         code.append( node.getReturnCondition().genCode( this ) );
 
+        int valueSpace = node.getProcEntry().getLocalScope().getValueParameterSpace();
+        
         // The return address is -1
-        code.genLoadConstant(-1);
-
-        // Store the value
+        code.genLoadConstant(-valueSpace);
+        
         code.generateOp( Operation.STORE_FRAME );
 
         endGen( "ReturnNode" );
@@ -251,8 +267,12 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         beginGen( "Call" );
         SymEntry.ProcedureEntry proc = node.getEntry();
         Code code = new Code();
+        
+        // Create a new scope
+        Scope scope = proc.getLocalScope().newScope(proc);
+        proc.setLocalScope(scope);
 
-        code.append( generateParams(proc, node.getParameters()) );
+        code.append( generateParams(proc, node.getParameters(), proc.getLocalScope()) );
 
         /* Generate the call instruction. The second parameter is the
          * procedure's symbol table entry. The actual address is resolved 
