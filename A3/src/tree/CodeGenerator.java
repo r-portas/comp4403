@@ -1,4 +1,5 @@
 package tree;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -55,36 +56,17 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
      * Generates code for the parameters
      *
      * @param proc The procedure entry
-     * @param params The actual parmaeters of the node
+     * @param params The actual parameters of the node
      */
-    private Code generateParams(SymEntry.ProcedureEntry proc, List<ExpNode.ActualParamNode> params, Scope scope) {
+    private Code generateParams(SymEntry.ProcedureEntry proc, List<ExpNode.ActualParamNode> params) {
         Code code = new Code();
+        Scope scope = proc.getLocalScope();
 
-        int totalParamSpace = 2;
-
-        for (SymEntry.ParamEntry formal : proc.getType().getFormalParams()) {
-            boolean foundParam = false;
-
-            for (ExpNode.ActualParamNode param : params) {
-                // Check the identifier
-                if (param.getIdentifier().equals(formal.getIdent())) {
-                    foundParam = true;
-                    // TODO: Check that this is reverse
-                    SymEntry.ParamEntry paramEntry = (SymEntry.ParamEntry)scope.lookup( param.getIdentifier() );
-                    int paramSpace = paramEntry.getType().getSpace();
-                    totalParamSpace += paramSpace;
-                }
-            }
-            
-            // Use the default parameter
-            if (foundParam == false) {
-                int paramSpace = formal.getType().getSpace();
-                totalParamSpace += paramSpace;
-            }
-
-        }
-
-        for (SymEntry.ParamEntry formal : proc.getType().getFormalParams()) {
+        List<SymEntry.ParamEntry> formalParams = proc.getType().getFormalParams();	
+        ArrayList<Integer> offsets = new ArrayList<Integer>();
+        
+        for (int i = formalParams.size() - 1; i >= 0; i--) {
+            SymEntry.ParamEntry formal = formalParams.get(i);
             boolean foundParam = false;
 
             for (ExpNode.ActualParamNode param : params) {
@@ -97,8 +79,9 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
                     // Negative offset
                     // paramEntry.setOffset(-(totalOffset - offsetCounter));
-                    paramEntry.setOffset(-(totalParamSpace + scope.allocValueParameterSpace(paramSpace)));
-
+                    //formal.setOffset(scope.allocValueParameterSpace(paramSpace));
+                    offsets.add(scope.allocValueParameterSpace(paramSpace));
+                    
                     code.append( param.genCode( this ) );
                 }
             }
@@ -109,10 +92,21 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
 
                 // Negative offset
                 // formal.setOffset(-(totalOffset - offsetCounter));
-                formal.setOffset(-(totalParamSpace + scope.allocValueParameterSpace(paramSpace)));
+                // formal.setOffset(scope.allocValueParameterSpace(paramSpace));
+                offsets.add(scope.allocValueParameterSpace(paramSpace));
 
                 code.append( formal.getDefaultExp().genCode( this ) );
             }
+ 
+        }
+        
+        // Set the offsets, in reverse
+        for (int i = 0; i < formalParams.size(); i++) {
+            SymEntry.ParamEntry formal = formalParams.get(i);
+            
+            int offset = offsets.get(i);
+            
+            formal.setOffset(offset);
         }
 
         return code;
@@ -142,13 +136,11 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         scope = scope.newScope(proc);
         proc.setLocalScope(scope);
 
-        // This should be -1 position
-        scope.allocValueParameterSpace(((Type.ProcedureType)proc.getType()).getResultType().getSpace());
         // Set the return value, and a garbage value
         code.genLoadConstant( 0x80808080 );
         
         // Generate the parameters
-        code.append( generateParams(proc, node.getParameters(), scope) );
+        code.append( generateParams(proc, node.getParameters()) );
 
         /* Generate the call instruction. The second parameter is the
          * procedure's symbol table entry. The actual address is resolved 
@@ -157,7 +149,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         code.genCall( staticLevel - proc.getLevel(), proc );
 
         int paramValueSize = scope.getValueParameterSpace();
-        code.genDeallocStack(paramValueSize - 1);
+        code.genDeallocStack(paramValueSize);
         
         // Return address is here, should be top of the stack
         code.generateOp( Operation.DUP );
@@ -182,9 +174,8 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         // Push return onto stack before returning?
         code.append( node.getReturnCondition().genCode( this ) );
 
-        int valueSpace = node.getProcEntry().getLocalScope().getValueParameterSpace();
+        int valueSpace = node.getProcEntry().getLocalScope().getValueParameterSpace() + 1;
         
-        // The return address is -1
         code.genLoadConstant(-valueSpace);
         
         code.generateOp( Operation.STORE_FRAME );
@@ -272,7 +263,7 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         Scope scope = proc.getLocalScope().newScope(proc);
         proc.setLocalScope(scope);
 
-        code.append( generateParams(proc, node.getParameters(), proc.getLocalScope()) );
+        code.append( generateParams(proc, node.getParameters()) );
 
         /* Generate the call instruction. The second parameter is the
          * procedure's symbol table entry. The actual address is resolved 

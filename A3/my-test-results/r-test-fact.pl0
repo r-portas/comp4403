@@ -1,13 +1,18 @@
 Compiling /Users/roy/projects/comp4403/A3/test-pgm/test-fact.pl0
 Parsing complete
 Static semantic analysis complete
-1
-2
-Param value size: 1
-Return offset: -2
+-1
+PARAM  n : ref(int) level 2 offset -1
+-2
+PARAM  b : ref(boolean) level 2 offset -2
+-1
+PARAM  n : ref(int) level 2 offset -1
+-2
+PARAM  b : ref(boolean) level 2 offset -2
+Return: -3
 Code generation complete
 No errors detected.
 Running ...
-1
+120
 
 Terminated
