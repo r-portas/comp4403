@@ -3,17 +3,22 @@ procedure C( x : int, y : int ) : int =
    procedure fact( n : int ) : int =
     var f : int;
     begin
+    // write 1337;
+   	// write n;
       // assume 0 <= n
       if n = 0 then
         f := 1    
         // f = n!
       else // 0 < n
+      	// write n-1;
         f := n * fact( n <- n-1 );
         // f = n!
       return f
     end; // fact
     
   begin // C
+  	// write x;
+  	// write y;
     return fact(n <- x) / (fact(n <- y) * fact(n <- x-y))
   end; // C
   

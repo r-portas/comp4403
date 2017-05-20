@@ -118,6 +118,9 @@ public class CodeGenerator implements DeclVisitor, StatementTransform<Code>,
         Code code = new Code();
 
         code.append( node.getCondition().genCode( this ) );
+        
+        //code.generateOp(Operation.DUP);
+        //code.generateOp(Operation.WRITE);
 
         endGen( "ActualParam" );
         return code;

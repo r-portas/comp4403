@@ -125,6 +125,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
                     // }
                     try {
                         ExpNode cond = formalParamType.coerceToType(param.getCondition());
+                        param.setCondition(cond);
                     } catch (Type.IncompatibleTypes e) {
                         staticError("can't coerce " + paramType + " to " + formalParamType, param.getCondition().getLocation());
                     }
