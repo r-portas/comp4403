@@ -45,6 +45,38 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
         this.errors = errors;
         nodeStack = new Stack<String>();
     }
+    
+    /**
+     * Generates code for the parameters
+     *
+     * @param proc The procedure entry
+     * @param params The actual parameters of the node
+     */
+    private void generateParams(SymEntry.ProcedureEntry proc) {
+        Scope scope = proc.getLocalScope();
+
+        List<SymEntry.ParamEntry> formalParams = proc.getType().getFormalParams();	
+        ArrayList<Integer> offsets = new ArrayList<Integer>();
+        
+        for (int i = formalParams.size() - 1; i >= 0; i--) {
+            SymEntry.ParamEntry formal = formalParams.get(i);
+            
+            int paramSpace = formal.getType().getSpace();
+            offsets.add(scope.allocValueParameterSpace(paramSpace));
+ 
+        }
+        
+        // Set the offsets, in reverse
+        for (int i = 0; i < formalParams.size(); i++) {
+            SymEntry.ParamEntry formal = formalParams.get(i);
+            
+            int offset = offsets.get(i);
+            
+            formal.setOffset(offset);
+        }
+    }
+    
+    
     /** The tree traversal starts with a call to visitProgramNode.
      * Then its descendants are visited using visit methods for each
      * node type, which are called using the visitor pattern "accept"
@@ -132,7 +164,7 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
 
                 }
             }
-
+            
             if (foundParam == false) {
                 staticError("not a parameter of procedure", param.getLocation());
             }
@@ -193,6 +225,8 @@ public class StaticChecker implements DeclVisitor, StatementVisitor,
             }
         }
 
+        generateParams(procEntry);
+        
         // resolve all references to identifiers with the declarations
         localScope.resolveScope();
         // Enter the local scope
